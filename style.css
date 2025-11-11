@@ -458,8 +458,15 @@ main {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-#profile .profile-field:hover {
+#profile .profile-field:hover,
+#profile .accordion:hover {
     transform: translateY(-5px); /* Move up on hover */
+    box-shadow: 0 0 15px #ff0000, inset 0 0 10px #ff0000; /* Stronger glow on hover */
+}
+
+#profile #name-field:hover {
+    transform: translateY(-5px); /* Move up on hover */
+    box-shadow: 0 0 15px #ff0000, inset 0 0 15px #ff0000; /* Stronger glow on hover */
 }
 
 .profile-field h3 {
@@ -489,7 +496,7 @@ main {
 }
 
 .social-link-item:hover {
-    transform: translateY(-3px);
+    transform: translateY(-5px);
     box-shadow: 0 0 10px #ff0000, inset 0 0 10px #ff0000; /* Stronger glow on hover */
 }
 
@@ -509,7 +516,7 @@ main {
 }
 
 .contact-info:hover {
-    transform: translateY(-3px);
+    transform: translateY(-5px);
     box-shadow: 0 0 10px #ff0000, inset 0 0 10px #ff0000; /* Stronger glow on hover */
 }
 
