@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>（あなたの名前）'s Portfolio</title>
+    
+    <!-- Google Fonts (見栄えを良くするため) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+
+    <!-- 外部CSSファイルの読み込み -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- p5.jsのキャンバスを格納する専用コンテナ -->
+    <div id="canvas-container"></div>
+
+    <!-- ===== LOADING ===== -->
+    <div id="loading-screen">
+        <div id="loading-text"></div>
+    </div>
+
+    <!-- ===== 1. ナビゲーションバー (常に固定) ===== -->
+    <header class="navbar hidden">
+        <nav>
+            <ul>
+                <li><a href="#top">TOP</a></li>
+                <li><a href="#profile">PROFILE</a></li>
+                <li><a href="#projects">PROJECTS</a></li>
+                <li><a href="#experience">EXPERIENCE</a></li>
+                <li><a href="#skills">SKILLS</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- ===== メインコンテンツ ===== -->
+    <main>
+
+        <!-- ===== 2. TOP (ヒーローセクション) ===== -->
+        <section id="top" class="hero-section">
+            <div class="hero-video-background">
+                <iframe src="https://www.youtube.com/embed/b3qK5eTwYUs?autoplay=1&mute=1&loop=1&playlist=b3qK5eTwYUs&controls=0&showinfo=0&modestbranding=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+            <div class="hero-content">
+                <h1 class="scroll-animate from-up">YOUR CATCHPHRASE</h1>
+                <p class="scroll-animate from-up">あなたのキャッチコピー</p>
+            </div>
+        </section>
+
+        <!-- ===== 3. プロフィール ===== -->
+        <section id="profile" class="section-container">
+            <h2 class="scroll-animate from-down">PROFILE</h2>
+            <div class="profile-content">
+                <div class="profile-sidebar">
+                    <div class="profile-image-container">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <img src="https://via.placeholder.com/200" alt="顔写真" class="profile-image">
+                            </div>
+                            <div class="flip-card-back">
+                                <img src="https://via.placeholder.com/200/0000FF/808080" alt="裏面の写真" class="profile-image">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile-field" id="name-field">
+                        <h3>Name</h3>
+                        <p>YOUKIN</p>
+                    </div>
+                    <div class="social-links">
+                        <a href="https://twitter.com/your_twitter" target="_blank" class="social-link-item">
+                            <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter">
+                            <span>Twitter</span>
+                        </a>
+                        <a href="https://github.com/your_github" target="_blank" class="social-link-item">
+                            <img src="https://cdn-icons-png.flaticon.com/512/733/733553.png" alt="GitHub">
+                            <span>GitHub</span>
+                        </a>
+                    </div>
+                    <div class="contact-info">
+                        <a href="/cdn-cgi/l/email-protection#92ebfde7e0bcf7fff3fbfed2f7eaf3ffe2fef7bcf1fdff"><span class="__cf_email__" data-cfemail="dda4b2a8aff3b8b0bcb4b19db8a5bcb0adb1b8f3beb2b0">[email&#160;protected]</span></a>
+                    </div>
+                </div>
+                <div class="profile-text">
+                    <div class="profile-field">
+                        <h3>About Me</h3>
+                        <p>ゲーム開発と3Dモデリングに情熱を注ぐクリエイター。新しい技術を探求し、魅力的な体験を創造することが好きです。</p>
+                    </div>
+
+                    <!-- 受賞歴アコーディオン -->
+                    <div class="accordion">
+                        <div class="accordion-toggle">
+                            <h3>受賞歴</h3>
+                            <span class="icon-arrow"></span>
+                        </div>
+                        <div class="accordion-content">
+                            <ul>
+                                <li>20XX年: 〇〇コンテスト 優秀賞</li>
+                                <!-- 必要に応じて追加 -->
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- インターン・バイト経験アコーディオン -->
+                    <div class="accordion">
+                        <div class="accordion-toggle">
+                            <h3>インターン・バイト経験</h3>
+                            <span class="icon-arrow"></span>
+                        </div>
+                        <div class="accordion-content">
+                            <ul>
+                                <li>20XX年〜20XX年: 株式会社〇〇 (インターン)</li>
+                                <!-- 必要に応じて追加 -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 4. 作品 ===== -->
+        <section id="projects" class="section-container">
+            <h2 class="scroll-animate from-down">PROJECTS</h2>
+            
+            <!-- トップ作品 -->
+            <div class="project-top scroll-animate from-down">
+                <div class="project-item" data-modal-target="modal-project-1">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/b3qK5eTwYUs" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="project-description">
+                        <h3>最新のプロジェクト名</h3>
+                        <p>ここに最新のプロジェクトの簡単な説明が入ります。どのような技術を使い、何を実現したのかを記述します。</p>
+                        <ul class="tags">
+                            <li class="tag unity">Unity</li>
+                            <li class="tag blender">Blender</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 作品グリッド (3列) -->
+            <div class="project-grid">
+                <!-- 作品アイテム 2 -->
+                <div class="project-item" data-modal-target="modal-project-2">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/g1A0z3bnu78" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="project-description">
+                        <h3>プロジェクト名 2</h3>
+                        <p>プロジェクトの簡単な説明。</p>
+                        <ul class="tags">
+                            <li class="tag blender">Blender</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- 作品アイテム 3 -->
+                <div class="project-item" data-modal-target="modal-project-3">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/b3qK5eTwYUs" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="project-description">
+                        <h3>プロジェクト名 3</h3>
+                        <p>プロジェクトの簡単な説明。</p>
+                        <ul class="tags">
+                            <li class="tag illust">Illust</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- 作品アイテム 4 -->
+                <div class="project-item" data-modal-target="modal-project-4">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/b3qK5eTwYUs" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="project-description">
+                        <h3>プロジェクト名 4</h3>
+                        <p>プロジェクトの簡単な説明。</p>
+                        <ul class="tags">
+                            <li class="tag unity">Unity</li>
+                            <li class="tag blender">Blender</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 5. 経験 ===== -->
+        <section id="experience" class="section-container">
+            <h2 class="scroll-animate from-down">EXPERIENCE</h2>
+            <div class="experience-list scroll-animate from-down">
+                <!-- 経験 1 (アコーディオン) -->
+                <div class="accordion">
+                    <div class="accordion-toggle">
+                        <h3>Life is Tech! インターン (2025年7月〜)</h3>
+                        <span class="icon-arrow"></span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>（ここに詳しい説明。どのような役割で、何を学び、どんな成果を出したか）</p>
+                    </div>
+                </div>
+                <!-- 経験 2 (アコーディオン) -->
+                <div class="accordion">
+                    <div class="accordion-toggle">
+                        <h3>〇〇ゲームコンテスト セミファイナル進出 (2024年)</h3>
+                        <span class="icon-arrow"></span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>（応募した作品、評価された点、この経験から得たことなど）</p>
+                    </div>
+                </div>
+                <!-- 経験 3 (アコーディオン) -->
+                <div class="accordion">
+                    <div class="accordion-toggle">
+                        <h3>（経験タイトル3）</h3>
+                        <span class="icon-arrow"></span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>（詳しい説明）</p>
+                    </div>
+                </div>
+                <!-- 経験 4 (アコーディオン) -->
+                <div class="accordion">
+                    <div class="accordion-toggle">
+                        <h3>（経験タイトル4）</h3>
+                        <span class="icon-arrow"></span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>（詳しい説明）</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== 6. スキル ===== -->
+        <section id="skills" class="section-container">
+            <h2 class="scroll-animate from-down">SKILLS</h2>
+            <div class="skills-grid scroll-animate from-down">
+                <!-- カテゴリ 1: Languages -->
+                <div class="skill-category">
+                    <h3>Languages</h3>
+                    <ul>
+                        <li>
+                            <span class="skill-name">C# (Unity)</span>
+                            <div class="stars" data-rating="5"></div>
+                        </li>
+                        <li>
+                            <span class="skill-name">JavaScript</span>
+                            <div class="stars" data-rating="3"></div>
+                        </li>
+                        <li>
+                            <span class="skill-name">Python</span>
+                            <div class="stars" data-rating="2"></div>
+                        </li>
+                        <li>
+                            <span class="skill-name">C++</span>
+                            <div class="stars" data-rating="2"></div>
+                        </li>
+                         <li>
+                            <span class="skill-name">HTML/CSS</span>
+                            <div class="stars" data-rating="3"></div>
+                        </li>
+                    </ul>
+                </div>
+                <!-- カテゴリ 2: Tools & Engines -->
+                <div class="skill-category">
+                    <h3>Tools</h3>
+                    <ul>
+                        <li>
+                            <span class="skill-name">Git/GitHub</span>
+                            <div class="stars" data-rating="4"></div>
+                        </li>
+                        <li>
+                            <span class="skill-name">Unity</span>
+                            <div class="stars" data-rating="5"></div>
+                        </li>
+                        <li>
+                            <span class="skill-name">Unreal Engine</span>
+                            <div class="stars" data-rating="1"></div>
+                        </li>
+                        <li>
+                            <span class="skill-name">Blender</span>
+                            <div class="stars" data-rating="3"></div>
+                        </li>
+                        <li>
+                            <span class="skill-name">Photoshop</span>
+                            <div class="stars" data-rating="4"></div>
+                        </li>
+                        <li>
+                            <span class="skill-name">Illustrator</span>
+                            <div class="stars" data-rating="3"></div>
+                        </li>
+                    </ul>
+                </div>
+                <!-- カテゴリ 4: Others -->
+                <div class="skill-category">
+                    <h3>Others</h3>
+                    <ul>
+                        <li>
+                            <span class="skill-name">ゲームデザイン</span>
+                            <div class="stars" data-rating="4"></div>
+                        </li>
+                        <li>
+                            <span class="skill-name">企画書作成</span>
+                            <div class="stars" data-rating="5"></div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== 7. フッター ===== -->
+    <footer class="footer">
+        <p>&copy; 2025 （あなたの名前）. All Rights Reserved.</p>
+    </footer>
+
+    <!-- ===== 作品詳細モーダル (ポップアップ) ===== -->
+    <!-- (初期状態では非表示) -->
+    <div id="modal-project-1" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>（トップ作品のタイトル）</h2>
+            <p><strong>ジャンル:</strong> (例: 3Dアクション)</p>
+            <p><strong>操作説明:</strong> (例: WASD: 移動, Space: ジャンプ)</p>
+            <p><strong>詳しい説明:</strong><br>
+                (このゲームのコンセプト、工夫した点、技術的な挑戦などを詳しく書く)
+            </p>
+            <p><strong>リンク:</strong></p>
+            <ul>
+                <li><a href="（GitHubのURL）" target="_blank">GitHubリポジトリ</a></li>
+                <li><a href="（WebGLなどのプレイURL）" target="_blank">ゲームをプレイ</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div id="modal-project-2" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>（作品タイトル2）</h2>
+            <!-- ... 作品1と同様に詳細を書く ... -->
+        </div>
+    </div>
+
+    <div id="modal-project-3" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>（作品タイトル3）</h2>
+            <!-- ... 作品1と同様に詳細を書く ... -->
+        </div>
+    </div>
+
+    <div id="modal-project-4" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>（作品タイトル4）</h2>
+            <!-- ... 作品1と同様に詳細を書く ... -->
+        </div>
+    </div>
+
+
+    <!-- 外部JavaScriptファイルの読み込み (必ず </body> の直前に) -->
+    <!-- p5.jsライブラリ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <script src="sketch.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
