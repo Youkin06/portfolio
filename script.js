@@ -99,6 +99,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 // scrollHeight を使って、コンテンツの実際の高さを取得して設定
                 content.style.maxHeight = content.scrollHeight + 'px';
             }
+
+            const parentSection = accordionItem.closest('.section-container');
+            if (!parentSection) return;
+
+            // アニメーション完了後に一度だけ実行される関数
+            const onTransitionEnd = () => {
+                const backgroundContainerId = parentSection.querySelector('.section-background-canvas')?.id;
+                if (!backgroundContainerId) return;
+
+                const p5Instance = window.p5Instances && window.p5Instances[backgroundContainerId];
+                if (p5Instance && typeof p5Instance.windowResized === 'function') {
+                    p5Instance.windowResized();
+                }
+
+                // 一度実行したらイベントリスナーを削除する
+                content.removeEventListener('transitionend', onTransitionEnd);
+            };
+
+            // transitionendイベントリスナーを追加
+            content.addEventListener('transitionend', onTransitionEnd);
         });
     });
 

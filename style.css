@@ -385,7 +385,7 @@ main {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    /* height: 100%; */ /* JavaScriptで高さを制御するため削除 */
     z-index: 0; /* コンテンツより後ろに配置 */
     pointer-events: none; /* クリックイベントを無視 */
 }
@@ -410,6 +410,7 @@ main {
     border: 3px solid #ff0000; /* さらに太くする */
     box-shadow: 0 0 5px #ff0000, inset 0 0 5px #ff0000; /* Match the glow of other fields */
     cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Add transition */
 }
 
 .flip-card-inner {
@@ -446,6 +447,7 @@ main {
 }
 
 .profile-image-container:hover {
+    transform: translateY(-5px); /* Move up on hover */
     box-shadow: 0 0 15px #ff0000, inset 0 0 15px #ff0000; /* Match the Name field's hover glow */
 }
 
@@ -540,13 +542,14 @@ main {
 .project-top {
     margin-bottom: 60px;
     padding-bottom: 40px;
-    border-bottom: 2px solid #444;
+    /* border-bottom: 2px solid #444; */ /* 線を削除 */
 }
 
 .project-top .project-item {
     display: flex;
     gap: 30px;
-    align-items: flex-start;
+    flex-direction: column; /* 動画と説明を縦に並べる */
+    /* align-items: flex-start; */ /* flex-direction: column の場合は不要 */
     background-color: #1a1a1a;
     padding: 20px;
     border-radius: 10px;
@@ -562,7 +565,7 @@ main {
 
 .project-top .video-container {
     flex-shrink: 0;
-    width: 400px;
+    width: 100%; /* 親要素の幅いっぱいに広げる */
 }
 
 .project-top .project-description {
@@ -672,6 +675,7 @@ main {
 
 #experience .accordion:hover {
     transform: translateY(-5px); /* Move up on hover */
+    box-shadow: 0 0 15px #ffa500, inset 0 0 15px #ffa500; /* Stronger orange glow on hover */
 }
 
 /* ===== 6. スキルセクション ===== */

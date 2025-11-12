@@ -1,3 +1,6 @@
+// p5.jsのインスタンスを管理するためのグローバルオブジェクト
+window.p5Instances = window.p5Instances || {};
+
 /**
  * p5.jsを使用して、各セクションに静的なハニカム構造の背景を描画します。
  * @param {string} containerId - キャンバスを配置するコンテナのID
@@ -18,8 +21,16 @@ const createSectionSketch = (containerId, glowColor) => {
                 p.noLoop();
                 return;
             }
+
+            // 親セクションの高さを取得して背景コンテナに設定
+            const parentSection = container.parentElement;
+            if (parentSection) {
+                container.style.height = parentSection.offsetHeight + 'px';
+            }
+
             const canvas = p.createCanvas(container.offsetWidth, container.offsetHeight);
             canvas.parent(container);
+            canvas.id(`${containerId}-canvas`); // キャンバスに一意のIDを割り当てる
 
             hexWidth = p.sqrt(3) * hexRadius;
             hexHeight = 2 * hexRadius;
@@ -75,9 +86,26 @@ const createSectionSketch = (containerId, glowColor) => {
             }
             p.endShape(p.CLOSE);
         };
+
+        // This function will be called externally to resize the canvas
+        p.windowResized = function () {
+            const container = document.getElementById(containerId);
+            if (container) {
+                // 親セクションの現在の高さに合わせてリサイズ
+                const parentSection = container.parentElement;
+                if (parentSection) { // parentSectionが存在するか確認
+                    container.style.height = parentSection.offsetHeight + 'px';
+                } else {
+                    container.style.height = p.height + 'px'; // フォールバック
+                }
+                p.resizeCanvas(container.offsetWidth, container.offsetHeight);
+                p.initializeHexagons();
+            }
+        };
     };
 
-    new p5(sketch);
+    // 生成したインスタンスをグローバルオブジェクトに保存
+    window.p5Instances[containerId] = new p5(sketch);
 };
 
 // DOMが読み込まれたら、各セクションのスケッチを生成
