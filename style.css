@@ -1,4 +1,20 @@
 /* ===== ローディング画面 ===== */
+/* 虹色グローアニメーションの定義 */
+@keyframes rainbowGlow {
+    0%, 100% { text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000; } /* Red */
+    14% { text-shadow: 0 0 10px #ffa500, 0 0 20px #ffa500; } /* Orange */
+    28% { text-shadow: 0 0 10px #ffff00, 0 0 20px #ffff00; } /* Yellow */
+    42% { text-shadow: 0 0 10px #008000, 0 0 20px #008000; } /* Green */
+    56% { text-shadow: 0 0 10px #0000ff, 0 0 20px #0000ff; } /* Blue */
+    70% { text-shadow: 0 0 10px #4b0082, 0 0 20px #4b0082; } /* Indigo */
+    84% { text-shadow: 0 0 10px #ee82ee, 0 0 20px #ee82ee; } /* Violet */
+}
+
+@keyframes fadeInBackground {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
 #loading-screen {
     position: fixed;
     top: 0;
@@ -102,11 +118,6 @@ html {
     scroll-padding-bottom: var(--navbar-height);
     /* サイト全体の背景色を黒に設定 */
     background-color: #000000;
-}
-
-@keyframes fadeInBackground {
-    from { opacity: 0; }
-    to   { opacity: 1; }
 }
 
 body {
@@ -262,9 +273,20 @@ main {
 .hero-content {
     position: relative;
     z-index: 1;
-    background-color: rgba(0, 0, 0, 0.5); /* Add a semi-transparent overlay for text readability */
-    padding: 20px 40px;
-    border-radius: 10px;
+}
+
+.hero-content h1 {
+    font-size: 4rem; /* デスクトップでの文字サイズを大きく */
+    animation: rainbowGlow 10s infinite linear; /* 虹色グローアニメーションを適用 */
+    /* アニメーション開始前や失敗時のフォールバックとして初期シャドウを設定 */ text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+    line-height: 1.2; /* 行の高さを調整して見やすくする */
+}
+
+.hero-content p {
+    font-size: 1.8rem; /* 文字サイズを調整 */
+    font-family: 'Press Start 2P', 'DotGothic16', cursive; /* フォントをタイトルと合わせる */
+    animation: rainbowGlow 10s infinite linear; /* 虹色グローアニメーションを適用 */
+    text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000; /* アニメーションのフォールバック */
 }
 
 /* ===== 3-6. 各セクション共通スタイル (Dungeon Slabs) ===== */
@@ -1055,8 +1077,9 @@ main {
 @media (max-width: 768px) {
     /* ヘッダー: ハンバーガーメニューを右端に配置 */
     .navbar {
-        justify-content: flex-end;
+        justify-content: center; /* 中央揃えに戻す */
         padding: 0 20px;
+        background-image: url('Images/Controller_smh.png'); /* スマホ用の背景画像に変更 */
     }
 
     /* PC用ナビゲーションを非表示 */
@@ -1096,7 +1119,7 @@ main {
 
 
     .hero-content h1 {
-        font-size: 2rem;
+        font-size: 2.5rem; /* モバイルでの文字サイズを調整 */
     }
     .hero-content p {
         font-size: 1rem;
