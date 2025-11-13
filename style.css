@@ -1147,6 +1147,18 @@ main {
         font-size: 1rem;
     }
 
+    /* ローディング画面のスマホ対応 */
+    #loading-text {
+        font-size: 1.2rem; /* 文字サイズを小さく */
+        /* flex-wrap: wrap; */ /* 必要に応じて折り返しを有効にする */
+        /* justify-content: center; */
+    }
+    .char-box {
+        width: 45px; /* ボックスの幅を小さく */
+        height: 45px; /* ボックスの高さを小さく */
+        margin: 0 4px; /* ボックス間のマージンを小さく */
+    }
+
     .section-container {
         padding: 40px 15px;
     }
