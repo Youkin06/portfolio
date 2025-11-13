@@ -177,22 +177,23 @@ h1, h2, h3 {
     bottom: -160px; /* Move completely off-screen (navbar-height + margin-bottom) */
 }
 
-.navbar nav {
+.navbar nav ul {
+    list-style: none;
     margin: 0;
-    padding: 0;
-    width: 100%;
+    padding: clamp(20px, 5vh, 40px) 0 0 0; /* Responsive padding-top */
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: clamp(15px, 4vh, 30px); /* 上部のレスポンシブな余白 */
-}
-
-.nav-row {
-    display: flex;
+    width: 50vw; /* Responsive width */
+    max-width: 600px; /* Max width for large screens */
     justify-content: center;
+    gap: clamp(10px, 3vw, 30px); /* Responsive gap */
+    position: relative; /* Allow for transform */
 }
 
-.navbar nav a {
+.navbar nav li {
+    margin: 0;
+}
+
+.navbar nav ul a {
     font-family: 'Press Start 2P', 'DotGothic16', cursive;
     text-decoration: none;
     color: white; /* White text color */
@@ -200,8 +201,6 @@ h1, h2, h3 {
     font-size: clamp(12px, 2.5vw, 20px); /* Responsive font size */
     transition: color 0.3s ease, transform 0.3s ease; /* Add transform to transition */
     text-shadow: 1px 1px 2px rgba(0,0,0,0.7); /* Black shadow */
-    padding: 0 clamp(5px, 1.5vw, 15px); /* 左右のレスポンシブな余白 */
-    line-height: 1.5; /* 行の高さを調整 */
 }
 /* Hover colors for each link */
 .navbar nav li:nth-child(1) a:hover { /* TOP */
@@ -1087,18 +1086,37 @@ main {
         background-image: url('Images/Controller_smh.png'); /* スマホ用の背景画像に変更 */
     }
 
-    .navbar nav {
-        padding-top: clamp(10px, 3vh, 20px); /* スマホ用に上部余白を調整 */
+    .navbar nav ul {
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+        padding-top: clamp(10px, 3vh, 20px);
     }
 
-    .navbar nav a {
-        font-size: clamp(10px, 3vw, 14px); /* スマホ用にフォントサイズを調整 */
-        padding: 0 clamp(8px, 2vw, 12px); /* スマホ用に左右余白を調整 */
-        line-height: 1.4; /* スマホ用に高さを調整 */
+    .navbar nav ul li {
+        line-height: 1.4;
     }
 
-    /* PCのホバーエフェクトを無効化 */
-    .navbar nav a:hover {
+    .navbar nav ul li:nth-child(1) {
+        order: 1;
+    }
+    .navbar nav ul li:nth-child(2),
+    .navbar nav ul li:nth-child(3) {
+        order: 2;
+        display: inline-block; /* 横並びにする */
+    }
+    .navbar nav ul li:nth-child(4),
+    .navbar nav ul li:nth-child(5) {
+        order: 3;
+        display: inline-block; /* 横並びにする */
+    }
+
+    .navbar nav ul a {
+        font-size: clamp(10px, 3vw, 14px);
+        padding: 0 clamp(8px, 2vw, 12px);
+    }
+
+    .navbar nav ul a:hover {
         color: white;
         transform: none;
     }
