@@ -1083,7 +1083,7 @@ main {
     /* ヘッダー: ハンバーガーメニューを右端に配置 */
     .navbar {
         justify-content: center; /* 中央揃えに戻す */
-        padding: 0 20px;
+        padding: 0; /* 左右のパディングを削除して背景画像を中央揃えに */
         background-image: url('Images/Controller_smh.png'); /* スマホ用の背景画像に変更 */
     }
 
