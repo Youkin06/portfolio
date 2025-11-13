@@ -472,6 +472,11 @@ main {
     /* border: 2px solid #444; */ /* Remove the inner border to fix alignment */
 }
 
+/* 画像切り替え用：デフォルト（PC）ではスマホ用画像を非表示 */
+.mobile-image {
+    display: none;
+}
+
 .profile-image-container:hover {
     transform: translateY(-5px); /* Move up on hover */
     box-shadow: 0 0 15px #ff0000, inset 0 0 15px #ff0000; /* Match the Name field's hover glow */
@@ -1137,6 +1142,15 @@ main {
         flex-direction: column;
         text-align: center;
     }
+
+    /* 画像切り替え用：スマホではPC用画像を非表示にし、スマホ用画像を表示 */
+    .pc-image {
+        display: none;
+    }
+    .mobile-image {
+        display: block;
+    }
+
 
     /* 作品グリッドを1列に */
     .project-grid {
