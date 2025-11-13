@@ -211,3 +211,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+/* ========================================
+ * 6. メールアドレスのホバーエフェクト
+ * ======================================== */
+document.addEventListener('DOMContentLoaded', () => {
+    // メールアドレスのリンク要素を取得 (href属性が "mailto:" で始まるaタグを想定)
+    const emailLink = document.querySelector('a[href^="mailto:"]');
+
+    if (emailLink) {
+        // 元の文字色を保持
+        const originalColor = window.getComputedStyle(emailLink).color;
+
+        // カーソルが乗った時の処理
+        emailLink.addEventListener('mouseover', () => {
+            emailLink.style.color = 'red'; // 文字色を赤に変更
+        });
+
+        // カーソルが離れた時の処理
+        emailLink.addEventListener('mouseout', () => {
+            emailLink.style.color = originalColor; // 元の色に戻す
+        });
+    }
+});

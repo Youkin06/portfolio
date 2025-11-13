@@ -534,7 +534,8 @@ main {
 .contact-info a {
     color: var(--primary-color);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 0.9rem; /* 既存のスタイル */
+    display: block; /* リンクをブロック要素にして改行させる */
 }
 
 /* ===== 4. 作品セクション ===== */
@@ -659,6 +660,31 @@ main {
 .tag.illust {
     background-color: #66bb6a;
     color: white;
+}
+
+.tag.two-d {
+    background-color: #00bcd4; /* Cyan */
+    color: white;
+}
+
+.tag.dot-e {
+    background-color: #3f51b5; /* Indigo */
+    color: white;
+}
+
+.tag.modeling {
+    background-color: #9c27b0; /* Purple */
+    color: white;
+}
+
+.tag.three-d {
+    background-color: #ff9800; /* Orange */
+    color: white;
+}
+
+.tag.gc-koshien {
+    background-color: #ffd700; /* Gold */
+    color: #333; /* Dark text for contrast */
 }
 
 /* ===== 5. 経験セクション ===== */
@@ -824,12 +850,19 @@ main {
     background-color: #222;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
+    padding: 0 20px; /* 左右のパディングは維持し、上下のパディングを0に */
+}
+
+/* アコーディオンが開いたときだけ、上下のパディングを追加 */
+.accordion.active .accordion-content {
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
 .accordion-content p, 
 .accordion-content ul {
     margin: 0;
-    padding: 20px; /* 開いたときの内側余白 */
     border-top: 1px solid #444;
+    padding: 20px 0 0 0; /* 上方向のパディングのみに調整 */
 }
 
 /* ===== 共通: 作品モーダル (ポップアップ) ===== */
@@ -856,6 +889,17 @@ main {
     box-shadow: inset 0 0 15px #000, 0 5px 15px rgba(0,0,0,0.5);
     position: relative;
     animation: fadeIn 0.3s;
+}
+
+/* モーダル内のリンクスタイル */
+.modal-content ul li a {
+    color: #87ceeb; /* ライトブルー */
+    text-decoration: underline; /* リンクであることを示す下線 */
+    transition: color 0.3s ease;
+}
+
+.modal-content ul li a:hover {
+    color: #aaddff; /* ホバー時に少し明るい水色 */
 }
 
 /* モーダル表示アニメーション */
@@ -890,6 +934,47 @@ main {
 .scroll-animate.visible {
     opacity: 1;
     transform: none; /* 初期位置をリセット */
+}
+
+/* インターン・バイト経験の枠のスタイル */
+.experience-item {
+    border: 1px solid #ff4d4d; /* 赤い枠線 */
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.7), 0 0 12px rgba(255, 0, 0, 0.5); /* 赤い光彩 (glow) */
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px; /* 角を丸くする */
+    background-color: rgba(255, 0, 0, 0.05); /* ほんのり赤い背景色 */
+}
+
+.experience-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+}
+
+.company-name {
+    font-family: 'Press Start 2P', 'DotGothic16', cursive;
+    font-size: 1.1rem; /* 会社名を少し大きく */
+    color: #ff8c00; /* オレンジ系のアクセントカラー */
+}
+
+.period {
+    font-size: 0.85rem;
+    color: #ccc;
+}
+
+/* 作品詳細への誘導テキスト */
+.click-for-details {
+    display: inline-block;
+    margin-top: 10px;
+    color: var(--accent-color); /* オレンジ色で目立たせる */
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.project-item:hover .click-for-details {
+    color: white; /* 親要素のホバーで白に変化 */
 }
 
 
