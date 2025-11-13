@@ -342,6 +342,10 @@ main {
     z-index: 1;
 }
 
+#projects.section-container h2 {
+    color: #ffffff; /* Yellow-green */
+}
+
 #projects.section-container > h2::after { 
     background: #adff2f; /* Yellow-green */
     box-shadow: 0 0 5px #adff2f;
@@ -486,6 +490,11 @@ main {
     font-size: 1.2rem;
 }
 
+/* PROFILEセクションのフィールドタイトルを赤色に */
+#profile .profile-field h3 {
+    color: #ff0000; /* Red */
+}
+
 .social-links {
     display: flex;
     gap: 15px;
@@ -622,6 +631,10 @@ main {
 .project-description h3 {
     color: var(--accent-color);
     margin-bottom: 10px;
+}
+/* PROJECTSセクションの各ゲームタイトルの色を黄緑に */
+.project-description h3 {
+    color: #adff2f; /* Yellow-green */
 }
 
 .project-description p {
@@ -968,7 +981,7 @@ main {
 .click-for-details {
     display: inline-block;
     margin-top: 10px;
-    color: var(--accent-color); /* オレンジ色で目立たせる */
+    color: #adff2f; /* 黄緑色に変更 */
     font-weight: bold;
     transition: color 0.3s ease;
 }
