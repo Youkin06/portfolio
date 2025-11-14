@@ -722,8 +722,13 @@ main {
 }
 
 .tag.gc-koshien {
-    background-color: #ffd700; /* Gold */
+    background-color: hwb(51 0% 0%); /* Gold */
     color: #333; /* Dark text for contrast */
+}
+
+.tag.google-play {
+    background-color: hwb(51 0% 0%); /* Green for release */
+    color: #333;
 }
 
 /* ===== 5. 経験セクション ===== */
@@ -1097,34 +1102,31 @@ main {
     }
 
     .navbar nav ul {
-        flex-direction: column;
+        flex-flow: row wrap; /* 横並びにして、折り返しを許可 */
         align-items: center;
-        gap: 0;
+        justify-content: center; /* 中央揃え */
+        gap: 5px 0; /* 上下の隙間を少し空ける */
         padding-top: clamp(10px, 3vh, 20px);
     }
 
     .navbar nav ul li:nth-child(1) {
-        order: 1;
-        width: 100%;
+        flex-basis: 100%; /* 1行目を100%の幅にする */
         text-align: center;
     }
     .navbar nav ul li:nth-child(2),
     .navbar nav ul li:nth-child(3) {
-        order: 2;
-        display: inline-block; /* 横並びにする */
-        line-height: 1.4;
+        /* 2行目の要素 */
+        flex-basis: auto; /* 自動幅 */
     }
     .navbar nav ul li:nth-child(4),
     .navbar nav ul li:nth-child(5) {
-        order: 3;
-        display: inline-block; /* 横並びにする */
-        line-height: 1.4;
+        /* 3行目の要素 */
+        flex-basis: auto; /* 自動幅 */
     }
 
     .navbar nav ul a {
         font-size: clamp(10px, 3vw, 14px);
         padding: 0 clamp(8px, 2vw, 12px);
-        line-height: 1.6; /* 行の高さを少し調整 */
     }
 
     .navbar nav ul a:hover {
