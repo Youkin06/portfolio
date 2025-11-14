@@ -771,6 +771,11 @@ main {
     font-size: 1.3rem; /* Slightly smaller font */
 }
 
+/* SKILLSセクションのカテゴリタイトルを水色に */
+#skills .skill-category h3 {
+    color: #87ceeb; /* Light blue */
+}
+
 .skill-category ul {
     list-style: none;
     padding: 0;
@@ -799,7 +804,7 @@ main {
 .stars {
     --star-size: 14px; /* Further reduced star size */
     --star-color: #555;
-    --star-background: var(--accent-color); /* 塗りつぶしの色 */
+    --star-background: #87ceeb; /* 塗りつぶしの色を水色に変更 */
     display: inline-block;
     font-size: var(--star-size);
     line-height: 1;
