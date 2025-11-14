@@ -1116,30 +1116,28 @@ main {
         align-items: center;
         justify-content: center; /* 中央揃え */
         gap: 5px 0; /* 上下の隙間を少し空ける */
-        padding-top: clamp(10px, 3vh, 20px);
+        padding-top: clamp(15px, 4vh, 25px); /* TOPの位置を少し上に調整 */
         width: 100%; /* 横幅を100%に設定してレイアウト崩れを防ぐ */
     }
 
     .navbar nav ul li:nth-child(1) {
         flex-basis: 100%; /* 1行目を100%の幅にする */
         text-align: center;
+        margin-bottom: 5px; /* 2行目との間に少し余白を追加 */
     }
     .navbar nav ul li:nth-child(2),
+    .navbar nav ul li:nth-child(3) {
+        /* 2行目の要素 (PROFILE, PROJECTS) */
+        display: inline-block; /* 横並びにする */
+    }
     .navbar nav ul li:nth-child(4),
     .navbar nav ul li:nth-child(5) {
-        display: none; /* 3段目を一旦非表示に */
-    }
-
-    /* 2行目と3行目を生成して中央揃え */
-    .navbar nav ul li:nth-child(3)::after,
-    .navbar nav ul li:nth-child(3)::before {
-        display: block;
-        text-align: center;
-        width: 100%;
-    }
-    .navbar nav ul li:nth-child(3)::after {
-        content: 'EXPERIENCE SKILLS';
-        word-spacing: 20px; /* 単語間のスペース */
+        /* 3行目の要素 (EXPERIENCE, SKILLS) */
+        display: inline-block; /* 横並びにする */
+        /* 3行目を改行させるためにflex-basisを設定 */
+        flex-basis: 50%;
+        text-align: right; /* 右寄せ */
+        padding-right: 10px; /* 微調整 */
     }
 
     .navbar nav ul a {
@@ -1149,6 +1147,12 @@ main {
     .navbar nav ul a:hover {
         color: white;
         transform: none;
+    }
+
+    /* 3行目の左側の要素を左寄せにする */
+    .navbar nav ul li:nth-child(4) {
+        text-align: left;
+        padding-left: 10px; /* 微調整 */
     }
 
 
