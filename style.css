@@ -743,6 +743,11 @@ main {
     box-shadow: 0 0 15px #ffa500, inset 0 0 15px #ffa500; /* Stronger orange glow on hover */
 }
 
+/* EXPERIENCEのタイトルフォントを日本語フォントに合わせる */
+#experience .accordion-toggle h3 {
+    font-family: 'DotGothic16', 'Press Start 2P', cursive;
+}
+
 /* ===== 6. スキルセクション ===== */
 .skills-grid {
     display: grid;
