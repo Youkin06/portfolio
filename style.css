@@ -1223,8 +1223,13 @@ main {
         grid-template-columns: 1fr;
     }
 
+    .modal {
+        padding: 20px 0; /* 上下に余白を追加 */
+    }
     .modal-content {
         width: 90%;
-        margin: 20% auto;
+        margin: auto; /* 上下のマージンを自動にして中央揃え */
+        max-height: 90vh; /* 画面の高さの90%を最大値に */
+        overflow-y: auto; /* コンテンツが多い場合は縦スクロールを許可 */
     }
 }
