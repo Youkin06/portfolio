@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const modal = document.getElementById(modalId);
             
             if(modal) {
-                modal.style.display = 'block'; // モーダルを表示
+                modal.classList.add('visible'); // .visibleクラスを追加して表示
             }
         });
     });
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // クリックされたボタンの親であるモーダルを取得して非表示に
             const modal = button.closest('.modal');
             if(modal) {
-                modal.style.display = 'none';
+                modal.classList.remove('visible'); // .visibleクラスを削除して非表示
             }
         });
     });
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.addEventListener('click', (event) => {
             // クリックされたのがモーダルの背景部分（modal本体）かチェック
             if (event.target === modal) {
-                modal.style.display = 'none';
+                modal.classList.remove('visible'); // .visibleクラスを削除して非表示
             }
         });
     });

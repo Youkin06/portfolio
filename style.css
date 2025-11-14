@@ -930,14 +930,23 @@ main {
     height: 100%;
     overflow: auto;
     background-color: rgba(0,0,0,0.8); /* 背景を暗く */
+    /* display: flex; */ /* 初期状態ではflexにしない */
+    padding: 20px; /* 画面端に余白を確保 */
+    box-sizing: border-box; /* paddingをwidth/heightに含める */
+}
+
+/* 表示時にFlexboxで中央揃えするためのクラス */
+.modal.visible {
+    display: flex;
+    align-items: center; /* 垂直方向の中央揃え */
+    justify-content: center; /* 水平方向の中央揃え */
 }
 
 .modal-content {
     background-color: #2a2a2a;
-    margin: 10% auto; /* 上下10%空けて中央に */
+    margin: 0; /* Flexboxで中央揃えするためマージンをリセット */
     padding: 30px;
     border: 2px solid #444;
-    width: 80%;
     max-width: 700px;
     border-radius: 10px;
     box-shadow: inset 0 0 15px #000, 0 5px 15px rgba(0,0,0,0.5);
@@ -1108,6 +1117,7 @@ main {
         justify-content: center; /* 中央揃え */
         gap: 5px 0; /* 上下の隙間を少し空ける */
         padding-top: clamp(10px, 3vh, 20px);
+        width: 100%; /* 横幅を100%に設定してレイアウト崩れを防ぐ */
     }
 
     .navbar nav ul li:nth-child(1) {
@@ -1115,19 +1125,25 @@ main {
         text-align: center;
     }
     .navbar nav ul li:nth-child(2),
-    .navbar nav ul li:nth-child(3) {
-        /* 2行目の要素 */
-        flex-basis: auto; /* 自動幅 */
-    }
     .navbar nav ul li:nth-child(4),
     .navbar nav ul li:nth-child(5) {
-        /* 3行目の要素 */
-        flex-basis: auto; /* 自動幅 */
+        display: none; /* 3段目を一旦非表示に */
+    }
+
+    /* 2行目と3行目を生成して中央揃え */
+    .navbar nav ul li:nth-child(3)::after,
+    .navbar nav ul li:nth-child(3)::before {
+        display: block;
+        text-align: center;
+        width: 100%;
+    }
+    .navbar nav ul li:nth-child(3)::after {
+        content: 'EXPERIENCE SKILLS';
+        word-spacing: 20px; /* 単語間のスペース */
     }
 
     .navbar nav ul a {
         font-size: clamp(10px, 3vw, 14px);
-        padding: 0 clamp(8px, 2vw, 12px);
     }
 
     .navbar nav ul a:hover {
@@ -1223,13 +1239,8 @@ main {
         grid-template-columns: 1fr;
     }
 
-    .modal {
-        padding: 20px 0; /* 上下に余白を追加 */
-    }
     .modal-content {
-        width: 90%;
-        margin: auto; /* 上下のマージンを自動にして中央揃え */
-        max-height: 90vh; /* 画面の高さの90%を最大値に */
+        max-height: calc(100vh - 40px); /* 画面の高さから上下のpaddingを引いた値を最大値に */
         overflow-y: auto; /* コンテンツが多い場合は縦スクロールを許可 */
     }
 }
