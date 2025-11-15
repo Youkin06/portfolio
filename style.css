@@ -1115,7 +1115,7 @@ main {
         flex-flow: row wrap; /* 横並びにして、折り返しを許可 */
         align-items: center;
         justify-content: center; /* 中央揃え */
-        gap: 5px 0; /* 上下の隙間を少し空ける */
+        gap: 2px 0; /* 上下の隙間を狭くする */
         padding-top: clamp(15px, 4vh, 25px); /* TOPの位置を少し上に調整 */
         width: 100%; /* 横幅を100%に設定してレイアウト崩れを防ぐ */
     }
@@ -1123,7 +1123,7 @@ main {
     .navbar nav ul li:nth-child(1) {
         flex-basis: 100%; /* 1行目を100%の幅にする */
         text-align: center;
-        margin-bottom: 5px; /* 2行目との間に少し余白を追加 */
+        margin-bottom: 2px; /* 2行目との間の余白を狭くする */
     }
     .navbar nav ul li:nth-child(2),
     .navbar nav ul li:nth-child(3) {
