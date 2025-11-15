@@ -1129,15 +1129,13 @@ main {
     .navbar nav ul li:nth-child(3) {
         /* 2行目の要素 (PROFILE, PROJECTS) */
         display: inline-block; /* 横並びにする */
+        padding: 0 5px;
     }
     .navbar nav ul li:nth-child(4),
     .navbar nav ul li:nth-child(5) {
         /* 3行目の要素 (EXPERIENCE, SKILLS) */
         display: inline-block; /* 横並びにする */
-        /* 3行目を改行させるためにflex-basisを設定 */
-        flex-basis: 50%;
-        text-align: right; /* 右寄せ */
-        padding-right: 10px; /* 微調整 */
+        padding: 0 5px;
     }
 
     .navbar nav ul a {
@@ -1147,12 +1145,6 @@ main {
     .navbar nav ul a:hover {
         color: white;
         transform: none;
-    }
-
-    /* 3行目の左側の要素を左寄せにする */
-    .navbar nav ul li:nth-child(4) {
-        text-align: left;
-        padding-left: 10px; /* 微調整 */
     }
 
 
