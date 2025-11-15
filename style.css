@@ -1138,15 +1138,6 @@ main {
         padding: 0 5px;
     }
 
-    /* 3行目を2行目の下に配置するために、2行目の親要素に回り込み解除を設定 */
-    .navbar nav ul li:nth-child(3) {
-        /* この要素の後に改行が入るようにする */
-        flex-basis: 100%;
-        height: 0; /* 高さをなくして見えなくする */
-        padding: 0;
-        margin: 0;
-    }
-
     .navbar nav ul a {
         font-size: clamp(10px, 3vw, 14px);
     }
