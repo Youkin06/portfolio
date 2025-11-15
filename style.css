@@ -1138,6 +1138,13 @@ main {
         padding: 0 5px;
     }
 
+    /* 2行目の後に改行を強制する */
+    .navbar nav ul li:nth-child(3)::after {
+        content: '';
+        display: block;
+        width: 100%;
+    }
+
     .navbar nav ul a {
         font-size: clamp(10px, 3vw, 14px);
     }
