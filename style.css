@@ -1138,11 +1138,12 @@ main {
         padding: 0 5px;
     }
 
-    /* 2行目の後に改行を強制する */
-    .navbar nav ul li:nth-child(3)::after {
-        content: "";
+    /* 2行目の後に改行を強制 */
+    .navbar nav ul li:nth-child(3) {
         flex-basis: 100%;
-        width: 0;
+        height: 0; /* 高さをなくして見えなくする */
+        margin: 0;
+        padding: 0;
     }
 
     .navbar nav ul a {
