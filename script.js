@@ -44,32 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
      * 1. スクロールに応じたナビゲーションバーの表示/非表示 (スクロール停止時に表示)
      * ======================================== */
     const navbar = document.querySelector('.navbar');
-    let scrollTimeout;
-
-    // 初期状態でページの最上部にいる場合は非表示にする
-    if (navbar && window.scrollY <= 100) {
-        navbar.classList.add('hidden');
-    }
-
-    window.addEventListener('scroll', () => {
-        // スクロール中は常に非表示にする
-        if (navbar) {
-            navbar.classList.add('hidden');
-        }
-
-        // 既存のタイムアウトをクリア
-        clearTimeout(scrollTimeout);
-
-        // スクロールが止まったら表示するための新しいタイムアウトを設定
-        scrollTimeout = setTimeout(() => {
-            if (navbar) {
-                // ただし、ページの最上部では表示しない
-                if (window.scrollY > 100) {
-                    navbar.classList.remove('hidden');
-                }
-            }
-        }, 250); // 250ミリ秒後にスクロールが停止したとみなす
-    });
 
 
     /* ========================================
@@ -208,6 +182,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if (flipCard) {
         flipCard.addEventListener('click', () => {
             flipCard.classList.toggle('is-flipped');
+        });
+    }
+
+    /* ========================================
+     * 6. 目次表示切り替えボタン機能
+     * ======================================== */
+    const navbarToggleButton = document.getElementById('navbar-toggle-button');
+
+    // 初期状態でナビゲーションバーを非表示にする
+    if (navbar) {
+        navbar.classList.add('hidden');
+    }
+
+    if (navbar && navbarToggleButton) {
+        navbarToggleButton.addEventListener('click', () => {
+            // hiddenクラスを付け外しして表示/非表示を切り替える
+            navbar.classList.toggle('hidden');
+            // ボタン自体のactiveクラスも切り替えて、見た目を変える
+            navbarToggleButton.classList.toggle('active');
         });
     }
 });

@@ -1058,6 +1058,44 @@ main {
     cursor: pointer;
 }
 
+/* ===== 目次表示切り替えボタン ===== */
+#navbar-toggle-button {
+    position: fixed;
+    right: 15px;
+    bottom: 15px;
+    z-index: 1100; /* ナビゲーションバーより手前に */
+    width: 100px;
+    cursor: pointer;
+    transition: filter 0.3s ease, bottom 0.4s ease-in-out; /* bottomプロパティのtransitionを追加 */
+}
+
+#navbar-toggle-button img {
+    width: 100%;
+    height: auto;
+    filter: brightness(0.4); /* 初期状態は暗め */
+    transition: filter 0.3s ease;
+}
+
+#navbar-toggle-button span {
+    position: absolute;
+    top: 30%; /* 50%から40%に変更して少し上に移動 */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-family: 'Press Start 2P', 'DotGothic16', cursive;
+    font-size: 14px;
+    text-shadow: 1px 1px 3px black;
+    pointer-events: none; /* テキストがクリックの邪魔をしないように */
+}
+
+#navbar-toggle-button.active img {
+    filter: brightness(1); /* 目次表示中は明るく（白っぽく） */
+}
+
+#navbar-toggle-button.active {
+    bottom: 160px; /* ナビゲーションバーの高さ(150px) + 余白(10px)分、上に移動 */
+}
+
 /* ===== ハンバーガーメニュー ===== */
 .hamburger-menu {
     display: none; /* PCでは非表示 */
@@ -1105,9 +1143,7 @@ main {
 /* ===== レスポンシブ対応 (スマホ用) ===== */
 @media (max-width: 768px) {
     /* ヘッダー: ハンバーガーメニューを右端に配置 */
-    .navbar {
-        display: none; /* スマホ版では目次を非表示にする */
-    }
+    /* スマホでもnavbarはデフォルトで表示可能にするため、display:noneを削除 */
 
     .navbar nav ul {
         flex-flow: row wrap; /* 横並びにして、折り返しを許可 */
