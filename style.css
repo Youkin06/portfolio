@@ -121,7 +121,7 @@ html {
 }
 
 body {
-    font-family: 'DotGothic16', 'VT323', monospace;
+    font-family: 'DotGothic16', monospace;
     font-size: 1.2rem;
     margin: 0;
     padding: 0;
@@ -1018,7 +1018,7 @@ main {
 }
 
 .company-name {
-    font-family: 'Press Start 2P', 'DotGothic16', cursive;
+    font-family: 'DotGothic16', cursive;
     font-size: 1.1rem; /* 会社名を少し大きく */
     color: #ff8c00; /* オレンジ系のアクセントカラー */
 }
