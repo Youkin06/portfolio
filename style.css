@@ -948,6 +948,8 @@ main {
     padding: 30px;
     border: 2px solid #444;
     max-width: 700px;
+    max-height: 80vh; /* Allow scrolling for content that exceeds 80% of viewport height */
+    overflow-y: auto; /* Enable vertical scrolling */
     border-radius: 10px;
     box-shadow: inset 0 0 15px #000, 0 5px 15px rgba(0,0,0,0.5);
     position: relative;
