@@ -916,7 +916,7 @@ main {
 .accordion-content ul {
     margin: 0;
     border-top: 1px solid #444;
-    padding: 20px 0 0 0; /* 上方向のパディングのみに調整 */
+    padding: 20px 0; /* 上下のパディングを均等に */
 }
 
 /* ===== 共通: 作品モーダル (ポップアップ) ===== */
