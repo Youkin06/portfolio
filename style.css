@@ -1,18 +1,53 @@
 /* ===== ローディング画面 ===== */
 /* 虹色グローアニメーションの定義 */
 @keyframes rainbowGlow {
-    0%, 100% { text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000; } /* Red */
-    14% { text-shadow: 0 0 10px #ffa500, 0 0 20px #ffa500; } /* Orange */
-    28% { text-shadow: 0 0 10px #ffff00, 0 0 20px #ffff00; } /* Yellow */
-    42% { text-shadow: 0 0 10px #008000, 0 0 20px #008000; } /* Green */
-    56% { text-shadow: 0 0 10px #0000ff, 0 0 20px #0000ff; } /* Blue */
-    70% { text-shadow: 0 0 10px #4b0082, 0 0 20px #4b0082; } /* Indigo */
-    84% { text-shadow: 0 0 10px #ee82ee, 0 0 20px #ee82ee; } /* Violet */
+
+    0%,
+    100% {
+        text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+    }
+
+    /* Red */
+    14% {
+        text-shadow: 0 0 10px #ffa500, 0 0 20px #ffa500;
+    }
+
+    /* Orange */
+    28% {
+        text-shadow: 0 0 10px #ffff00, 0 0 20px #ffff00;
+    }
+
+    /* Yellow */
+    42% {
+        text-shadow: 0 0 10px #008000, 0 0 20px #008000;
+    }
+
+    /* Green */
+    56% {
+        text-shadow: 0 0 10px #0000ff, 0 0 20px #0000ff;
+    }
+
+    /* Blue */
+    70% {
+        text-shadow: 0 0 10px #4b0082, 0 0 20px #4b0082;
+    }
+
+    /* Indigo */
+    84% {
+        text-shadow: 0 0 10px #ee82ee, 0 0 20px #ee82ee;
+    }
+
+    /* Violet */
 }
 
 @keyframes fadeInBackground {
-    from { opacity: 0; }
-    to   { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 #loading-screen {
@@ -45,8 +80,10 @@
 
 .char-box {
     position: relative;
-    width: 80px; /* 正方形に戻す */
-    height: 80px;  /* 正方形に戻す */
+    width: 80px;
+    /* 正方形に戻す */
+    height: 80px;
+    /* 正方形に戻す */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -54,7 +91,8 @@
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.5s ease, transform 0.5s ease;
-    border-radius: 10px; /* 少し角を丸めた四角形にする */
+    border-radius: 10px;
+    /* 少し角を丸めた四角形にする */
 }
 
 .char-box.visible {
@@ -66,7 +104,8 @@
 .char-box::after {
     content: '';
     position: absolute;
-    border: 2px solid; /* Border color will be set by nth-child */
+    border: 2px solid;
+    /* Border color will be set by nth-child */
     width: 0;
     height: 0;
     box-sizing: border-box;
@@ -88,27 +127,61 @@
 }
 
 /* Specific colors for each character box */
-.char-box:nth-child(1)::before, .char-box:nth-child(1)::after { border-color: #87ceeb; } /* Light blue */
-.char-box:nth-child(2)::before, .char-box:nth-child(2)::after { border-color: #ff0000; } /* Red */
-.char-box:nth-child(3)::before, .char-box:nth-child(3)::after { border-color: #adff2f; } /* Yellow-green */
-.char-box:nth-child(4)::before, .char-box:nth-child(4)::after { border-color: #ffa500; } /* Orange */
-.char-box:nth-child(5)::before, .char-box:nth-child(5)::after { border-color: #87ceeb; } /* Light blue */
-.char-box:nth-child(6)::before, .char-box:nth-child(6)::after { border-color: #ff0000; } /* Red */
+.char-box:nth-child(1)::before,
+.char-box:nth-child(1)::after {
+    border-color: #87ceeb;
+}
+
+/* Light blue */
+.char-box:nth-child(2)::before,
+.char-box:nth-child(2)::after {
+    border-color: #ff0000;
+}
+
+/* Red */
+.char-box:nth-child(3)::before,
+.char-box:nth-child(3)::after {
+    border-color: #adff2f;
+}
+
+/* Yellow-green */
+.char-box:nth-child(4)::before,
+.char-box:nth-child(4)::after {
+    border-color: #ffa500;
+}
+
+/* Orange */
+.char-box:nth-child(5)::before,
+.char-box:nth-child(5)::after {
+    border-color: #87ceeb;
+}
+
+/* Light blue */
+.char-box:nth-child(6)::before,
+.char-box:nth-child(6)::after {
+    border-color: #ff0000;
+}
+
+/* Red */
 
 .char-box.visible::before,
 .char-box.visible::after {
     width: 100%;
     height: 100%;
-    transition-delay: 0.2s; /* 文字が表示されてから枠をアニメーション */
+    transition-delay: 0.2s;
+    /* 文字が表示されてから枠をアニメーション */
 }
 
 
 /* ===== 基本設定 ===== */
 /* ===== 基本設定 ===== */
 :root {
-    --primary-color: #e0e0e0; /* Text color */
-    --secondary-color: #2a2a2a; /* Card background */
-    --accent-color: #ff8c00; /* Fiery orange for dungeon theme */
+    --primary-color: #e0e0e0;
+    /* Text color */
+    --secondary-color: #2a2a2a;
+    /* Card background */
+    --accent-color: #ff8c00;
+    /* Fiery orange for dungeon theme */
     --navbar-height: 150px;
 }
 
@@ -127,15 +200,45 @@ body {
     padding: 0;
     line-height: 1.6;
     /* bodyの背景は透明にして、背後のキャンバスが透けるようにする */
-    background-color: transparent; 
+    background-color: transparent;
     color: var(--primary-color);
 }
+
+/* ===== リンクの色設定 ===== */
+/* 通常のリンク（デフォルト） */
+a {
+    color: #ff9f40;
+    /* 明るいオレンジ色で見やすく */
+    text-decoration: none;
+}
+
+a:hover {
+    color: #ffb366;
+    /* ホバー時はさらに明るく */
+    text-decoration: underline;
+}
+
+/* 研究セクション内のリンク（より目立たせる） */
+.experience-details a {
+    color: #ffa500;
+    /* 明るいオレンジ */
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.experience-details a:hover {
+    color: #ffcc66;
+    /* ホバー時は黄色寄りに */
+}
+
 
 body.loading {
     overflow: hidden;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
     font-family: 'Press Start 2P', 'DotGothic16', cursive;
 }
 
@@ -146,9 +249,11 @@ h1, h2, h3 {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -1; /* コンテンツの背面に配置 */
+    z-index: -1;
+    /* コンテンツの背面に配置 */
     pointer-events: none;
-    opacity: 0; /* 初期状態は透明 */
+    opacity: 0;
+    /* 初期状態は透明 */
     /* ローディング完了後にフェードイン */
     animation: fadeInBackground 1.5s ease 1.2s forwards;
 }
@@ -167,26 +272,35 @@ h1, h2, h3 {
     z-index: 1000;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Align items to the top */
-    transition: bottom 0.4s ease-in-out; /* Animate the 'bottom' property */
-    margin-bottom: 10px; /* Add a small gap below the navbar */
+    align-items: flex-start;
+    /* Align items to the top */
+    transition: bottom 0.4s ease-in-out;
+    /* Animate the 'bottom' property */
+    margin-bottom: 10px;
+    /* Add a small gap below the navbar */
 }
 
 /* ナビゲーションバーを隠すためのクラス */
 .navbar.hidden {
-    bottom: -160px; /* Move completely off-screen (navbar-height + margin-bottom) */
+    bottom: -160px;
+    /* Move completely off-screen (navbar-height + margin-bottom) */
 }
 
 .navbar nav ul {
     list-style: none;
     margin: 0;
-    padding: clamp(20px, 5vh, 40px) 0 0 0; /* Responsive padding-top */
+    padding: clamp(20px, 5vh, 40px) 0 0 0;
+    /* Responsive padding-top */
     display: flex;
-    width: 50vw; /* Responsive width */
-    max-width: 600px; /* Max width for large screens */
+    width: 50vw;
+    /* Responsive width */
+    max-width: 600px;
+    /* Max width for large screens */
     justify-content: center;
-    gap: clamp(10px, 3vw, 30px); /* Responsive gap */
-    position: relative; /* Allow for transform */
+    gap: clamp(10px, 3vw, 30px);
+    /* Responsive gap */
+    position: relative;
+    /* Allow for transform */
 }
 
 .navbar nav li {
@@ -196,56 +310,83 @@ h1, h2, h3 {
 .navbar nav ul a {
     font-family: 'Press Start 2P', 'DotGothic16', cursive;
     text-decoration: none;
-    color: white; /* White text color */
+    color: white;
+    /* White text color */
     font-weight: 700;
-    font-size: clamp(12px, 2.5vw, 20px); /* Responsive font size */
-    transition: color 0.3s ease, transform 0.3s ease; /* Add transform to transition */
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.7); /* Black shadow */
+    font-size: clamp(12px, 2.5vw, 20px);
+    /* Responsive font size */
+    transition: color 0.3s ease, transform 0.3s ease;
+    /* Add transform to transition */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    /* Black shadow */
 }
+
 /* Hover colors for each link */
-.navbar nav li:nth-child(1) a:hover { /* TOP */
-    color: #87ceeb; /* Light blue */
+.navbar nav li:nth-child(1) a:hover {
+    /* TOP */
+    color: #87ceeb;
+    /* Light blue */
     transform: translateY(-3px);
 }
-.navbar nav li:nth-child(2) a:hover { /* PROFILE */
-    color: #ff0000; /* Red */
+
+.navbar nav li:nth-child(2) a:hover {
+    /* PROFILE */
+    color: #ff0000;
+    /* Red */
     transform: translateY(-3px);
 }
-.navbar nav li:nth-child(3) a:hover { /* PROJECTS */
-    color: #adff2f; /* Yellow-green */
+
+.navbar nav li:nth-child(3) a:hover {
+    /* PROJECTS */
+    color: #adff2f;
+    /* Yellow-green */
     transform: translateY(-3px);
 }
-.navbar nav li:nth-child(4) a:hover { /* EXPERIENCE */
-    color: #ffa500; /* Orange */
+
+.navbar nav li:nth-child(4) a:hover {
+    /* EXPERIENCE */
+    color: #ffa500;
+    /* Orange */
     transform: translateY(-3px);
 }
-.navbar nav li:nth-child(5) a:hover { /* SKILLS */
-    color: #87ceeb; /* Light blue */
+
+.navbar nav li:nth-child(5) a:hover {
+    /* SKILLS */
+    color: #87ceeb;
+    /* Light blue */
     transform: translateY(-3px);
 }
 
 /* ===== main (ヘッダーとコンテンツが被るのを防ぐ) ===== */
 main {
-    position: relative; /* z-indexを有効にするため */
-    z-index: 1; /* 背景より手前に来るように明示 */
-    background-color: transparent; /* mainの背景は透明にする */
+    position: relative;
+    /* z-indexを有効にするため */
+    z-index: 1;
+    /* 背景より手前に来るように明示 */
+    background-color: transparent;
+    /* mainの背景は透明にする */
     padding-bottom: var(--navbar-height);
 }
 
 /* ===== 2. TOP (ヒーローセクション) ===== */
 .hero-section {
     height: 100vh;
-    background-color: transparent; /* 背景を透明に設定 */
+    background-color: transparent;
+    /* 背景を透明に設定 */
     display: flex;
     justify-content: center;
     align-items: center;
     color: white;
     text-align: center;
     position: relative;
-    overflow: hidden; /* Hide parts of the video that go outside the container */
-    border: 2px solid #87ceeb; /* Light blue border */
-    box-shadow: 0 0 10px #87ceeb, inset 0 0 10px #87ceeb; /* Light blue glow */
-    box-sizing: border-box; /* Include border in height calculation */
+    overflow: hidden;
+    /* Hide parts of the video that go outside the container */
+    border: 2px solid #87ceeb;
+    /* Light blue border */
+    box-shadow: 0 0 10px #87ceeb, inset 0 0 10px #87ceeb;
+    /* Light blue glow */
+    box-sizing: border-box;
+    /* Include border in height calculation */
 }
 
 .hero-video-background {
@@ -275,29 +416,42 @@ main {
 }
 
 .hero-content h1 {
-    font-size: 4rem; /* デスクトップでの文字サイズを大きく */
-    animation: rainbowGlow 10s infinite linear; /* 虹色グローアニメーションを適用 */
-    /* アニメーション開始前や失敗時のフォールバックとして初期シャドウを設定 */ text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
-    line-height: 1.2; /* 行の高さを調整して見やすくする */
+    font-size: 4rem;
+    /* デスクトップでの文字サイズを大きく */
+    animation: rainbowGlow 10s infinite linear;
+    /* 虹色グローアニメーションを適用 */
+    /* アニメーション開始前や失敗時のフォールバックとして初期シャドウを設定 */
+    text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+    line-height: 1.2;
+    /* 行の高さを調整して見やすくする */
 }
 
 .hero-content p {
-    font-size: 1.8rem; /* 文字サイズを調整 */
-    font-family: 'Press Start 2P', 'DotGothic16', cursive; /* フォントをタイトルと合わせる */
-    animation: rainbowGlow 10s infinite linear; /* 虹色グローアニメーションを適用 */
-    text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000; /* アニメーションのフォールバック */
+    font-size: 1.8rem;
+    /* 文字サイズを調整 */
+    font-family: 'Press Start 2P', 'DotGothic16', cursive;
+    /* フォントをタイトルと合わせる */
+    animation: rainbowGlow 10s infinite linear;
+    /* 虹色グローアニメーションを適用 */
+    text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+    /* アニメーションのフォールバック */
 }
 
 /* ===== 3-6. 各セクション共通スタイル (Dungeon Slabs) ===== */
 .section-container {
-    width: 80%; /* Use a smaller percentage for responsive width */
-    max-width: 1000px; /* Keep a smaller max-width for large screens */
-    margin: 130px auto; /* 上下のマージンを増やしてセクション間の間隔を広げる */
+    width: 80%;
+    /* Use a smaller percentage for responsive width */
+    max-width: 1000px;
+    /* Keep a smaller max-width for large screens */
+    margin: 130px auto;
+    /* 上下のマージンを増やしてセクション間の間隔を広げる */
     padding: 40px;
-    background-color: var(--secondary-color); /* 各セクションの背景を灰色に設定 */
-    border: 2px solid #444; /* Default border */
+    background-color: var(--secondary-color);
+    /* 各セクションの背景を灰色に設定 */
+    border: 2px solid #444;
+    /* Default border */
     border-radius: 5px;
-    box-shadow: inset 0 0 15px #000, 0 5px 15px rgba(0,0,0,0.5);
+    box-shadow: inset 0 0 15px #000, 0 5px 15px rgba(0, 0, 0, 0.5);
     color: var(--primary-color);
 }
 
@@ -305,58 +459,70 @@ main {
     font-size: 2.5rem;
     text-align: center;
     margin-bottom: 40px;
-    border-bottom: 3px solid var(--accent-color); /* Default underline */
+    border-bottom: 3px solid var(--accent-color);
+    /* Default underline */
     display: inline-block;
     padding-bottom: 10px;
     color: var(--primary-color);
 }
+
 /* 中央揃え用コンテナ */
-.section-container > h2 {
+.section-container>h2 {
     display: block;
     text-align: center;
-    border-bottom: none; /* 中央のh2は下線を消す */
+    border-bottom: none;
+    /* 中央のh2は下線を消す */
 }
-.section-container > h2::after {
+
+.section-container>h2::after {
     content: '';
     display: block;
     width: 60px;
     height: 3px;
-    background: var(--accent-color); /* Default underline color */
+    background: var(--accent-color);
+    /* Default underline color */
     margin: 10px auto 0;
 }
 
 /* Specific colors for each section */
-#profile.section-container { 
-    position: relative; /* 背景キャンバスの基準点にする */
-    border-color: #ff0000; /* Red */
+#profile.section-container {
+    position: relative;
+    /* 背景キャンバスの基準点にする */
+    border-color: #ff0000;
+    /* Red */
     box-shadow: 0 0 10px #ff0000, inset 0 0 10px #ff0000;
-    overflow: hidden; /* 角丸に合わせて背景をクリップする */
+    overflow: hidden;
+    /* 角丸に合わせて背景をクリップする */
 }
 
-#profile.section-container > h2,
+#profile.section-container>h2,
 .profile-content {
     position: relative;
     z-index: 1;
 }
 
-#profile.section-container > h2 {
+#profile.section-container>h2 {
     position: relative;
     z-index: 1;
 }
 
-#profile.section-container > h2::after { 
-    background: #ff0000; /* Red */
+#profile.section-container>h2::after {
+    background: #ff0000;
+    /* Red */
     box-shadow: 0 0 5px #ff0000;
 }
 
-#projects.section-container { 
-    position: relative; /* 背景キャンバスの基準点にする */
-    border-color: #adff2f; /* Yellow-green */
+#projects.section-container {
+    position: relative;
+    /* 背景キャンバスの基準点にする */
+    border-color: #adff2f;
+    /* Yellow-green */
     box-shadow: 0 0 10px #adff2f, inset 0 0 10px #adff2f;
-    overflow: hidden; /* 角丸に合わせて背景をクリップする */
+    overflow: hidden;
+    /* 角丸に合わせて背景をクリップする */
 }
 
-#projects.section-container > h2,
+#projects.section-container>h2,
 #projects.section-container .project-top,
 #projects.section-container .project-grid {
     position: relative;
@@ -364,43 +530,57 @@ main {
 }
 
 #projects.section-container h2 {
-    color: #ffffff; /* Yellow-green */
+    color: #ffffff;
+    /* Yellow-green */
 }
 
-#projects.section-container > h2::after { 
-    background: #adff2f; /* Yellow-green */
+#projects.section-container>h2::after {
+    background: #adff2f;
+    /* Yellow-green */
     box-shadow: 0 0 5px #adff2f;
 }
 
-#experience.section-container { 
-    position: relative; /* 背景キャンバスの基準点にする */
-    border-color: #ffa500; /* Orange */
+#experience.section-container {
+    position: relative;
+    /* 背景キャンバスの基準点にする */
+    border-color: #ffa500;
+    /* Orange */
     box-shadow: 0 0 10px #ffa500, inset 0 0 10px #ffa500;
-    overflow: hidden; /* 角丸に合わせて背景をクリップする */
+    overflow: hidden;
+    /* 角丸に合わせて背景をクリップする */
 }
-#experience.section-container > h2,
+
+#experience.section-container>h2,
 .experience-list {
     position: relative;
     z-index: 1;
 }
-#experience.section-container > h2::after { 
-    background: #ffa500; /* Orange */
+
+#experience.section-container>h2::after {
+    background: #ffa500;
+    /* Orange */
     box-shadow: 0 0 5px #ffa500;
 }
 
-#skills.section-container { 
-    position: relative; /* 背景キャンバスの基準点にする */
-    border-color: #87ceeb; /* Light blue */
+#skills.section-container {
+    position: relative;
+    /* 背景キャンバスの基準点にする */
+    border-color: #87ceeb;
+    /* Light blue */
     box-shadow: 0 0 10px #87ceeb, inset 0 0 10px #87ceeb;
-    overflow: hidden; /* 角丸に合わせて背景をクリップする */
+    overflow: hidden;
+    /* 角丸に合わせて背景をクリップする */
 }
-#skills.section-container > h2,
+
+#skills.section-container>h2,
 .skills-grid {
     position: relative;
     z-index: 1;
 }
-#skills.section-container > h2::after { 
-    background: #87ceeb; /* Light blue */
+
+#skills.section-container>h2::after {
+    background: #87ceeb;
+    /* Light blue */
     box-shadow: 0 0 5px #87ceeb;
 }
 
@@ -410,14 +590,18 @@ main {
     top: 0;
     left: 0;
     width: 100%;
-    /* height: 100%; */ /* JavaScriptで高さを制御するため削除 */
-    z-index: 0; /* コンテンツより後ろに配置 */
-    pointer-events: none; /* クリックイベントを無視 */
+    /* height: 100%; */
+    /* JavaScriptで高さを制御するため削除 */
+    z-index: 0;
+    /* コンテンツより後ろに配置 */
+    pointer-events: none;
+    /* クリックイベントを無視 */
 }
 
 .profile-content {
     display: flex;
-    gap: 40px; /* サイドバーとテキストの間の隙間 */
+    gap: 40px;
+    /* サイドバーとテキストの間の隙間 */
 }
 
 .profile-sidebar {
@@ -427,15 +611,22 @@ main {
 .profile-image-container {
     width: 200px;
     height: 200px;
-    perspective: 1000px; /* 3Dエフェクト用 */
+    perspective: 1000px;
+    /* 3Dエフェクト用 */
     margin-bottom: 30px;
-    margin-left: auto; /* 中央揃え */
-    margin-right: auto; /* 中央揃え */
-    border-radius: 50%; /* Make the container circular */
-    border: 3px solid #ff0000; /* さらに太くする */
-    box-shadow: 0 0 5px #ff0000, inset 0 0 5px #ff0000; /* Match the glow of other fields */
+    margin-left: auto;
+    /* 中央揃え */
+    margin-right: auto;
+    /* 中央揃え */
+    border-radius: 50%;
+    /* Make the container circular */
+    border: 3px solid #ff0000;
+    /* さらに太くする */
+    box-shadow: 0 0 5px #ff0000, inset 0 0 5px #ff0000;
+    /* Match the glow of other fields */
     cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Add transition */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* Add transition */
 }
 
 .flip-card-inner {
@@ -451,7 +642,8 @@ main {
     transform: rotateY(180deg);
 }
 
-.flip-card-front, .flip-card-back {
+.flip-card-front,
+.flip-card-back {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -467,8 +659,10 @@ main {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 50%; /* Make the image circular */
-    /* border: 2px solid #444; */ /* Remove the inner border to fix alignment */
+    border-radius: 50%;
+    /* Make the image circular */
+    /* border: 2px solid #444; */
+    /* Remove the inner border to fix alignment */
 }
 
 /* 画像切り替え用：デフォルト（PC）ではスマホ用画像を非表示 */
@@ -477,8 +671,10 @@ main {
 }
 
 .profile-image-container:hover {
-    transform: translateY(-5px); /* Move up on hover */
-    box-shadow: 0 0 15px #ff0000, inset 0 0 15px #ff0000; /* Match the Name field's hover glow */
+    transform: translateY(-5px);
+    /* Move up on hover */
+    box-shadow: 0 0 15px #ff0000, inset 0 0 15px #ff0000;
+    /* Match the Name field's hover glow */
 }
 
 .profile-text {
@@ -494,20 +690,26 @@ main {
 }
 
 #profile .profile-field {
-    border: 1px solid #ff0000; /* Red for profile fields */
-    box-shadow: 0 0 5px #ff0000, inset 0 0 5px #ff0000; /* Red glow */
+    border: 1px solid #ff0000;
+    /* Red for profile fields */
+    box-shadow: 0 0 5px #ff0000, inset 0 0 5px #ff0000;
+    /* Red glow */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 #profile .profile-field:hover,
 #profile .accordion:hover {
-    transform: translateY(-5px); /* Move up on hover */
-    box-shadow: 0 0 15px #ff0000, inset 0 0 10px #ff0000; /* Stronger glow on hover */
+    transform: translateY(-5px);
+    /* Move up on hover */
+    box-shadow: 0 0 15px #ff0000, inset 0 0 10px #ff0000;
+    /* Stronger glow on hover */
 }
 
 #profile #name-field:hover {
-    transform: translateY(-5px); /* Move up on hover */
-    box-shadow: 0 0 15px #ff0000, inset 0 0 15px #ff0000; /* Stronger glow on hover */
+    transform: translateY(-5px);
+    /* Move up on hover */
+    box-shadow: 0 0 15px #ff0000, inset 0 0 15px #ff0000;
+    /* Stronger glow on hover */
 }
 
 .profile-field h3 {
@@ -518,13 +720,15 @@ main {
 
 /* PROFILEセクションのフィールドタイトルを赤色に */
 #profile .profile-field h3 {
-    color: #ff0000; /* Red */
+    color: #ff0000;
+    /* Red */
 }
 
 .social-links {
     display: flex;
     gap: 15px;
-    margin-bottom: 30px; /* Add spacing after social links */
+    margin-bottom: 30px;
+    /* Add spacing after social links */
 }
 
 .social-link-item {
@@ -533,17 +737,20 @@ main {
     gap: 8px;
     padding: 8px 15px;
     background-color: #1a1a1a;
-    border: 1px solid #ff0000; /* Red for social links */
+    border: 1px solid #ff0000;
+    /* Red for social links */
     border-radius: 5px;
     text-decoration: none;
     color: var(--primary-color);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 0 5px #ff0000, inset 0 0 5px #ff0000; /* Red glow */
+    box-shadow: 0 0 5px #ff0000, inset 0 0 5px #ff0000;
+    /* Red glow */
 }
 
 .social-link-item:hover {
     transform: translateY(-5px);
-    box-shadow: 0 0 10px #ff0000, inset 0 0 10px #ff0000; /* Stronger glow on hover */
+    box-shadow: 0 0 10px #ff0000, inset 0 0 10px #ff0000;
+    /* Stronger glow on hover */
 }
 
 .social-link-item img {
@@ -554,23 +761,28 @@ main {
 .contact-info {
     padding: 10px 15px;
     background-color: #1a1a1a;
-    border: 1px solid #ff0000; /* Red for contact info */
+    border: 1px solid #ff0000;
+    /* Red for contact info */
     border-radius: 5px;
     text-align: center;
-    box-shadow: 0 0 5px #ff0000, inset 0 0 5px #ff0000; /* Red glow */
+    box-shadow: 0 0 5px #ff0000, inset 0 0 5px #ff0000;
+    /* Red glow */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .contact-info:hover {
     transform: translateY(-5px);
-    box-shadow: 0 0 10px #ff0000, inset 0 0 10px #ff0000; /* Stronger glow on hover */
+    box-shadow: 0 0 10px #ff0000, inset 0 0 10px #ff0000;
+    /* Stronger glow on hover */
 }
 
 .contact-info a {
     color: var(--primary-color);
     text-decoration: none;
-    font-size: 0.9rem; /* 既存のスタイル */
-    display: block; /* リンクをブロック要素にして改行させる */
+    font-size: 0.9rem;
+    /* 既存のスタイル */
+    display: block;
+    /* リンクをブロック要素にして改行させる */
 }
 
 /* ===== 4. 作品セクション ===== */
@@ -578,30 +790,37 @@ main {
 .project-top {
     margin-bottom: 60px;
     padding-bottom: 40px;
-    /* border-bottom: 2px solid #444; */ /* 線を削除 */
+    /* border-bottom: 2px solid #444; */
+    /* 線を削除 */
 }
 
 .project-top .project-item {
     display: flex;
     gap: 30px;
-    flex-direction: column; /* 動画と説明を縦に並べる */
-    /* align-items: flex-start; */ /* flex-direction: column の場合は不要 */
+    flex-direction: column;
+    /* 動画と説明を縦に並べる */
+    /* align-items: flex-start; */
+    /* flex-direction: column の場合は不要 */
     background-color: #1a1a1a;
     padding: 20px;
     border-radius: 10px;
-    border: 2px solid #adff2f; /* Yellow-green for top project */
-    box-shadow: 0 0 10px #adff2f, inset 0 0 10px #adff2f; /* Yellow-green glow */
+    border: 2px solid #adff2f;
+    /* Yellow-green for top project */
+    box-shadow: 0 0 10px #adff2f, inset 0 0 10px #adff2f;
+    /* Yellow-green glow */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .project-top .project-item:hover {
     transform: translateY(-5px);
-    box-shadow: 0 0 20px #adff2f, inset 0 0 20px #adff2f; /* Stronger glow on hover */
+    box-shadow: 0 0 20px #adff2f, inset 0 0 20px #adff2f;
+    /* Stronger glow on hover */
 }
 
 .project-top .video-container {
     flex-shrink: 0;
-    width: 100%; /* 親要素の幅いっぱいに広げる */
+    width: 100%;
+    /* 親要素の幅いっぱいに広げる */
 }
 
 .project-top .project-description {
@@ -626,19 +845,23 @@ main {
 }
 
 .project-grid .project-item {
-    border-color: #adff2f; /* Yellow-green for project items */
-    box-shadow: 0 0 8px #adff2f, inset 0 0 8px #adff2f; /* Yellow-green glow */
+    border-color: #adff2f;
+    /* Yellow-green for project items */
+    box-shadow: 0 0 8px #adff2f, inset 0 0 8px #adff2f;
+    /* Yellow-green glow */
 }
 
 .project-item:hover {
     transform: translateY(-10px);
-    box-shadow: 0 0 15px #adff2f, inset 0 0 15px #adff2f; /* Stronger glow on hover */
+    box-shadow: 0 0 15px #adff2f, inset 0 0 15px #adff2f;
+    /* Stronger glow on hover */
 }
 
 .video-container {
     position: relative;
     width: 100%;
-    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    padding-bottom: 56.25%;
+    /* 16:9 aspect ratio */
     height: 0;
     overflow: hidden;
     background-color: #000;
@@ -658,9 +881,11 @@ main {
     color: var(--accent-color);
     margin-bottom: 10px;
 }
+
 /* PROJECTSセクションの各ゲームタイトルの色を黄緑に */
 .project-description h3 {
-    color: #adff2f; /* Yellow-green */
+    color: #adff2f;
+    /* Yellow-green */
 }
 
 .project-description p {
@@ -702,32 +927,39 @@ main {
 }
 
 .tag.two-d {
-    background-color: #00bcd4; /* Cyan */
+    background-color: #00bcd4;
+    /* Cyan */
     color: white;
 }
 
 .tag.dot-e {
-    background-color: #3f51b5; /* Indigo */
+    background-color: #3f51b5;
+    /* Indigo */
     color: white;
 }
 
 .tag.modeling {
-    background-color: #9c27b0; /* Purple */
+    background-color: #9c27b0;
+    /* Purple */
     color: white;
 }
 
 .tag.three-d {
-    background-color: #ff9800; /* Orange */
+    background-color: #ff9800;
+    /* Orange */
     color: white;
 }
 
 .tag.gc-koshien {
-    background-color: hwb(51 0% 0%); /* Gold */
-    color: #333; /* Dark text for contrast */
+    background-color: hwb(51 0% 0%);
+    /* Gold */
+    color: #333;
+    /* Dark text for contrast */
 }
 
 .tag.google-play {
-    background-color: hwb(51 0% 0%); /* Green for release */
+    background-color: hwb(51 0% 0%);
+    /* Green for release */
     color: #333;
 }
 
@@ -737,15 +969,19 @@ main {
 }
 
 #experience .accordion {
-    border: 1px solid #ffa500; /* Orange for experience */
-    box-shadow: 0 0 7px #ffa500, inset 0 0 7px #ffa500; /* Orange glow */
+    border: 1px solid #ffa500;
+    /* Orange for experience */
+    box-shadow: 0 0 7px #ffa500, inset 0 0 7px #ffa500;
+    /* Orange glow */
     background-color: #1a1a1a;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 #experience .accordion:hover {
-    transform: translateY(-5px); /* Move up on hover */
-    box-shadow: 0 0 15px #ffa500, inset 0 0 15px #ffa500; /* Stronger orange glow on hover */
+    transform: translateY(-5px);
+    /* Move up on hover */
+    box-shadow: 0 0 15px #ffa500, inset 0 0 15px #ffa500;
+    /* Stronger orange glow on hover */
 }
 
 /* EXPERIENCEのタイトルフォントを日本語フォントに合わせる */
@@ -763,27 +999,34 @@ main {
 
 .skill-category {
     background-color: #1a1a1a;
-    padding: 15px; /* Further reduced padding */
+    padding: 15px;
+    /* Further reduced padding */
     border-radius: 10px;
-    border: 2px solid #87ceeb; /* Light blue for skills */
-    box-shadow: 0 0 8px #87ceeb, inset 0 0 8px #87ceeb; /* Light blue glow */
+    border: 2px solid #87ceeb;
+    /* Light blue for skills */
+    box-shadow: 0 0 8px #87ceeb, inset 0 0 8px #87ceeb;
+    /* Light blue glow */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .skill-category:hover {
     transform: translateY(-5px);
-    box-shadow: 0 0 15px #87ceeb, inset 0 0 15px #87ceeb; /* Stronger glow on hover */
+    box-shadow: 0 0 15px #87ceeb, inset 0 0 15px #87ceeb;
+    /* Stronger glow on hover */
 }
 
 .skill-category h3 {
     color: var(--accent-color);
-    margin-bottom: 15px; /* Reduced margin */
-    font-size: 1.3rem; /* Slightly smaller font */
+    margin-bottom: 15px;
+    /* Reduced margin */
+    font-size: 1.3rem;
+    /* Slightly smaller font */
 }
 
 /* SKILLSセクションのカテゴリタイトルを水色に */
 #skills .skill-category h3 {
-    color: #87ceeb; /* Light blue */
+    color: #87ceeb;
+    /* Light blue */
 }
 
 .skill-category ul {
@@ -794,27 +1037,36 @@ main {
 
 .skill-category li {
     background-color: #333;
-    padding: 5px; /* Further reduced padding */
+    padding: 5px;
+    /* Further reduced padding */
     border: 1px solid #444;
     border-radius: 5px;
-    margin-bottom: 8px; /* Reduced margin */
+    margin-bottom: 8px;
+    /* Reduced margin */
     display: flex;
-    flex-direction: row; /* Display horizontally */
-    justify-content: space-between; /* Space between name and stars */
-    align-items: center; /* Vertically align items */
+    flex-direction: row;
+    /* Display horizontally */
+    justify-content: space-between;
+    /* Space between name and stars */
+    align-items: center;
+    /* Vertically align items */
 }
 
 .skill-name {
     font-weight: bold;
-    margin-bottom: 0; /* Removed margin */
-    font-size: 0.9rem; /* Reduced font size */
+    margin-bottom: 0;
+    /* Removed margin */
+    font-size: 0.9rem;
+    /* Reduced font size */
 }
 
 /* 星のスタイル */
 .stars {
-    --star-size: 14px; /* Further reduced star size */
+    --star-size: 14px;
+    /* Further reduced star size */
     --star-color: #555;
-    --star-background: #87ceeb; /* 塗りつぶしの色を水色に変更 */
+    --star-background: #87ceeb;
+    /* 塗りつぶしの色を水色に変更 */
     display: inline-block;
     font-size: var(--star-size);
     line-height: 1;
@@ -829,19 +1081,33 @@ main {
 }
 
 /* data-rating属性に基づいて星の割合を計算 */
-.stars[data-rating="1"] { --percent: 20; }
-.stars[data-rating="2"] { --percent: 40; }
-.stars[data-rating="3"] { --percent: 60; }
-.stars[data-rating="4"] { --percent: 80; }
-.stars[data-rating="5"] { --percent: 100; }
+.stars[data-rating="1"] {
+    --percent: 20;
+}
+
+.stars[data-rating="2"] {
+    --percent: 40;
+}
+
+.stars[data-rating="3"] {
+    --percent: 60;
+}
+
+.stars[data-rating="4"] {
+    --percent: 80;
+}
+
+.stars[data-rating="5"] {
+    --percent: 100;
+}
 
 
 /* ===== 7. フッター ===== */
 .footer {
     position: relative;
-    z-index: 1; 
+    z-index: 1;
     /* #111 (rgb(17,17,17)) を 85% の透明度で設定 */
-    background-color: rgba(17, 17, 17, 0.85); 
+    background-color: rgba(17, 17, 17, 0.85);
     color: #888;
     text-align: center;
     padding: 20px;
@@ -851,26 +1117,33 @@ main {
 
 /* ===== 共通: アコーディオン (学歴・経験) ===== */
 #profile .accordion {
-    border: 1px solid #ff0000; /* Thinner red border, matching profile-field */
-    box-shadow: 0 0 7px #ff0000, inset 0 0 7px #ff0000; /* Slightly larger glow than About Me */
+    border: 1px solid #ff0000;
+    /* Thinner red border, matching profile-field */
+    box-shadow: 0 0 7px #ff0000, inset 0 0 7px #ff0000;
+    /* Slightly larger glow than About Me */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background-color: #1a1a1a; /* Match About Me background */
-    border-radius: 5px; /* Ensure rounded corners */
+    background-color: #1a1a1a;
+    /* Match About Me background */
+    border-radius: 5px;
+    /* Ensure rounded corners */
 }
 
 #profile .accordion:hover {
-    transform: translateY(-5px); /* Move up on hover */
+    transform: translateY(-5px);
+    /* Move up on hover */
 }
 
 .accordion {
     background-color: #1a1a1a;
     border: 1px solid #444;
     border-radius: 5px;
-    margin-bottom: 20px; /* Increased spacing */
+    margin-bottom: 20px;
+    /* Increased spacing */
 }
 
 .accordion-toggle {
-    padding: 8px 12px; /* Further reduced padding */
+    padding: 8px 12px;
+    /* Further reduced padding */
     cursor: pointer;
     display: flex;
     justify-content: space-between;
@@ -888,12 +1161,15 @@ main {
     height: 10px;
     border-top: 2px solid var(--primary-color);
     border-right: 2px solid var(--primary-color);
-    transform: rotate(135deg); /* 下向き */
+    transform: rotate(135deg);
+    /* 下向き */
     transition: transform 0.3s ease;
 }
+
 /* 開いたときの矢印 */
 .accordion.active .icon-arrow {
-    transform: rotate(-45deg); /* 上向き */
+    transform: rotate(-45deg);
+    /* 上向き */
 }
 
 .accordion-content {
@@ -904,7 +1180,8 @@ main {
     background-color: #222;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    padding: 0 20px; /* 左右のパディングは維持し、上下のパディングを0に */
+    padding: 0 20px;
+    /* 左右のパディングは維持し、上下のパディングを0に */
 }
 
 /* アコーディオンが開いたときだけ、上下のパディングを追加 */
@@ -912,16 +1189,19 @@ main {
     padding-top: 20px;
     padding-bottom: 20px;
 }
-.accordion-content p, 
+
+.accordion-content p,
 .accordion-content ul {
     margin: 0;
     border-top: 1px solid #444;
-    padding: 20px 0; /* 上下のパディングを均等に */
+    padding: 20px 0;
+    /* 上下のパディングを均等に */
 }
 
 /* ===== 共通: 作品モーダル (ポップアップ) ===== */
 .modal {
-    display: none; /* 初期状態は非表示 */
+    display: none;
+    /* 初期状態は非表示 */
     position: fixed;
     z-index: 2000;
     left: 0;
@@ -929,49 +1209,69 @@ main {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.8); /* 背景を暗く */
-    /* display: flex; */ /* 初期状態ではflexにしない */
-    padding: 20px; /* 画面端に余白を確保 */
-    box-sizing: border-box; /* paddingをwidth/heightに含める */
+    background-color: rgba(0, 0, 0, 0.8);
+    /* 背景を暗く */
+    /* display: flex; */
+    /* 初期状態ではflexにしない */
+    padding: 20px;
+    /* 画面端に余白を確保 */
+    box-sizing: border-box;
+    /* paddingをwidth/heightに含める */
 }
 
 /* 表示時にFlexboxで中央揃えするためのクラス */
 .modal.visible {
     display: flex;
-    align-items: center; /* 垂直方向の中央揃え */
-    justify-content: center; /* 水平方向の中央揃え */
+    align-items: center;
+    /* 垂直方向の中央揃え */
+    justify-content: center;
+    /* 水平方向の中央揃え */
 }
 
 .modal-content {
     background-color: #2a2a2a;
-    margin: 0; /* Flexboxで中央揃えするためマージンをリセット */
+    margin: 0;
+    /* Flexboxで中央揃えするためマージンをリセット */
     padding: 30px;
     border: 2px solid #444;
     max-width: 700px;
-    max-height: 80vh; /* Allow scrolling for content that exceeds 80% of viewport height */
-    overflow-y: auto; /* Enable vertical scrolling */
+    max-height: 80vh;
+    /* Allow scrolling for content that exceeds 80% of viewport height */
+    overflow-y: auto;
+    /* Enable vertical scrolling */
     border-radius: 10px;
-    box-shadow: inset 0 0 15px #000, 0 5px 15px rgba(0,0,0,0.5);
+    box-shadow: inset 0 0 15px #000, 0 5px 15px rgba(0, 0, 0, 0.5);
     position: relative;
     animation: fadeIn 0.3s;
-    word-wrap: break-word; /* 長い単語を強制的に改行 */
+    word-wrap: break-word;
+    /* 長い単語を強制的に改行 */
 }
 
 /* モーダル内のリンクスタイル */
 .modal-content ul li a {
-    color: #87ceeb; /* ライトブルー */
-    text-decoration: underline; /* リンクであることを示す下線 */
+    color: #87ceeb;
+    /* ライトブルー */
+    text-decoration: underline;
+    /* リンクであることを示す下線 */
     transition: color 0.3s ease;
 }
 
 .modal-content ul li a:hover {
-    color: #aaddff; /* ホバー時に少し明るい水色 */
+    color: #aaddff;
+    /* ホバー時に少し明るい水色 */
 }
 
 /* モーダル表示アニメーション */
 @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 
@@ -986,12 +1286,15 @@ main {
 .scroll-animate.from-up {
     transform: translateY(-60px);
 }
+
 .scroll-animate.from-down {
     transform: translateY(60px);
 }
+
 .scroll-animate.from-left {
     transform: translateX(-60px);
 }
+
 .scroll-animate.from-right {
     transform: translateX(60px);
 }
@@ -999,17 +1302,22 @@ main {
 /* 画面内に入ったときに適用するクラス */
 .scroll-animate.visible {
     opacity: 1;
-    transform: none; /* 初期位置をリセット */
+    transform: none;
+    /* 初期位置をリセット */
 }
 
 /* インターン・バイト経験の枠のスタイル */
 .experience-item {
-    border: 1px solid #ff4d4d; /* 赤い枠線 */
-    box-shadow: 0 0 8px rgba(255, 0, 0, 0.7), 0 0 12px rgba(255, 0, 0, 0.5); /* 赤い光彩 (glow) */
+    border: 1px solid #ff4d4d;
+    /* 赤い枠線 */
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.7), 0 0 12px rgba(255, 0, 0, 0.5);
+    /* 赤い光彩 (glow) */
     padding: 15px;
     margin-bottom: 15px;
-    border-radius: 8px; /* 角を丸くする */
-    background-color: rgba(255, 0, 0, 0.05); /* ほんのり赤い背景色 */
+    border-radius: 8px;
+    /* 角を丸くする */
+    background-color: rgba(255, 0, 0, 0.05);
+    /* ほんのり赤い背景色 */
 }
 
 .experience-header {
@@ -1021,8 +1329,10 @@ main {
 
 .company-name {
     font-family: 'DotGothic16', cursive;
-    font-size: 1.1rem; /* 会社名を少し大きく */
-    color: #ff8c00; /* オレンジ系のアクセントカラー */
+    font-size: 1.1rem;
+    /* 会社名を少し大きく */
+    color: #ff8c00;
+    /* オレンジ系のアクセントカラー */
 }
 
 .period {
@@ -1034,13 +1344,15 @@ main {
 .click-for-details {
     display: inline-block;
     margin-top: 10px;
-    color: #adff2f; /* 黄緑色に変更 */
+    color: #adff2f;
+    /* 黄緑色に変更 */
     font-weight: bold;
     transition: color 0.3s ease;
 }
 
 .project-item:hover .click-for-details {
-    color: white; /* 親要素のホバーで白に変化 */
+    color: white;
+    /* 親要素のホバーで白に変化 */
 }
 
 
@@ -1065,50 +1377,60 @@ main {
     position: fixed;
     right: 15px;
     bottom: 15px;
-    z-index: 1100; /* ナビゲーションバーより手前に */
+    z-index: 1100;
+    /* ナビゲーションバーより手前に */
     width: 100px;
     cursor: pointer;
-    transition: filter 0.3s ease, bottom 0.4s ease-in-out; /* bottomプロパティのtransitionを追加 */
+    transition: filter 0.3s ease, bottom 0.4s ease-in-out;
+    /* bottomプロパティのtransitionを追加 */
 }
 
 #navbar-toggle-button img {
     width: 100%;
     height: auto;
-    filter: brightness(0.4); /* 初期状態は暗め */
+    filter: brightness(0.4);
+    /* 初期状態は暗め */
     transition: filter 0.3s ease;
 }
 
 #navbar-toggle-button span {
     position: absolute;
-    top: 30%; /* 50%から40%に変更して少し上に移動 */
+    top: 30%;
+    /* 50%から40%に変更して少し上に移動 */
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
     font-family: 'Press Start 2P', 'DotGothic16', cursive;
     font-size: 14px;
     text-shadow: 1px 1px 3px black;
-    pointer-events: none; /* テキストがクリックの邪魔をしないように */
+    pointer-events: none;
+    /* テキストがクリックの邪魔をしないように */
 }
 
 #navbar-toggle-button.active img {
-    filter: brightness(1); /* 目次表示中は明るく（白っぽく） */
+    filter: brightness(1);
+    /* 目次表示中は明るく（白っぽく） */
 }
 
 #navbar-toggle-button.active {
-    bottom: 160px; /* ナビゲーションバーの高さ(150px) + 余白(10px)分、上に移動 */
+    bottom: 160px;
+    /* ナビゲーションバーの高さ(150px) + 余白(10px)分、上に移動 */
 }
 
 /* ===== ハンバーガーメニュー ===== */
 .hamburger-menu {
-    display: none; /* PCでは非表示 */
+    display: none;
+    /* PCでは非表示 */
     cursor: pointer;
     background: none;
     border: none;
-    z-index: 2100; /* メニューより手前に */
+    z-index: 2100;
+    /* メニューより手前に */
     position: relative;
     width: 30px;
     height: 21px;
 }
+
 .hamburger-menu span {
     display: block;
     width: 100%;
@@ -1118,12 +1440,15 @@ main {
     position: absolute;
     transition: transform 0.3s ease, top 0.3s ease, opacity 0.3s ease;
 }
+
 .hamburger-menu span:nth-child(1) {
     top: 0;
 }
+
 .hamburger-menu span:nth-child(2) {
     top: 9px;
 }
+
 .hamburger-menu span:nth-child(3) {
     top: 18px;
 }
@@ -1133,9 +1458,11 @@ main {
     top: 9px;
     transform: rotate(45deg);
 }
+
 .hamburger-menu.active span:nth-child(2) {
     opacity: 0;
 }
+
 .hamburger-menu.active span:nth-child(3) {
     top: 9px;
     transform: rotate(-45deg);
@@ -1148,29 +1475,40 @@ main {
     /* スマホでもnavbarはデフォルトで表示可能にするため、display:noneを削除 */
 
     .navbar nav ul {
-        flex-flow: row wrap; /* 横並びにして、折り返しを許可 */
+        flex-flow: row wrap;
+        /* 横並びにして、折り返しを許可 */
         align-items: center;
-        justify-content: center; /* 中央揃え */
-        gap: 2px 0; /* 上下の隙間を狭くする */
-        padding-top: clamp(15px, 4vh, 25px); /* TOPの位置を少し上に調整 */
-        width: 100%; /* 横幅を100%に設定してレイアウト崩れを防ぐ */
+        justify-content: center;
+        /* 中央揃え */
+        gap: 2px 0;
+        /* 上下の隙間を狭くする */
+        padding-top: clamp(15px, 4vh, 25px);
+        /* TOPの位置を少し上に調整 */
+        width: 100%;
+        /* 横幅を100%に設定してレイアウト崩れを防ぐ */
     }
 
     .navbar nav ul li:nth-child(1) {
-        flex-basis: 100%; /* 1行目を100%の幅にする */
+        flex-basis: 100%;
+        /* 1行目を100%の幅にする */
         text-align: center;
-        margin-bottom: 2px; /* 2行目との間の余白を狭くする */
+        margin-bottom: 2px;
+        /* 2行目との間の余白を狭くする */
     }
+
     .navbar nav ul li:nth-child(2),
     .navbar nav ul li:nth-child(3) {
         /* 2行目の要素 (PROFILE, PROJECTS) */
-        display: inline-block; /* 横並びにする */
+        display: inline-block;
+        /* 横並びにする */
         padding: 0 5px;
     }
+
     .navbar nav ul li:nth-child(4),
     .navbar nav ul li:nth-child(5) {
         /* 3行目の要素 (EXPERIENCE, SKILLS) */
-        display: inline-block; /* 横並びにする */
+        display: inline-block;
+        /* 横並びにする */
         padding: 0 5px;
     }
 
@@ -1210,7 +1548,8 @@ main {
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(26, 26, 26, 0.98); /* Dark theme */
+        background-color: rgba(26, 26, 26, 0.98);
+        /* Dark theme */
         flex-direction: column;
         justify-content: center;
         align-items: center;
@@ -1218,39 +1557,51 @@ main {
         transition: transform 0.5s ease-in-out;
         z-index: 2000;
     }
+
     .nav-links.active {
         transform: translateY(0);
     }
+
     .nav-links li {
         margin: 20px 0;
     }
+
     .nav-links a {
         font-size: 20px;
     }
 
 
     .hero-content h1 {
-        font-size: 2.5rem; /* モバイルでの文字サイズを調整 */
+        font-size: 2.5rem;
+        /* モバイルでの文字サイズを調整 */
     }
+
     .hero-content p {
         font-size: 1rem;
     }
 
     /* ローディング画面のスマホ対応 */
     #loading-text {
-        font-size: 1.2rem; /* 文字サイズを小さく */
-        /* flex-wrap: wrap; */ /* 必要に応じて折り返しを有効にする */
+        font-size: 1.2rem;
+        /* 文字サイズを小さく */
+        /* flex-wrap: wrap; */
+        /* 必要に応じて折り返しを有効にする */
         /* justify-content: center; */
     }
+
     .char-box {
-        width: 45px; /* ボックスの幅を小さく */
-        height: 45px; /* ボックスの高さを小さく */
-        margin: 0 4px; /* ボックス間のマージンを小さく */
+        width: 45px;
+        /* ボックスの幅を小さく */
+        height: 45px;
+        /* ボックスの高さを小さく */
+        margin: 0 4px;
+        /* ボックス間のマージンを小さく */
     }
 
     .section-container {
         padding: 40px 15px;
     }
+
     .section-container h2 {
         font-size: 2rem;
     }
@@ -1265,6 +1616,7 @@ main {
     .pc-image {
         display: none;
     }
+
     .mobile-image {
         display: block;
     }
@@ -1281,7 +1633,9 @@ main {
     }
 
     .modal-content {
-        max-height: calc(100vh - 40px); /* 画面の高さから上下のpaddingを引いた値を最大値に */
-        overflow-y: auto; /* コンテンツが多い場合は縦スクロールを許可 */
+        max-height: calc(100vh - 40px);
+        /* 画面の高さから上下のpaddingを引いた値を最大値に */
+        overflow-y: auto;
+        /* コンテンツが多い場合は縦スクロールを許可 */
     }
 }
