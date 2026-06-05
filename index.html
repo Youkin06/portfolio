@@ -16,7 +16,7 @@
         rel="stylesheet">
 
     <!-- 外部CSSファイルの読み込み -->
-    <link rel="stylesheet" href="style.css?v=1.1">
+    <link rel="stylesheet" href="style.css?v=1.2">
 
     <!-- 追加のCSS -->
     <style>
@@ -186,6 +186,30 @@
 
             <!-- トップ作品 -->
             <div class="project-top scroll-animate from-down">
+                <div class="project-item" data-modal-target="modal-project-5">
+                    <div class="video-container">
+                        <iframe
+                            src="https://www.youtube.com/embed/MQZcKngi_ns?autoplay=1&mute=1&loop=1&playlist=MQZcKngi_ns&controls=0&rel=0"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="project-description">
+                        <h3>PiNTCH WiTCH // Shadow play</h3>
+                        <p>影を使って2D世界の少女を救う、ハンドトラッキング対応ゲーム。<br><span class="click-for-details">▶︎ クリックして詳細を見る</span></p>
+                        <ul class="tags">
+                            <li class="tag unity">Unity</li>
+                            <li class="tag blender">Blender</li>
+                            <li class="tag team-dev">チーム開発</li>
+                            <li class="tag game-jam">Game Jam</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 作品グリッド (2列) -->
+            <div class="project-grid">
+                <!-- 作品アイテム 1 -->
                 <div class="project-item" data-modal-target="modal-project-1">
                     <div class="video-container">
                         <iframe
@@ -205,10 +229,6 @@
                         </ul>
                     </div>
                 </div>
-            </div>
-
-            <!-- 作品グリッド (3列) -->
-            <div class="project-grid">
                 <!-- 作品アイテム 2 -->
                 <div class="project-item" data-modal-target="modal-project-2">
                     <div class="video-container">
@@ -230,26 +250,6 @@
                     </div>
                 </div>
                 <!-- 作品アイテム 3 -->
-                <div class="project-item" data-modal-target="modal-project-3">
-                    <div class="video-container">
-                        <iframe
-                            src="https://www.youtube.com/embed/b3qK5eTwYUs?autoplay=1&mute=1&loop=1&playlist=b3qK5eTwYUs&controls=0&rel=0"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen></iframe>
-                    </div>
-                    <div class="project-description">
-                        <h3>スライムスライス</h3>
-                        <p>スライムを切り裂け！3Dカジュアルゲーム<br><span class="click-for-details">▶︎ クリックして詳細を見る</span></p>
-                        <ul class="tags">
-                            <li class="tag unity">Unity</li>
-                            <li class="tag modeling">モデリング</li>
-                            <li class="tag three-d">3D</li>
-                            <li class="tag blender">Blender</li>
-                        </ul>
-                    </div>
-                </div>
-                <!-- 作品アイテム 4 -->
                 <div class="project-item" data-modal-target="modal-project-4">
                     <div class="video-container">
                         <iframe
@@ -266,6 +266,25 @@
                             <li class="tag illust">イラスト</li>
                             <li class="tag two-d">2D</li>
                             <li class="tag google-play">Google Playリリース</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- 作品アイテム 4 -->
+                <div class="project-item" data-modal-target="modal-project-6">
+                    <div class="video-container">
+                        <iframe
+                            src="https://www.youtube.com/embed/NgFxASIIjKs?autoplay=1&mute=1&loop=1&playlist=NgFxASIIjKs&controls=0&rel=0"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="project-description">
+                        <h3>KamoRogue</h3>
+                        <p>カモが地下ダンジョンを進む2Dローグライクアクションゲーム。<br><span class="click-for-details">▶︎ クリックして詳細を見る</span></p>
+                        <ul class="tags">
+                            <li class="tag python">Python</li>
+                            <li class="tag pyxel">Pyxel</li>
+                            <li class="tag dot-e">ドット絵</li>
                         </ul>
                     </div>
                 </div>
@@ -436,6 +455,33 @@
 
     <!-- ===== 作品詳細モーダル (ポップアップ) ===== -->
     <!-- (初期状態では非表示) -->
+    <div id="modal-project-5" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>PiNTCH WiTCH // Shadow play</h2>
+            <p><strong>ジャンル:</strong> 2D/3Dパズルアクション</p>
+            <p><strong>開発期間:</strong> 2026年2月〜5月（3カ月間）</p>
+            <p><strong>操作説明:</strong> 手でオブジェクトを掴む、マウスで操作</p>
+            <p><strong>詳しい説明:</strong><br>
+                アリスという少女が悪夢の世界に迷い込んでしまったところから始まるゲームです。
+                3D空間にあるオブジェクトの影を使って、2D世界にいるアリスを救うことを目指します。
+                ハンドトラッキングを使ったゲームで、BitSummit Game Jamに参加し、8人（プランナー4人、エンジニア3人、イラストレーター1人）で開発しました。
+                この開発ではリードプログラマーを担当しました。
+            </p>
+            <p><strong>技術説明:</strong><br>
+                主に、MediaPipeを用いた手の認識、つかみ判定、影コライダー生成、オーバーレイを使ったカメラ制御を担当しました。
+                そのほか、3D空間で掴めるオブジェクト、セレクトシーン、スタートシーンの作成も行いました。
+                また、他職種とのミーティングや、エンジニアタスクの割り振りも担当しました。
+            </p>
+            <p><strong>GitHubリポジトリ:</strong> チーム開発物のため非公開です。</p>
+            <p><strong>リンク:</strong></p>
+            <ul>
+                <li><a href="https://youtu.be/MQZcKngi_ns" target="_blank">動画を見る</a></li>
+                <li><a href="https://bitsummit-gamejam.itch.io/pinchwitch-shadowplay" target="_blank">ゲームをプレイ</a></li>
+            </ul>
+        </div>
+    </div>
+
     <div id="modal-project-1" class="modal">
         <div class="modal-content">
             <span class="modal-close">&times;</span>
@@ -491,34 +537,6 @@
         </div>
     </div>
 
-    <div id="modal-project-3" class="modal">
-        <div class="modal-content">
-            <span class="modal-close">&times;</span>
-            <h2>スライムスライス</h2>
-            <p><strong>ジャンル:</strong>3Dカジュアル</p>
-            <p><strong>開発期間:</strong>2025年7月(2週間)</p>
-            <p><strong>操作説明:</strong> 指のスワイプで敵を斬る</p>
-            <p><strong>詳しい説明:</strong><br>
-                スマートフォンでユーザーがいかに簡単に爽快感を得られるかを追求してこのゲームを制作しました。
-                スライムを切断した際の効果音やエフェクトには特にこだわり、心地よさを高めています。
-                ユーザーインターフェースは分かりやすさと統一感を持たせることに注力しました。
-                また、ただスライムを斬り続ける単純作業にならないよう、攻撃力アップや一撃必殺などの戦略的な要素となるボタンを追加し、ゲームプレイに変化をつけています。
-            </p>
-            <p><strong>技術説明:</strong><br>
-                スマートフォンのスワイプ操作で敵を切るアクションの実装に注力しました。
-                敵を斬るエフェクトはLineRendererを用いて視覚的な表現にこだわっています。
-                敵はウェーブ式で出現し、ウェーブが進むごとに敵の量やHPが増加するように設定しました。
-                キャラクターモデルとしてBlenderでスライムやボススライム、雲を作成し、Unityに取り込んで使用しています。
-                現状はウェーブごとの敵の強化に対してプレイヤーの攻撃力の伸びが追いつかず、最大ウェーブが22程度で止まってしまうため、今後はレベルデザインをより精密に調整してゲームが無限に続くように改善したいと考えています。
-                また、敵を切断した際のエフェクトをParticle SystemやShaderを活用してさらに高品質にしたいと考えています。
-            </p>
-            <p><strong>リンク:</strong></p>
-            <ul>
-                <li><a href="https://unityroom.com/games/slimeslice" target="_blank">ゲームをプレイ</a></li>
-            </ul>
-        </div>
-    </div>
-
     <div id="modal-project-4" class="modal">
         <div class="modal-content">
             <span class="modal-close">&times;</span>
@@ -539,10 +557,39 @@
                 Particle Systemを使って黄色の板が割れるエフェクトや、コインで手に入るスキンを魅力的に見せる工夫をしました。
                 Shader Graphを用いて速度が上昇する板に動きを加えています。
                 このゲームはGoogle Playにリリースしましたが、現在はストアでは公開していません。
+            </p>
             <p><strong>リンク:</strong></p>
             <ul>
                 <li><a href="https://applion.jp/CIRCUSAL/android-com.YOUKINCOMPANY.CIRCUSAL/" target="_blank">Google
                         Playに載せ、APPLIONに掲載された</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="modal-project-6" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>KamoRogue</h2>
+            <p><strong>ジャンル:</strong> 2Dローグライクアクション</p>
+            <p><strong>開発期間:</strong> 2025年10月〜2026年2月（4カ月間）</p>
+            <p><strong>操作説明:</strong> A/Dキーで左右移動、Wキーでジャンプ、Jキーで攻撃、Kキーで盾を発動</p>
+            <p><strong>詳しい説明:</strong><br>
+                カモが地下に進み、敵を倒しながらダンジョンを攻略するローグライクアクションゲームです。
+                大学の情報の授業で開発しました。
+                私の大学には鴨池という場所があり、その地下にダンジョンがあるという設定でこのゲームを制作しました。
+                ローグライクゲームのため、ステージを進むごとに能力を1つ獲得できます。
+                盾、ダッシュ、ダブルジャンプ、HP増加といった能力を駆使し、ボスに挑むゲームです。
+            </p>
+            <p><strong>技術説明:</strong><br>
+                PyxelというPython用ゲーム開発ライブラリを用いて、ボス戦の音楽を除き、グラフィック、プログラム、ボス戦以外の音楽を作成しました。
+                Pythonのオブジェクト指向を活用し、継承などを使って効率的に制作しました。
+                特にEnemyのスクリプトで継承を使用しています。
+                Unityとは描画方法なども異なり、ゲームエンジンに頼らない形での初めてのゲーム開発でした。
+            </p>
+            <p><strong>リンク:</strong></p>
+            <ul>
+                <li><a href="https://github.com/Youkin06/KamoRogue" target="_blank">GitHubリポジトリ</a></li>
+                <li><a href="https://youkin06.github.io/KamoRogue/" target="_blank">ゲームをプレイ</a></li>
             </ul>
         </div>
     </div>

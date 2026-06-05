@@ -827,10 +827,10 @@ main {
     flex-grow: 1;
 }
 
-/* 作品グリッド（3列） */
+/* 作品グリッド（2列） */
 .project-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 30px;
     margin-top: 40px;
 }
@@ -867,6 +867,7 @@ main {
     background-color: #000;
     border-radius: 8px;
     margin-bottom: 15px;
+    pointer-events: none;
 }
 
 .video-container iframe {
@@ -875,6 +876,7 @@ main {
     left: 0;
     width: 100%;
     height: 100%;
+    pointer-events: none;
 }
 
 .project-description h3 {
@@ -961,6 +963,31 @@ main {
     background-color: hwb(51 0% 0%);
     /* Green for release */
     color: #333;
+}
+
+.tag.team-dev {
+    background-color: #7e57c2;
+    color: white;
+}
+
+.tag.game-jam {
+    background-color: #ef5350;
+    color: white;
+}
+
+.tag.python {
+    background-color: #ffd43b;
+    color: #333;
+}
+
+.tag.pyxel {
+    background-color: #26a69a;
+    color: white;
+}
+
+.tag.solo-dev {
+    background-color: #8d6e63;
+    color: white;
 }
 
 /* ===== 5. 経験セクション ===== */
