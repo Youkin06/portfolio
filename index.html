@@ -250,6 +250,26 @@
                     </div>
                 </div>
                 <!-- 作品アイテム 3 -->
+                <div class="project-item" data-modal-target="modal-project-3">
+                    <div class="video-container">
+                        <iframe
+                            src="https://www.youtube.com/embed/b3qK5eTwYUs?autoplay=1&mute=1&loop=1&playlist=b3qK5eTwYUs&controls=0&rel=0"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="project-description">
+                        <h3>スライムスライス</h3>
+                        <p>スライムを切り裂け！3Dカジュアルゲーム<br><span class="click-for-details">▶︎ クリックして詳細を見る</span></p>
+                        <ul class="tags">
+                            <li class="tag unity">Unity</li>
+                            <li class="tag modeling">モデリング</li>
+                            <li class="tag three-d">3D</li>
+                            <li class="tag blender">Blender</li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- 作品アイテム 4 -->
                 <div class="project-item" data-modal-target="modal-project-4">
                     <div class="video-container">
                         <iframe
@@ -269,7 +289,7 @@
                         </ul>
                     </div>
                 </div>
-                <!-- 作品アイテム 4 -->
+                <!-- 作品アイテム 5 -->
                 <div class="project-item" data-modal-target="modal-project-6">
                     <div class="video-container">
                         <iframe
@@ -533,6 +553,34 @@
             <ul>
                 <li><a href="https://play.unity.com/ja/games/962dd261-d374-4db9-83cf-7050148df431/depth-diary"
                         target="_blank">ゲームをプレイ（スマホでのプレイのみです）</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="modal-project-3" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>スライムスライス</h2>
+            <p><strong>ジャンル:</strong>3Dカジュアル</p>
+            <p><strong>開発期間:</strong>2025年7月(2週間)</p>
+            <p><strong>操作説明:</strong> 指のスワイプで敵を斬る</p>
+            <p><strong>詳しい説明:</strong><br>
+                スマートフォンでユーザーがいかに簡単に爽快感を得られるかを追求してこのゲームを制作しました。
+                スライムを切断した際の効果音やエフェクトには特にこだわり、心地よさを高めています。
+                ユーザーインターフェースは分かりやすさと統一感を持たせることに注力しました。
+                また、ただスライムを斬り続ける単純作業にならないよう、攻撃力アップや一撃必殺などの戦略的な要素となるボタンを追加し、ゲームプレイに変化をつけています。
+            </p>
+            <p><strong>技術説明:</strong><br>
+                スマートフォンのスワイプ操作で敵を切るアクションの実装に注力しました。
+                敵を斬るエフェクトはLineRendererを用いて視覚的な表現にこだわっています。
+                敵はウェーブ式で出現し、ウェーブが進むごとに敵の量やHPが増加するように設定しました。
+                キャラクターモデルとしてBlenderでスライムやボススライム、雲を作成し、Unityに取り込んで使用しています。
+                現状はウェーブごとの敵の強化に対してプレイヤーの攻撃力の伸びが追いつかず、最大ウェーブが22程度で止まってしまうため、今後はレベルデザインをより精密に調整してゲームが無限に続くように改善したいと考えています。
+                また、敵を切断した際のエフェクトをParticle SystemやShaderを活用してさらに高品質にしたいと考えています。
+            </p>
+            <p><strong>リンク:</strong></p>
+            <ul>
+                <li><a href="https://unityroom.com/games/slimeslice" target="_blank">ゲームをプレイ</a></li>
             </ul>
         </div>
     </div>
