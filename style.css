@@ -857,10 +857,6 @@ main {
     /* Stronger glow on hover */
 }
 
-.project-item--preview-only {
-    cursor: default;
-}
-
 .video-container {
     position: relative;
     width: 100%;

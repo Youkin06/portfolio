@@ -210,8 +210,8 @@
 
             <!-- 作品グリッド (2列) -->
             <div class="project-grid">
-                <!-- 新規作品（詳細は後日追加） -->
-                <div class="project-item project-item--preview-only">
+                <!-- 新規作品 -->
+                <div class="project-item" data-modal-target="modal-project-siro">
                     <div class="video-container">
                         <iframe
                             src="https://www.youtube.com/embed/TWyRMdgAO90?autoplay=1&mute=1&loop=1&playlist=TWyRMdgAO90&controls=0&rel=0"
@@ -222,6 +222,8 @@
                     </div>
                     <div class="project-description">
                         <h3>あなたはシロです。</h3>
+                        <p>白と黒の状態を切り替え、警察の動きを利用して進む3Dアクションパズルゲーム。<br><span
+                                class="click-for-details">▶︎ クリックして詳細を見る</span></p>
                         <ul class="tags">
                             <li class="tag unity1week">unity1week</li>
                             <li class="tag unity">Unity</li>
@@ -230,7 +232,7 @@
                     </div>
                 </div>
 
-                <div class="project-item project-item--preview-only">
+                <div class="project-item" data-modal-target="modal-project-sausage-smash">
                     <div class="video-container">
                         <iframe
                             src="https://www.youtube.com/embed/0-91UJvYJCo?autoplay=1&mute=1&loop=1&playlist=0-91UJvYJCo&controls=0&rel=0"
@@ -241,6 +243,8 @@
                     </div>
                     <div class="project-description">
                         <h3>Sausage Smash</h3>
+                        <p>ソーセージをスマッシュして、迫り来る野菜を迎え撃つVRアクションゲーム。<br><span
+                                class="click-for-details">▶︎ クリックして詳細を見る</span></p>
                         <ul class="tags">
                             <li class="tag unity">Unity</li>
                             <li class="tag vr">VR</li>
@@ -516,6 +520,71 @@
 
     <!-- ===== 作品詳細モーダル (ポップアップ) ===== -->
     <!-- (初期状態では非表示) -->
+    <div id="modal-project-siro" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>あなたはシロです。</h2>
+            <p><strong>ジャンル:</strong> 3Dアクションパズル</p>
+            <p><strong>開発期間:</strong> 2日間</p>
+            <p><strong>開発体制:</strong> 個人制作</p>
+            <p><strong>担当:</strong> 企画、プログラム、モデリング、レベルデザイン、アニメーション</p>
+            <p><strong>操作説明:</strong> プレイヤーを操作し、白と黒の状態を切り替えながらステージを進む</p>
+            <p><strong>詳しい説明:</strong><br>
+                刑事ドラマなどで使われる「あなたは黒です」という表現から着想を得た、白と黒の状態を切り替えて進むアクションパズルゲームです。
+                白の状態では警察は反応しませんが、黒の状態になるとプレイヤーを追いかけます。
+                あえて黒になって警察を誘導し、その動きを利用して仕掛けを突破していきます。
+                <br><br>
+                ただし、黒の状態を使うたびに「黒ゲージ」が蓄積し、プレイヤーの見た目も少しずつ黒く変化します。
+                タイトルのとおり、最終ステージは白の状態でクリアしなければなりません。
+                1回目は黒の力を多用して進み、2回目には黒になる回数を抑える必要に気づくという、プレイヤーの理解によって攻略方法が変わる二段構成を目指しました。
+            </p>
+            <p><strong>技術説明:</strong><br>
+                企画からプログラム、モデリング、レベルデザイン、アニメーションまで、すべての工程を担当しました。
+                フルスクリーンシェーダーを活用して画面全体の表現を整え、短期間でも統一感のある世界観になるよう工夫しています。
+                また、Git worktreeで作業を分割し、AIを活用しながら複数の実装を並行して進めることで、2日間という限られた開発期間でも完成まで持っていきました。
+                制作を通して、シェーダーによる画面表現と、並列開発を効率良く進める方法を学びました。
+            </p>
+            <p><strong>リンク:</strong></p>
+            <ul>
+                <li><a href="https://youtu.be/TWyRMdgAO90" target="_blank">動画を見る</a></li>
+                <li><a href="https://unityroom.com/games/anatahasirodesu" target="_blank">ゲームをプレイ</a></li>
+                <li><a href="https://github.com/Youkin06/SiroGame" target="_blank">GitHubリポジトリ</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="modal-project-sausage-smash" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>Sausage Smash</h2>
+            <p><strong>ジャンル:</strong> VRアクション</p>
+            <p><strong>開発期間:</strong> 3日間</p>
+            <p><strong>開発体制:</strong> エンジニア3人によるチーム制作</p>
+            <p><strong>担当:</strong> プレイヤー操作、フライ返しの操作、トス、スマッシュ</p>
+            <p><strong>操作説明:</strong> VRコントローラーでフライ返しを動かし、鉄板で焼いたソーセージを打ち返す</p>
+            <p><strong>詳しい説明:</strong><br>
+                ハッカソンで制作した、ラケットスポーツのような感覚で遊べるVRアクションゲームです。
+                プレイヤーはフライ返しでソーセージを打ち、次々と迫ってくる野菜を迎え撃ちます。
+                ソーセージが当たった野菜はソーセージへ変化するため、コミカルな見た目と爽快なアクションを同時に楽しめます。
+                <br><br>
+                特にこだわったのは、ソーセージを高くトスし、上から叩きつける「スマッシュ」の気持ちよさです。
+                トスの最中は攻撃できず敵に接近される危険がありますが、スマッシュが決まると範囲攻撃で大きなダメージを与えられます。
+                大技を狙うタイミングにリスクとリターンが生まれるよう設計しました。
+            </p>
+            <p><strong>技術説明:</strong><br>
+                プレイヤーに関わる動作全般を担当し、VRでの移動、フライ返しの操作、トス、スマッシュを実装しました。
+                通常の物理挙動ではトスしたソーセージが必要以上に高く飛んでしまうため、トス中だけ加速度を抑える調整を加え、狙った高さへ自然に上げやすくしています。
+                <br><br>
+                ハッカソンでは、ラケットを振るように直感的に操作できる点と、音や手応えによるフィードバックの気持ちよさが評価され、優勝しました。
+                現在もリリースに向けて開発を続けています。
+            </p>
+            <p><strong>リンク:</strong></p>
+            <ul>
+                <li><a href="https://youtu.be/0-91UJvYJCo" target="_blank">動画を見る</a></li>
+            </ul>
+        </div>
+    </div>
+
     <div id="modal-project-5" class="modal">
         <div class="modal-content">
             <span class="modal-close">&times;</span>
