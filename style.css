@@ -995,23 +995,23 @@ main {
 }
 
 .tag.unity1week {
-    background-color: #e34f63;
+    background: #8e44ad;
     color: white;
 }
 
 .tag.vr {
-    background-color: #00acc1;
-    color: white;
+    background: #00d4c7;
+    color: #102020;
 }
 
 .tag.hackathon {
-    background-color: #ef5350;
+    background: #ff5c35;
     color: white;
 }
 
 .tag.winner {
-    background-color: #ffd700;
-    color: #333;
+    background: #ffd54f;
+    color: #1a1a1a;
 }
 
 /* ===== 5. 経験セクション ===== */
