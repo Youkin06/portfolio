@@ -147,6 +147,18 @@
                                 <p class="experience-details">
                                     商業ゲーム開発にプログラマーとして参画しています。自己解決のためのリサーチ力と、迅速なトライアンドエラーによる開発スキルを実践で体得しました。</p>
                             </div>
+                            <!-- 枠3 -->
+                            <div class="experience-item">
+                                <div class="experience-header">
+                                    <span class="company-name">株式会社サイバーエージェント / プロトスプリントリーグ</span>
+                                    <span class="period">2026年8月</span>
+                                </div>
+                                <p class="experience-details">
+                                    3人チームで、2日間のゲーム開発型インターンにUnityエンジニアとして参加しました。事前準備期間から企画、アセット選定、タスク分割、スケジュール作成を行い、当日は実装やビルド確認、ゲームの手触り調整を担当しました。短期間の開発を通して、進捗が遅れた際に実装の優先度を見直し、完成に向けてスケジュールを調整する重要性を学びました。
+                                </p>
+                                <a href="#project-frying-pan"
+                                    class="experience-project-link">制作作品：フライパン返し</a>
+                            </div>
                         </div>
                     </div>
                     <div class="accordion">
@@ -210,6 +222,28 @@
 
             <!-- 作品グリッド (2列) -->
             <div class="project-grid">
+                <div id="project-frying-pan" class="project-item" data-modal-target="modal-project-frying-pan">
+                    <div class="video-container">
+                        <iframe
+                            src="https://www.youtube.com/embed/A58K6AprXpU?autoplay=1&mute=1&loop=1&playlist=A58K6AprXpU&controls=0&rel=0"
+                            title="フライパン返し プレイ動画"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="project-description">
+                        <h3>フライパン返し</h3>
+                        <p>スマホをフライパンに見立てて振り、パンケーキをひっくり返す体感アクションゲーム。<br><span
+                                class="click-for-details">▶︎ クリックして詳細を見る</span></p>
+                        <ul class="tags">
+                            <li class="tag unity">Unity</li>
+                            <li class="tag csharp">C#</li>
+                            <li class="tag android">Android</li>
+                            <li class="tag team-dev">チーム開発</li>
+                        </ul>
+                    </div>
+                </div>
+
                 <!-- 新規作品 -->
                 <div class="project-item" data-modal-target="modal-project-siro">
                     <div class="video-container">
@@ -520,6 +554,31 @@
 
     <!-- ===== 作品詳細モーダル (ポップアップ) ===== -->
     <!-- (初期状態では非表示) -->
+    <div id="modal-project-frying-pan" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>フライパン返し</h2>
+            <p><strong>ジャンル:</strong> 体感アクション</p>
+            <p><strong>開発期間:</strong> 2日間（企画・アセット準備などの事前準備期間：約1週間）</p>
+            <p><strong>開発体制:</strong> 3人チーム</p>
+            <p><strong>担当:</strong> 企画、Unityプログラミング</p>
+            <p><strong>使用技術:</strong> Unity、C#、Android、Unity Input System（Accelerometer / AttitudeSensor /
+                LinearAccelerationSensor）、Git / GitHub</p>
+            <p><strong>詳しい説明:</strong><br>
+                サイバーエージェントのゲームエンジニア向けインターン「プロトスプリントリーグ」で制作した、スマートフォンをフライパンに見立ててパンケーキをひっくり返すゲームです。Android端末のセンサーを利用し、実際にスマートフォンを傾けたり振ったりする動きをゲーム内のフライパン操作に反映しています。
+                <br><br>
+                主にスマートフォンの傾き取得、フライパンの操作、パンケーキの物理挙動、飛ぶ方向の補正、回転制御、キャリブレーションを担当しました。
+            </p>
+            <p><strong>技術説明:</strong><br>
+                特に苦戦したのは、パンケーキを自然に飛ばしながら、プレイヤーの意図した方向へ返せるようにする調整です。プログラム側で動きを強く制御すると不自然になり、反対に物理挙動だけに任せると意図しない方向へ飛んでしまう問題がありました。
+                <br><br>
+                そこで、奥行き方向への不要な移動を抑えながら、回転をプログラム側で制御することで、物理的な動きを残しつつ遊びやすい挙動になるよう調整しました。
+                <br><br>
+                Unity Input SystemのAttitudeSensorで端末の傾きを取得し、LinearAccelerationSensorとAccelerometerで振る動きを検出しています。開発中は実装だけでなく、GitHub運用、タスク分割、スケジュール作成、実機ビルド、ゲームの手触り確認にも取り組みました。社員メンターからは、細かな部分まで手触りを逐一確認し、改善を重ねていた点を評価していただきました。
+            </p>
+        </div>
+    </div>
+
     <div id="modal-project-siro" class="modal">
         <div class="modal-content">
             <span class="modal-close">&times;</span>

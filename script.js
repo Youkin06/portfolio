@@ -100,8 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
      * 3. 作品モーダル (ポップアップ) 機能
      * ======================================== */
 
-    // モーダルを開くトリガー（各作品アイテム）を取得
-    const modalTriggers = document.querySelectorAll('.project-item');
+    // モーダルを開くトリガー（作品アイテムと作品詳細リンク）を取得
+    const modalTriggers = document.querySelectorAll('[data-modal-target]');
     
     // モーダルを閉じるボタン（"×"）をすべて取得
     const closeButtons = document.querySelectorAll('.modal-close');
@@ -111,7 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- モーダルを開く処理 ---
     modalTriggers.forEach(trigger => {
-        trigger.addEventListener('click', () => {
+        trigger.addEventListener('click', (event) => {
+            event.preventDefault();
             // data-modal-target 属性から、対応するモーダルのIDを取得
             const modalId = trigger.getAttribute('data-modal-target');
             const modal = document.getElementById(modalId);

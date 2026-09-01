@@ -918,6 +918,16 @@ main {
     color: white;
 }
 
+.tag.csharp {
+    background-color: #68217a;
+    color: white;
+}
+
+.tag.android {
+    background-color: #3ddc84;
+    color: #102018;
+}
+
 .tag.blender {
     background-color: #ff7043;
     color: white;
@@ -1385,6 +1395,25 @@ main {
 .period {
     font-size: 0.85rem;
     color: #ccc;
+    flex-shrink: 0;
+}
+
+.experience-project-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: #87ceeb;
+    font-weight: bold;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+.experience-project-link:hover,
+.experience-project-link:focus {
+    color: #aaddff;
+}
+
+#project-frying-pan {
+    scroll-margin-top: 100px;
 }
 
 /* 作品詳細への誘導テキスト */
@@ -1680,9 +1709,17 @@ main {
     }
 
     .modal-content {
+        width: 100%;
+        box-sizing: border-box;
         max-height: calc(100vh - 40px);
         /* 画面の高さから上下のpaddingを引いた値を最大値に */
         overflow-y: auto;
         /* コンテンツが多い場合は縦スクロールを許可 */
+    }
+
+    .experience-header {
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
     }
 }
