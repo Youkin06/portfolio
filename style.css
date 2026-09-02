@@ -918,14 +918,14 @@ main {
     color: white;
 }
 
-.tag.csharp {
-    background-color: #68217a;
-    color: white;
-}
-
 .tag.android {
     background-color: #3ddc84;
     color: #102018;
+}
+
+.tag.internship {
+    background-color: #ff7043;
+    color: white;
 }
 
 .tag.blender {
