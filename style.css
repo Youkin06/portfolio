@@ -1412,7 +1412,27 @@ main {
     color: #aaddff;
 }
 
-#project-frying-pan {
+.award-item > span {
+    display: block;
+}
+
+.award-project-link {
+    display: inline-block;
+    margin-top: 4px;
+    color: #ff7777;
+    font-size: 0.9em;
+    font-weight: bold;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.3s ease;
+}
+
+.award-project-link:hover,
+.award-project-link:focus {
+    color: #ffffff;
+}
+
+.project-item[id] {
     scroll-margin-top: 100px;
 }
 
