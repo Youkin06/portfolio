@@ -725,7 +725,8 @@ main {
 }
 
 .social-links {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 15px;
     margin-bottom: 30px;
     /* Add spacing after social links */
@@ -734,6 +735,7 @@ main {
 .social-link-item {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
     padding: 8px 15px;
     background-color: #1a1a1a;
