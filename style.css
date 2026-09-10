@@ -1407,7 +1407,7 @@ main {
     align-items: center;
     margin-bottom: 0;
     cursor: pointer;
-    gap: 16px;
+    gap: 6px;
 }
 
 .experience-detail-toggle:focus-visible {
@@ -1418,7 +1418,7 @@ main {
 .experience-header-meta {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 10px;
     flex-shrink: 0;
 }
 
@@ -1429,6 +1429,8 @@ main {
     border-bottom: 2px solid var(--primary-color);
     transform: rotate(45deg);
     transition: transform 0.3s ease;
+    flex-shrink: 0;
+    margin-right: 5px;
 }
 
 .experience-item.detail-open .detail-arrow {
