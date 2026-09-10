@@ -14,23 +14,48 @@ const createSectionSketch = (containerId, glowColor) => {
         let hexHeight;
         let hexagons = [];
         let parentSection;
-        let resizeTimer;
+
+        const getMaximumSectionHeight = () => {
+            if (!parentSection.querySelector('.accordion')) {
+                return parentSection.clientHeight;
+            }
+
+            // 全アコーディオンを開いた複製を画面外で測り、最大高を先に確保する
+            const clone = parentSection.cloneNode(true);
+            const computedStyle = window.getComputedStyle(parentSection);
+            clone.querySelector('.section-background-canvas')?.remove();
+            clone.style.position = 'fixed';
+            clone.style.left = '-10000px';
+            clone.style.top = '0';
+            clone.style.width = computedStyle.width;
+            clone.style.height = 'auto';
+            clone.style.margin = '0';
+            clone.style.visibility = 'hidden';
+            clone.style.pointerEvents = 'none';
+
+            clone.querySelectorAll('.accordion').forEach(accordion => accordion.classList.add('active'));
+            clone.querySelectorAll('.accordion-content, .experience-detail-content').forEach(content => {
+                content.style.maxHeight = 'none';
+                content.style.transition = 'none';
+            });
+            clone.querySelectorAll('.experience-item').forEach(item => item.classList.add('detail-open'));
+
+            document.body.appendChild(clone);
+            const maximumHeight = clone.clientHeight;
+            clone.remove();
+            return maximumHeight;
+        };
 
         const resizeToSection = () => {
             const container = document.getElementById(containerId);
             if (!container || !parentSection) return;
 
             const nextWidth = parentSection.clientWidth;
-            const nextHeight = parentSection.clientHeight;
+            const nextHeight = getMaximumSectionHeight();
             if (nextWidth === p.width && nextHeight === p.height) return;
 
             p.resizeCanvas(nextWidth, nextHeight);
             p.initializeHexagons();
-        };
-
-        const scheduleResize = () => {
-            window.clearTimeout(resizeTimer);
-            resizeTimer = window.setTimeout(resizeToSection, 80);
         };
 
         p.setup = function () {
@@ -44,7 +69,7 @@ const createSectionSketch = (containerId, glowColor) => {
             // 親セクションの高さを取得して背景コンテナに設定
             parentSection = container.parentElement;
 
-            const canvas = p.createCanvas(parentSection.clientWidth, parentSection.clientHeight);
+            const canvas = p.createCanvas(parentSection.clientWidth, getMaximumSectionHeight());
             canvas.parent(container);
             canvas.id(`${containerId}-canvas`); // キャンバスに一意のIDを割り当てる
 
@@ -53,11 +78,6 @@ const createSectionSketch = (containerId, glowColor) => {
 
             p.initializeHexagons();
 
-            // アコーディオンなどでセクションの高さが変わったら自動追従する
-            if ('ResizeObserver' in window) {
-                const sectionResizeObserver = new ResizeObserver(scheduleResize);
-                sectionResizeObserver.observe(parentSection);
-            }
         };
 
         p.draw = function () {
@@ -111,7 +131,7 @@ const createSectionSketch = (containerId, glowColor) => {
 
         // This function will be called externally to resize the canvas
         p.windowResized = function () {
-            scheduleResize();
+            resizeToSection();
         };
     };
 

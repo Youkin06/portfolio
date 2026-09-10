@@ -218,17 +218,18 @@ a:hover {
     text-decoration: underline;
 }
 
-/* 研究セクション内のリンク（より目立たせる） */
+/* PROFILE内の詳細リンク */
 .experience-details a {
-    color: #ffa500;
-    /* 明るいオレンジ */
+    color: #ff7777;
     font-weight: bold;
-    transition: color 0.3s ease;
+    text-decoration-color: rgba(255, 119, 119, 0.75);
+    text-underline-offset: 3px;
+    transition: color 0.3s ease, text-decoration-color 0.3s ease;
 }
 
 .experience-details a:hover {
-    color: #ffcc66;
-    /* ホバー時は黄色寄りに */
+    color: #ffffff;
+    text-decoration-color: #ffffff;
 }
 
 
@@ -599,7 +600,7 @@ main {
 
 .section-background-canvas canvas {
     width: 100% !important;
-    height: 100% !important;
+    height: auto !important;
 }
 
 .profile-content {
@@ -1253,6 +1254,18 @@ main {
     padding-bottom: 20px;
 }
 
+/* PROFILEの展開部分でも赤い外枠の発光を途切れさせない */
+#profile .accordion.active > .accordion-content {
+    background-color: #222;
+    background-image:
+        linear-gradient(to right, rgba(255, 0, 0, 0.42), transparent),
+        linear-gradient(to left, rgba(255, 0, 0, 0.42), transparent),
+        linear-gradient(to top, rgba(255, 0, 0, 0.42), transparent);
+    background-position: left top, right top, left bottom;
+    background-size: 8px 100%, 8px 100%, 100% 8px;
+    background-repeat: no-repeat;
+}
+
 .accordion-content p,
 .accordion-content ul {
     margin: 0;
@@ -1437,8 +1450,7 @@ main {
     font-family: 'DotGothic16', cursive;
     font-size: 1.1rem;
     /* 会社名を少し大きく */
-    color: #ff8c00;
-    /* オレンジ系のアクセントカラー */
+    color: #ffffff;
 }
 
 .period {
@@ -1450,15 +1462,18 @@ main {
 .experience-project-link {
     display: inline-block;
     margin-top: 10px;
-    color: #87ceeb;
+    color: #ff7777;
     font-weight: bold;
     text-decoration: underline;
-    transition: color 0.3s ease;
+    text-decoration-color: rgba(255, 119, 119, 0.75);
+    text-underline-offset: 3px;
+    transition: color 0.3s ease, text-decoration-color 0.3s ease;
 }
 
 .experience-project-link:hover,
 .experience-project-link:focus {
-    color: #aaddff;
+    color: #ffffff;
+    text-decoration-color: #ffffff;
 }
 
 .award-item > span {
@@ -1473,12 +1488,14 @@ main {
     font-weight: bold;
     text-decoration: underline;
     text-underline-offset: 3px;
-    transition: color 0.3s ease;
+    text-decoration-color: rgba(255, 119, 119, 0.75);
+    transition: color 0.3s ease, text-decoration-color 0.3s ease;
 }
 
 .award-project-link:hover,
 .award-project-link:focus {
     color: #ffffff;
+    text-decoration-color: #ffffff;
 }
 
 .project-item[id] {
