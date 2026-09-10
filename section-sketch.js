@@ -13,6 +13,25 @@ const createSectionSketch = (containerId, glowColor) => {
         let hexWidth;
         let hexHeight;
         let hexagons = [];
+        let parentSection;
+        let resizeTimer;
+
+        const resizeToSection = () => {
+            const container = document.getElementById(containerId);
+            if (!container || !parentSection) return;
+
+            const nextWidth = parentSection.clientWidth;
+            const nextHeight = parentSection.clientHeight;
+            if (nextWidth === p.width && nextHeight === p.height) return;
+
+            p.resizeCanvas(nextWidth, nextHeight);
+            p.initializeHexagons();
+        };
+
+        const scheduleResize = () => {
+            window.clearTimeout(resizeTimer);
+            resizeTimer = window.setTimeout(resizeToSection, 80);
+        };
 
         p.setup = function () {
             const container = document.getElementById(containerId);
@@ -23,12 +42,9 @@ const createSectionSketch = (containerId, glowColor) => {
             }
 
             // 親セクションの高さを取得して背景コンテナに設定
-            const parentSection = container.parentElement;
-            if (parentSection) {
-                container.style.height = parentSection.offsetHeight + 'px';
-            }
+            parentSection = container.parentElement;
 
-            const canvas = p.createCanvas(container.offsetWidth, container.offsetHeight);
+            const canvas = p.createCanvas(parentSection.clientWidth, parentSection.clientHeight);
             canvas.parent(container);
             canvas.id(`${containerId}-canvas`); // キャンバスに一意のIDを割り当てる
 
@@ -36,6 +52,12 @@ const createSectionSketch = (containerId, glowColor) => {
             hexHeight = 2 * hexRadius;
 
             p.initializeHexagons();
+
+            // アコーディオンなどでセクションの高さが変わったら自動追従する
+            if ('ResizeObserver' in window) {
+                const sectionResizeObserver = new ResizeObserver(scheduleResize);
+                sectionResizeObserver.observe(parentSection);
+            }
         };
 
         p.draw = function () {
@@ -89,18 +111,7 @@ const createSectionSketch = (containerId, glowColor) => {
 
         // This function will be called externally to resize the canvas
         p.windowResized = function () {
-            const container = document.getElementById(containerId);
-            if (container) {
-                // 親セクションの現在の高さに合わせてリサイズ
-                const parentSection = container.parentElement;
-                if (parentSection) { // parentSectionが存在するか確認
-                    container.style.height = parentSection.offsetHeight + 'px';
-                } else {
-                    container.style.height = p.height + 'px'; // フォールバック
-                }
-                p.resizeCanvas(container.offsetWidth, container.offsetHeight);
-                p.initializeHexagons();
-            }
+            scheduleResize();
         };
     };
 

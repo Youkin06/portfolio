@@ -96,6 +96,49 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // インターン・研究の各項目を個別に開閉
+    const experienceDetailToggles = document.querySelectorAll('.experience-detail-toggle');
+
+    experienceDetailToggles.forEach(toggle => {
+        const item = toggle.closest('.experience-item');
+        const detail = item?.querySelector('.experience-detail-content');
+        const outerContent = item?.closest('.accordion-content');
+
+        // 内側の展開アニメーション中も外側の高さを追従させる
+        if (detail && outerContent && 'ResizeObserver' in window) {
+            const detailResizeObserver = new ResizeObserver(() => {
+                if (outerContent.style.maxHeight && outerContent.style.maxHeight !== 'none') {
+                    outerContent.style.maxHeight = outerContent.scrollHeight + 'px';
+                }
+            });
+            detailResizeObserver.observe(detail);
+        }
+
+        const toggleDetail = () => {
+            if (!item || !detail) return;
+
+            const willOpen = !item.classList.contains('detail-open');
+            item.classList.toggle('detail-open', willOpen);
+            toggle.setAttribute('aria-expanded', String(willOpen));
+            detail.style.maxHeight = willOpen ? detail.scrollHeight + 'px' : null;
+
+            // 内側の開閉に合わせて、外側のアコーディオンの高さも更新
+            requestAnimationFrame(() => {
+                if (outerContent?.style.maxHeight) {
+                    outerContent.style.maxHeight = outerContent.scrollHeight + 'px';
+                }
+            });
+        };
+
+        toggle.addEventListener('click', toggleDetail);
+        toggle.addEventListener('keydown', event => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                toggleDetail();
+            }
+        });
+    });
+
     /* ========================================
      * 3. 作品モーダル (ポップアップ) 機能
      * ======================================== */

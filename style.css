@@ -590,12 +590,16 @@ main {
     top: 0;
     left: 0;
     width: 100%;
-    /* height: 100%; */
-    /* JavaScriptで高さを制御するため削除 */
+    height: 100%;
     z-index: 0;
     /* コンテンツより後ろに配置 */
     pointer-events: none;
     /* クリックイベントを無視 */
+}
+
+.section-background-canvas canvas {
+    width: 100% !important;
+    height: 100% !important;
 }
 
 .profile-content {
@@ -1386,6 +1390,49 @@ main {
     margin-bottom: 10px;
 }
 
+.experience-detail-toggle {
+    align-items: center;
+    margin-bottom: 0;
+    cursor: pointer;
+    gap: 16px;
+}
+
+.experience-detail-toggle:focus-visible {
+    outline: 2px solid #ff7777;
+    outline-offset: 5px;
+}
+
+.experience-header-meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-shrink: 0;
+}
+
+.detail-arrow {
+    width: 9px;
+    height: 9px;
+    border-right: 2px solid var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    transform: rotate(45deg);
+    transition: transform 0.3s ease;
+}
+
+.experience-item.detail-open .detail-arrow {
+    transform: rotate(225deg);
+}
+
+.experience-detail-content {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.35s ease, opacity 0.25s ease;
+}
+
+.experience-item.detail-open .experience-detail-content {
+    opacity: 1;
+}
+
 .company-name {
     font-family: 'DotGothic16', cursive;
     font-size: 1.1rem;
@@ -1743,5 +1790,14 @@ main {
         flex-direction: column;
         align-items: center;
         gap: 4px;
+    }
+
+    .experience-detail-toggle {
+        align-items: stretch;
+    }
+
+    .experience-header-meta {
+        justify-content: space-between;
+        width: 100%;
     }
 }
