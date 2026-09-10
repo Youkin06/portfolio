@@ -1444,13 +1444,15 @@ main {
 
 .experience-item.detail-open .experience-detail-content {
     opacity: 1;
+    padding-top: 14px;
 }
 
 .company-name {
     font-family: 'DotGothic16', cursive;
     font-size: 1.1rem;
-    /* 会社名を少し大きく */
     color: #ffffff;
+    white-space: nowrap;
+    letter-spacing: -0.04em;
 }
 
 .period {
@@ -1816,5 +1818,11 @@ main {
     .experience-header-meta {
         justify-content: space-between;
         width: 100%;
+    }
+
+    .company-name {
+        font-size: 1.1rem;
+        white-space: normal;
+        letter-spacing: normal;
     }
 }

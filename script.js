@@ -130,8 +130,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         };
 
-        toggle.addEventListener('click', toggleDetail);
+        toggle.addEventListener('click', event => {
+            if (event.target.closest('a')) return;
+            toggleDetail();
+        });
         toggle.addEventListener('keydown', event => {
+            if (event.target.closest('a')) return;
             if (event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault();
                 toggleDetail();
