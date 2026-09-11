@@ -1202,6 +1202,21 @@ main {
     /* Ensure rounded corners */
 }
 
+.accordion-hover-shell {
+    padding: 5px 0;
+    margin: -5px 0 15px;
+}
+
+#profile .accordion-hover-shell > .accordion {
+    margin-bottom: 0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#profile .accordion-hover-shell:hover > .accordion {
+    transform: translateY(-5px);
+    box-shadow: 0 0 15px #ff0000, inset 0 0 10px #ff0000;
+}
+
 .accordion {
     background-color: #1a1a1a;
     border: 1px solid #444;
@@ -1389,6 +1404,7 @@ main {
 
 /* インターン・バイト経験の枠のスタイル */
 .experience-item {
+    position: relative;
     border: 1px solid #ff4d4d;
     /* 赤い枠線 */
     box-shadow: 0 0 8px rgba(255, 0, 0, 0.7), 0 0 12px rgba(255, 0, 0, 0.5);
@@ -1399,9 +1415,25 @@ main {
     /* 角を丸くする */
     background-color: rgba(255, 0, 0, 0.05);
     /* ほんのり赤い背景色 */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* カードが上昇してもホバー判定が外れない透明な余白 */
+.experience-item::before {
+    content: '';
+    position: absolute;
+    inset: -6px 0;
+    pointer-events: auto;
+}
+
+.experience-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.95), inset 0 0 10px rgba(255, 0, 0, 0.65);
 }
 
 .experience-header {
+    position: relative;
+    z-index: 1;
     display: flex;
     justify-content: space-between;
     align-items: baseline;
@@ -1443,6 +1475,8 @@ main {
 }
 
 .experience-detail-content {
+    position: relative;
+    z-index: 1;
     max-height: 0;
     overflow: hidden;
     opacity: 0;
