@@ -759,6 +759,13 @@ main {
     /* Stronger glow on hover */
 }
 
+.social-link-item:hover,
+.social-link-item:focus-visible,
+.social-link-item:active {
+    color: #ff7777;
+    text-decoration: none;
+}
+
 .social-link-item img {
     width: 20px;
     height: 20px;
@@ -788,6 +795,12 @@ main {
     /* 既存のスタイル */
     display: block;
     /* リンクをブロック要素にして改行させる */
+}
+
+.contact-info a:hover,
+.contact-info a:focus-visible,
+.contact-info a:active {
+    color: #ff7777;
 }
 
 /* ===== 4. 作品セクション ===== */
