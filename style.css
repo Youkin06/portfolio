@@ -702,8 +702,7 @@ main {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-#profile .profile-field:hover,
-#profile .accordion:hover {
+#profile .profile-field:hover {
     transform: translateY(-5px);
     /* Move up on hover */
     box-shadow: 0 0 15px #ff0000, inset 0 0 10px #ff0000;
@@ -774,11 +773,10 @@ main {
     text-align: center;
     box-shadow: 0 0 5px #ff0000, inset 0 0 5px #ff0000;
     /* Red glow */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: box-shadow 0.3s ease;
 }
 
 .contact-info:hover {
-    transform: translateY(-5px);
     box-shadow: 0 0 10px #ff0000, inset 0 0 10px #ff0000;
     /* Stronger glow on hover */
 }
@@ -1185,16 +1183,10 @@ main {
     /* Thinner red border, matching profile-field */
     box-shadow: 0 0 7px #ff0000, inset 0 0 7px #ff0000;
     /* Slightly larger glow than About Me */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
     background-color: #1a1a1a;
     /* Match About Me background */
     border-radius: 5px;
     /* Ensure rounded corners */
-}
-
-#profile .accordion:hover {
-    transform: translateY(-5px);
-    /* Move up on hover */
 }
 
 .accordion {
@@ -1206,7 +1198,7 @@ main {
 }
 
 .accordion-toggle {
-    padding: 8px 12px;
+    padding: 8px 26px 8px 12px;
     /* Further reduced padding */
     cursor: pointer;
     display: flex;
@@ -1447,6 +1439,47 @@ main {
 .experience-item.detail-open .experience-detail-content {
     opacity: 1;
     padding-top: 14px;
+}
+
+.life-is-tech-detail {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(160px, 26%);
+    gap: 24px;
+    align-items: start;
+    width: 100%;
+    box-sizing: border-box;
+    border-top: 1px solid #444;
+}
+
+.life-is-tech-detail .experience-details {
+    border-top: none;
+}
+
+.experience-activity-figure {
+    width: 100%;
+    margin: 0;
+}
+
+.experience-activity-image {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    box-sizing: border-box;
+    min-width: 0;
+    border: 1px solid #ff7777;
+    border-radius: 6px;
+    box-shadow: 0 0 8px rgba(255, 0, 0, 0.45);
+}
+
+.experience-activity-figure figcaption {
+    margin-top: 8px;
+    color: #bbb;
+    font-size: 0.62rem;
+    line-height: 1.5;
+    letter-spacing: -0.04em;
+    text-align: center;
+    white-space: nowrap;
 }
 
 .company-name {
@@ -1826,5 +1859,19 @@ main {
         font-size: 1.1rem;
         white-space: normal;
         letter-spacing: normal;
+    }
+
+    .life-is-tech-detail {
+        grid-template-columns: 1fr;
+    }
+
+    .experience-activity-image {
+        width: min(100%, 300px);
+        margin: 0 auto;
+    }
+
+    .experience-activity-figure {
+        max-width: 300px;
+        margin: 0 auto;
     }
 }
