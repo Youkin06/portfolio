@@ -309,6 +309,7 @@ h3 {
 }
 
 .navbar nav ul a {
+    display: inline-block;
     font-family: 'Press Start 2P', 'DotGothic16', cursive;
     text-decoration: none;
     color: white;
@@ -736,6 +737,11 @@ main {
     /* Add spacing after social links */
 }
 
+.social-link-hover-shell {
+    padding: 5px 0;
+    margin: -5px 0;
+}
+
 .social-link-item {
     display: flex;
     align-items: center;
@@ -751,9 +757,13 @@ main {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 0 5px #ff0000, inset 0 0 5px #ff0000;
     /* Red glow */
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
 }
 
-.social-link-item:hover {
+.social-link-hover-shell:hover > .social-link-item,
+.social-link-hover-shell:focus-within > .social-link-item {
     transform: translateY(-5px);
     box-shadow: 0 0 10px #ff0000, inset 0 0 10px #ff0000;
     /* Stronger glow on hover */
@@ -1429,6 +1439,38 @@ main {
 .experience-item:hover {
     transform: translateY(-5px);
     box-shadow: 0 0 15px rgba(255, 0, 0, 0.95), inset 0 0 10px rgba(255, 0, 0, 0.65);
+}
+
+/* ホバーで上昇する要素が元の位置から外れても判定を維持する */
+.navbar nav ul a,
+.profile-image-container,
+#profile .profile-field,
+.project-item,
+#experience .accordion,
+.skill-category {
+    position: relative;
+}
+
+.navbar nav ul a::before,
+.profile-image-container::before,
+#profile .profile-field::before,
+.project-item::before,
+#experience .accordion::before,
+.skill-category::before {
+    content: '';
+    position: absolute;
+    inset: -6px 0;
+    pointer-events: auto;
+}
+
+/* 作品カードは最大10px上昇するため、判定領域も広めに確保 */
+.project-item::before {
+    inset: -11px 0;
+}
+
+/* ナビゲーションは3px上昇するため、必要最小限の判定領域にする */
+.navbar nav ul a::before {
+    inset: -4px 0;
 }
 
 .experience-header {
