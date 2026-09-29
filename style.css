@@ -328,35 +328,30 @@ h3 {
     /* TOP */
     color: #87ceeb;
     /* Light blue */
-    transform: translateY(-3px);
 }
 
 .navbar nav li:nth-child(2) a:hover {
     /* PROFILE */
     color: #ff0000;
     /* Red */
-    transform: translateY(-3px);
 }
 
 .navbar nav li:nth-child(3) a:hover {
     /* PROJECTS */
     color: #adff2f;
     /* Yellow-green */
-    transform: translateY(-3px);
 }
 
 .navbar nav li:nth-child(4) a:hover {
     /* EXPERIENCE */
     color: #ffa500;
     /* Orange */
-    transform: translateY(-3px);
 }
 
 .navbar nav li:nth-child(5) a:hover {
     /* SKILLS */
     color: #87ceeb;
     /* Light blue */
-    transform: translateY(-3px);
 }
 
 /* ===== main (ヘッダーとコンテンツが被るのを防ぐ) ===== */
@@ -677,8 +672,6 @@ main {
 }
 
 .profile-image-container:hover {
-    transform: translateY(-5px);
-    /* Move up on hover */
     box-shadow: 0 0 15px #ff0000, inset 0 0 15px #ff0000;
     /* Match the Name field's hover glow */
 }
@@ -704,15 +697,11 @@ main {
 }
 
 #profile .profile-field:hover {
-    transform: translateY(-5px);
-    /* Move up on hover */
     box-shadow: 0 0 15px #ff0000, inset 0 0 10px #ff0000;
     /* Stronger glow on hover */
 }
 
 #profile #name-field:hover {
-    transform: translateY(-5px);
-    /* Move up on hover */
     box-shadow: 0 0 15px #ff0000, inset 0 0 15px #ff0000;
     /* Stronger glow on hover */
 }
@@ -764,7 +753,6 @@ main {
 
 .social-link-hover-shell:hover > .social-link-item,
 .social-link-hover-shell:focus-within > .social-link-item {
-    transform: translateY(-5px);
     box-shadow: 0 0 10px #ff0000, inset 0 0 10px #ff0000;
     /* Stronger glow on hover */
 }
@@ -840,7 +828,6 @@ main {
 }
 
 .project-top .project-item:hover {
-    transform: translateY(-5px);
     box-shadow: 0 0 20px #adff2f, inset 0 0 20px #adff2f;
     /* Stronger glow on hover */
 }
@@ -880,7 +867,6 @@ main {
 }
 
 .project-item:hover {
-    transform: translateY(-10px);
     box-shadow: 0 0 15px #adff2f, inset 0 0 15px #adff2f;
     /* Stronger glow on hover */
 }
@@ -1038,6 +1024,16 @@ main {
     color: #102020;
 }
 
+.tag.nomaps {
+    background: #e53965;
+    color: white;
+}
+
+.tag.exhibition {
+    background: #ffd54f;
+    color: #1a1a1a;
+}
+
 .tag.hackathon {
     background: #ff5c35;
     color: white;
@@ -1063,8 +1059,6 @@ main {
 }
 
 #experience .accordion:hover {
-    transform: translateY(-5px);
-    /* Move up on hover */
     box-shadow: 0 0 15px #ffa500, inset 0 0 15px #ffa500;
     /* Stronger orange glow on hover */
 }
@@ -1095,7 +1089,6 @@ main {
 }
 
 .skill-category:hover {
-    transform: translateY(-5px);
     box-shadow: 0 0 15px #87ceeb, inset 0 0 15px #87ceeb;
     /* Stronger glow on hover */
 }
@@ -1223,7 +1216,6 @@ main {
 }
 
 #profile .accordion-hover-shell:hover > .accordion {
-    transform: translateY(-5px);
     box-shadow: 0 0 15px #ff0000, inset 0 0 10px #ff0000;
 }
 
@@ -1243,11 +1235,6 @@ main {
     justify-content: space-between;
     align-items: center;
 }
-
-.accordion-toggle:hover {
-    /* transform: translateY(-3px); /* Removed hover movement */
-}
-
 
 /* 矢印アイコン */
 .icon-arrow {
@@ -1437,40 +1424,7 @@ main {
 }
 
 .experience-item:hover {
-    transform: translateY(-5px);
     box-shadow: 0 0 15px rgba(255, 0, 0, 0.95), inset 0 0 10px rgba(255, 0, 0, 0.65);
-}
-
-/* ホバーで上昇する要素が元の位置から外れても判定を維持する */
-.navbar nav ul a,
-.profile-image-container,
-#profile .profile-field,
-.project-item,
-#experience .accordion,
-.skill-category {
-    position: relative;
-}
-
-.navbar nav ul a::before,
-.profile-image-container::before,
-#profile .profile-field::before,
-.project-item::before,
-#experience .accordion::before,
-.skill-category::before {
-    content: '';
-    position: absolute;
-    inset: -6px 0;
-    pointer-events: auto;
-}
-
-/* 作品カードは最大10px上昇するため、判定領域も広めに確保 */
-.project-item::before {
-    inset: -11px 0;
-}
-
-/* ナビゲーションは3px上昇するため、必要最小限の判定領域にする */
-.navbar nav ul a::before {
-    inset: -4px 0;
 }
 
 .experience-header {
@@ -1815,7 +1769,6 @@ main {
 
     .navbar nav ul a:hover {
         color: white;
-        transform: none;
     }
 
 

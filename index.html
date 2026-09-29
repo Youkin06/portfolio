@@ -16,7 +16,7 @@
         rel="stylesheet">
 
     <!-- 外部CSSファイルの読み込み -->
-    <link rel="stylesheet" href="style.css?v=1.4">
+    <link rel="stylesheet" href="style.css?v=1.6">
 
 </head>
 
@@ -345,6 +345,29 @@
 
             <!-- 作品グリッド (2列) -->
             <div class="project-grid">
+                <div id="project-jiya-robot-tea" class="project-item" data-modal-target="modal-project-jiya-robot-tea">
+                    <div class="video-container">
+                        <iframe
+                            src="https://www.youtube.com/embed/aGIQZD2Nkak?autoplay=1&mute=1&loop=1&playlist=aGIQZD2Nkak&controls=0&rel=0"
+                            title="じいや！巨大ロボで紅茶を注ぎなさい！ プレイ動画"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                    </div>
+                    <div class="project-description">
+                        <h3>じいや！巨大ロボで紅茶を注ぎなさい！</h3>
+                        <p>巨大ロボを操作し、小さなティーカップに紅茶を注ぐVRゲーム。<br><span
+                                class="click-for-details">▶︎ クリックして詳細を見る</span></p>
+                        <ul class="tags">
+                            <li class="tag unity">Unity</li>
+                            <li class="tag vr">VR</li>
+                            <li class="tag team-dev">チーム開発</li>
+                            <li class="tag nomaps">NoMaps</li>
+                            <li class="tag exhibition">出展</li>
+                        </ul>
+                    </div>
+                </div>
+
                 <div id="project-sausage-smash" class="project-item" data-modal-target="modal-project-sausage-smash">
                     <div class="video-container">
                         <iframe
@@ -679,6 +702,45 @@
 
     <!-- ===== 作品詳細モーダル (ポップアップ) ===== -->
     <!-- (初期状態では非表示) -->
+    <div id="modal-project-jiya-robot-tea" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>じいや！巨大ロボで紅茶を注ぎなさい！</h2>
+            <p><strong>ジャンル:</strong> VRゲーム</p>
+            <p><strong>開発体制:</strong> Iwaken Lab. のメンバー4人によるチーム制作</p>
+            <p><strong>担当:</strong> Unityエンジニア（ロボットの腕の挙動、つかみ判定、ティーポットの状態に応じたビジュアルの遷移）</p>
+            <p><strong>使用技術:</strong> Unity、C#、IK（逆運動学）、アニメーション制御、enumによる状態管理</p>
+            <p><strong>出展:</strong> DIVE INTO XR（NoMaps2026）／2026年9月26日<br>
+                会場：Deep Tech Core Sapporo（北海道札幌市）</p>
+            <p><strong>詳しい説明:</strong><br>
+                執事となって巨大ロボを操作し、お嬢様のお茶会のために小さなティーカップへ紅茶を注ぐVRゲームです。
+                巨大なロボットで繊細な作業に挑む、スケールのギャップを楽しめる作品です。
+                所属するIwaken Lab. のメンバーと共同で開発し、Unityエンジニアとして参加しました。
+                <br><br>
+                北海道・札幌を舞台に、テクノロジーやエンターテインメント、クリエイティブを通じて新しい価値を生み出すフェスティバル「NoMaps2026」の連携事業として開催された、XR体験イベント「DIVE INTO XR」に出展しました。
+            </p>
+            <p><strong>技術説明:</strong><br>
+                <strong>ロボットの腕の制御</strong><br>
+                UnityのIK（逆運動学）を用いて、ロボットの腕の姿勢を計算する処理を実装しました。主に腕の挙動の作成を担当しています。
+                <br><br>
+                <strong>つかみ判定とアニメーションの連動</strong><br>
+                ロボットが掴む動作のアニメーションを作成し、プログラムによるつかみ判定と連動させました。腕の見た目の動作と、ゲーム内でオブジェクトを掴む処理を組み合わせています。
+                <br><br>
+                <strong>ティーポットの状態管理とビジュアルの遷移</strong><br>
+                enum型でティーポットの状態を管理し、それぞれの状態に対応する見た目を適用する処理を実装しました。状態の変化に合わせてビジュアルを切り替える部分を担当しました。
+            </p>
+            <p><strong>リンク:</strong></p>
+            <ul>
+                <li><a href="https://www.youtube.com/watch?v=aGIQZD2Nkak" target="_blank"
+                        rel="noopener noreferrer">動画を見る</a></li>
+                <li><a href="https://no-maps.jp/program/program-channel-deep-tech-core-sapporo/2609261100/" target="_blank"
+                        rel="noopener noreferrer">DIVE INTO XR（NoMaps2026）公式出展情報</a></li>
+                <li><a href="https://no-maps.jp/about_nomaps" target="_blank"
+                        rel="noopener noreferrer">NoMapsについて</a></li>
+            </ul>
+        </div>
+    </div>
+
     <div id="modal-project-frying-pan" class="modal">
         <div class="modal-content">
             <span class="modal-close">&times;</span>
