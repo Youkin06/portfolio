@@ -9,6 +9,7 @@ const mainSketch = (p) => {
     const glowColors = ['#ff0000', '#ffa500', '#87ceeb', '#adff2f']; // 赤、オレンジ、水色、黄緑
 
     p.setup = function () {
+        window.configureBackgroundSketch(p);
         let canvas = p.createCanvas(p.windowWidth, p.windowHeight);
         // キャンバスを #canvas-container の子要素にする
         const canvasContainer = document.getElementById('canvas-container');
@@ -40,7 +41,7 @@ const mainSketch = (p) => {
             if (!hex.isGlowing) continue;
 
             // sin関数を使って明滅効果を生成 (値は -1 から 1 の間を変動)
-            const pulse = p.sin(p.frameCount * 0.02 + hex.glowOffset);
+            const pulse = p.sin(p.millis() * 0.0012 + hex.glowOffset);
             
             // pulseの値に応じて、透明度と線の太さを変化させる
             const alpha = p.map(pulse, -1, 1, 50, 200);

@@ -69,6 +69,8 @@ const createSectionSketch = (containerId, glowColor) => {
             // 親セクションの高さを取得して背景コンテナに設定
             parentSection = container.parentElement;
 
+            window.configureBackgroundSketch(p, parentSection);
+
             const canvas = p.createCanvas(parentSection.clientWidth, getMaximumSectionHeight());
             canvas.parent(container);
             canvas.id(`${containerId}-canvas`); // キャンバスに一意のIDを割り当てる
@@ -96,7 +98,7 @@ const createSectionSketch = (containerId, glowColor) => {
                 for (const hex of hexagons) {
                     if (!hex.isGlowing) continue;
 
-                    const pulse = p.sin(p.frameCount * 0.02 + hex.glowOffset);
+                    const pulse = p.sin(p.millis() * 0.0012 + hex.glowOffset);
                     const alpha = p.map(pulse, -1, 1, 50, 200);
                     const weight = p.map(pulse, -1, 1, 1, 2.5);
 
