@@ -1443,6 +1443,15 @@ main {
     gap: 6px;
 }
 
+.internship-experience {
+    container-type: inline-size;
+}
+
+.internship-experience .experience-detail-toggle {
+    gap: 10px;
+    flex-wrap: nowrap;
+}
+
 .experience-detail-toggle:focus-visible {
     outline: 2px solid #ff7777;
     outline-offset: 5px;
@@ -1525,6 +1534,26 @@ main {
     white-space: nowrap;
 }
 
+.experience-heading {
+    container-type: inline-size;
+    display: flex;
+    align-items: baseline;
+    gap: 0.4em;
+    min-width: 0;
+    max-width: 100%;
+    flex: 1 1 0;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.experience-role {
+    font-family: 'DotGothic16', cursive;
+    font-size: min(3.4cqi, 1.15rem);
+    color: #ffffff;
+    line-height: 1.5;
+    letter-spacing: -0.04em;
+}
+
 .company-name {
     font-family: 'DotGothic16', cursive;
     font-size: 1.1rem;
@@ -1533,10 +1562,27 @@ main {
     letter-spacing: -0.04em;
 }
 
+.experience-heading .company-name {
+    font-family: inherit;
+    font-size: min(3.4cqi, 1.15rem);
+    color: #ffffff;
+    line-height: 1.6;
+    letter-spacing: normal;
+}
+
+.experience-separator {
+    color: #806565;
+    font-size: min(2.7cqi, 0.9rem);
+}
+
 .period {
     font-size: 0.85rem;
     color: #ccc;
     flex-shrink: 0;
+}
+
+.internship-experience .period {
+    font-size: min(2.4cqi, 0.65rem);
 }
 
 .experience-project-link {
@@ -1901,6 +1947,21 @@ main {
         font-size: 1.1rem;
         white-space: normal;
         letter-spacing: normal;
+    }
+
+    .internship-experience .experience-detail-toggle {
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .internship-experience .experience-header-meta {
+        gap: 6px;
+        width: auto;
+    }
+
+    .experience-heading .company-name {
+        white-space: nowrap;
     }
 
     .life-is-tech-detail {
