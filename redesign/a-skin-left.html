@@ -192,11 +192,10 @@
         .contacts .mail > span { user-select: all; overflow-wrap: anywhere; min-width: 0; }
         .contacts .mail-icon { flex-shrink: 0; }
 
-        /* 技術スタック：アイコンと名前の札を横に並べる */
-        .tech-stack-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
-        .tech { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); font-weight: 700; font-size: 15px; }
-        .tech img { width: 22px; height: 22px; display: block; }
-        .tech img + img { margin-left: -2px; }
+        /* 技術スタック */
+        /* アイコンだけを並べる（名前はマウスを乗せたときと読み上げで出る） */
+        .tech-stack-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 18px; }
+        .tech img { width: 44px; height: 44px; display: block; }
         /* Skills：既定はブロックのゲージ。言葉（.skill-word）はスキンで出す */
         .skills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 24px; }
         .skill-group h3 { margin: 0 0 8px; color: var(--muted); }
@@ -425,12 +424,14 @@
         // 技術スタック（GitHub のプロフィールのように、アイコンと名前を並べる。アイコンは devicon）
         const DEVICON = 'https://cdn.jsdelivr.net/npm/devicon@2.16.0/icons/';
         const TECH_STACK = [
-            { id: 'csharp', name: 'C#', icons: ['csharp/csharp-original'] },
-            { id: 'unity', name: 'Unity', icons: ['unity/unity-original'] },
-            { id: 'c-cpp', name: 'C/C++', icons: ['c/c-original', 'cplusplus/cplusplus-original'] },
-            { id: 'git-github', name: 'Git/GitHub', icons: ['git/git-original', 'github/github-original'] },
-            { id: 'blender', name: 'Blender', icons: ['blender/blender-original'] },
-            { id: 'figma', name: 'Figma', icons: ['figma/figma-original'] },
+            { id: 'csharp', name: 'C#', icon: 'csharp/csharp-original' },
+            { id: 'unity', name: 'Unity', icon: 'unity/unity-original' },
+            { id: 'c', name: 'C', icon: 'c/c-original' },
+            { id: 'cpp', name: 'C++', icon: 'cplusplus/cplusplus-original' },
+            { id: 'git', name: 'Git', icon: 'git/git-original' },
+            { id: 'github', name: 'GitHub', icon: 'github/github-original' },
+            { id: 'blender', name: 'Blender', icon: 'blender/blender-original' },
+            { id: 'figma', name: 'Figma', icon: 'figma/figma-original' },
         ];
         const MEDIA_BASE = 'https://youkin06.github.io/portfolio-media/videos/';
 
@@ -537,7 +538,7 @@
                             </div>
                         </div>`) +
                     block('skills', TEXT.skills, `<ul class="tech-stack-list">${TECH_STACK.map(tech => `
-                        <li class="tech" data-tech="${esc(tech.id)}">${tech.icons.map(icon => `<img src="${DEVICON}${icon}.svg" alt="" width="22" height="22" loading="lazy">`).join('')}<span>${esc(tech.name)}</span></li>`).join('')}
+                        <li class="tech" data-tech="${esc(tech.id)}" title="${esc(tech.name)}"><img src="${DEVICON}${tech.icon}.svg" alt="${esc(tech.name)}" width="44" height="44" loading="lazy"></li>`).join('')}
                     </ul>`),
                 internships: (single = false) => block('internships', single ? null : TEXT.internships, `<ol class="exp-list timeline">${data.internships.map(expHTML).join('')}</ol>`),
                 awards: (single = false) => block('awards', single ? null : TEXT.awards, `<ul class="item-list awards">${data.awards.map(itemHTML).join('')}</ul>`),
