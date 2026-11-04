@@ -1,16 +1,17 @@
 /* プロフィール画面の下端を散歩。待機 → 右へ歩く → 待機 → 左へ歩く。 */
 .profile-walkway {
     --profile-cycle: 32s;
+    --character-size: 128px;
     position: fixed;
     left: calc(var(--sidebar-w) + 16px);
     right: 16px;
     bottom: 0;
-    height: 76px;
+    height: var(--character-size);
     z-index: 5;
     overflow: hidden;
     pointer-events: none;
 }
-main:has(.profile-walkway) { padding-bottom: 100px; }
+main:has(.profile-walkway) { padding-bottom: 144px; }
 @media (max-width: 960px) {
     .profile-walkway { left: 16px; }
 }
@@ -18,8 +19,8 @@ main:has(.profile-walkway) { padding-bottom: 100px; }
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 76px;
-    height: 76px;
+    width: var(--character-size);
+    height: var(--character-size);
     animation: profile-stroll var(--profile-cycle) linear infinite;
 }
 .profile-character-facing {
@@ -43,7 +44,7 @@ main:has(.profile-walkway) { padding-bottom: 100px; }
 .profile-character-pose img + img { animation-name: profile-frame; }
 @keyframes profile-stroll {
     0%, 20%, 90%, 100% { left: 0; }
-    45%, 65% { left: calc(100% - 76px); }
+    45%, 65% { left: calc(100% - var(--character-size)); }
 }
 @keyframes profile-facing {
     0%, 65%, 100% { transform: scaleX(-1); }
@@ -65,8 +66,50 @@ main:has(.profile-walkway) { padding-bottom: 100px; }
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
 }
+/* 文章の前も横切る、操作を遮らないロケット。各区間で進行方向に機首を向ける。 */
+.profile-flight {
+    position: fixed;
+    inset: 80px 24px 24px calc(var(--sidebar-w) + 24px);
+    z-index: 6;
+    pointer-events: none;
+}
+.profile-rocket {
+    position: absolute;
+    width: 164px;
+    height: 164px;
+    transform: translate(-50%, -50%);
+    animation: profile-rocket-flight 30s linear -7s infinite;
+}
+.profile-rocket img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+    animation: profile-rocket-heading 30s steps(1, end) -7s infinite;
+}
+@keyframes profile-rocket-flight {
+    0%, 100% { left: 12%; top: 80%; }
+    20% { left: 62%; top: 18%; }
+    38% { left: 87%; top: 38%; }
+    58% { left: 42%; top: 65%; }
+    76% { left: 18%; top: 24%; }
+}
+@keyframes profile-rocket-heading {
+    0%, 100% { transform: rotate(45deg); }
+    20% { transform: rotate(125deg); }
+    38% { transform: rotate(240deg); }
+    58% { transform: rotate(320deg); }
+    76% { transform: rotate(185deg); }
+}
+@media (max-width: 960px) {
+    .profile-walkway { --character-size: 112px; }
+    .profile-flight { left: 32px; right: 32px; }
+    .profile-rocket { width: 132px; height: 132px; }
+}
 @media (prefers-reduced-motion: reduce) {
     .profile-character, .profile-character-facing,
     .profile-character-pose, .profile-character-pose img { animation: none; }
     .profile-character-walk, .profile-character-idle img + img { opacity: 0; }
+    .profile-flight { display: none; }
 }
