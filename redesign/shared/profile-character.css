@@ -1,7 +1,8 @@
 /* カモとDepthDiaryは16×16ドット。1ドットの表示幅を共通にする。 */
 .profile-meadow { --profile-pixel-size: 6px; --ground-h: calc(8 * var(--profile-pixel-size)); }
-/* プロフィールは、サイドバーの右側すべてを空と草原にする。キャラクターはこの中で暮らす。
-   空は画面に固定し、草原は画面の下端にそろえる。プロフィールの内容はその上に重ねる。 */
+/* About me の各ページは、サイドバーの右側すべてを空と草原にする。キャラクターはこの中で暮らす。
+   空は画面に固定し、草原は画面の下端にそろえる。内容はその上に重ねて流す。
+   プロフィールは1画面に収まるのでスクロールバーを出さない。長いページは最後の項目が草原より上まで来るよう下をあける。 */
 html:has(body[data-page="about/"]) { scrollbar-width: none; }
 html:has(body[data-page="about/"])::-webkit-scrollbar { display: none; }
 .profile-meadow {
@@ -10,10 +11,24 @@ html:has(body[data-page="about/"])::-webkit-scrollbar { display: none; }
     overflow: hidden;
 }
 .page.about > :not(.profile-meadow) { position: relative; z-index: 1; }
-/* 夕方と夜は空が暗いので、プロフィールの文字を白にする。黒一色のアイコン（Unity・GitHub）は白く反転する。
-   スマホでは空を出さないので、白地のまま。 */
 @media (min-width: 961px) {
-    :is([data-sky="evening"], [data-sky="night"]) body[data-page="about/"] main :is(.page-head, .page-head .label, .profile, .window-title) { color: #fff; }
+    body[data-section="about"]:not([data-page="about/"]) main { padding-bottom: 220px; }
+}
+/* 空の上で読めるように、About me の本文の色を時間帯で変える。スマホでは空を出さないので、白地のまま。
+   明け方と昼：リンクを濃い赤に。夕方と夜：文字と線を白に、リンクを薄い赤に。白いボタンの中は黒いまま。
+   黒一色のアイコン（Unity・GitHub）は夕方と夜に白く反転する。 */
+@media (min-width: 961px) {
+    body[data-section="about"] main { --section-fg: #8e1a23; --accent: #8e1a23; }
+    :is([data-sky="evening"], [data-sky="night"]) body[data-section="about"] main {
+        --fg: #fff;
+        --muted: #fff;
+        --section-fg: #ffc2c7;
+        --accent: #ffc2c7;
+        --section-bg: #ffffff24;
+        --line: #ffffff59;
+        color: #fff;
+    }
+    :is([data-sky="evening"], [data-sky="night"]) body[data-section="about"] main .contacts :is(a, .mail) { color: #222; }
     :is([data-sky="evening"], [data-sky="night"]) body[data-page="about/"] :is([data-tech="unity"], [data-tech="github"]) img { filter: invert(1); }
 }
 /* 空。時間帯（profile-sky.js が html[data-sky] に書く）で色を段々に変える。 */
