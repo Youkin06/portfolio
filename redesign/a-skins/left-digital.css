@@ -13,7 +13,6 @@
     --blue-1000: #00118f;
     --magenta-900: #8b008b;
     --orange-800: #c74700;
-    --yellow-300: #ffd43d;
     --green-50: #e6f5ec;
     --green-800: #197a4b;
     --gray-50: #f2f2f2;
@@ -65,7 +64,6 @@ main a:any-link:active { color: var(--orange-800); }
     .item-links a:hover, .exp-links a:hover, .link-list a:hover, main .back:hover,
     .contacts a:hover, .prose a:any-link:hover { background: var(--blue-50); }
 }
-main a:any-link:focus-visible { background-color: var(--yellow-300); }
 /* 作品ページへは「→」、外のサイトへは印（元の「↗」は使わない） */
 .link--work::before { content: "→ "; display: inline-block; white-space: pre; text-decoration: none; }
 .ext-mark { display: none; }
@@ -81,13 +79,12 @@ main a:any-link:focus-visible { background-color: var(--yellow-300); }
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
-/* ---- フォーカス（DADS 共通。変えない） ---- */
+/* ---- キーボードのフォーカス：塗りを足さず、細い青枠で示す ---- */
 :focus-visible {
-    outline: 4px solid #000;
+    outline: 2px solid var(--blue-1000);
     outline-offset: 2px;
     border-radius: 4px;
-    background-color: var(--yellow-300);
-    box-shadow: 0 0 0 2px var(--yellow-300);
+    box-shadow: none;
 }
 
 /* ---- サイドバー（DADS Menu list） ---- */
@@ -104,7 +101,7 @@ main a:any-link:focus-visible { background-color: var(--yellow-300); }
 .menu-list .no, .menu-list .year { color: var(--muted); font-size: 14px; }
 @media (hover: hover) { .menu-list a:hover { background: var(--blue-50); color: var(--blue-1000); text-decoration: none; } }
 .menu-list a.active { background: var(--blue-100); color: var(--blue-1000); font-weight: 700; }
-.menu-list a:focus-visible { outline: 4px solid #000; outline-offset: 2px; background: var(--yellow-300); }
+.menu-list a:focus-visible { outline: 2px solid var(--blue-1000); outline-offset: 2px; }
 .menu-list a.active .no, .menu-list a.active .year { color: var(--blue-1000); }
 
 /* ---- 見出し ---- */
@@ -208,7 +205,7 @@ main a:any-link:focus-visible { background-color: var(--yellow-300); }
 /* ---- 作品カード ---- */
 .card { border: 1px solid var(--gray-200); border-radius: 8px; box-shadow: none; overflow: hidden; }
 .card:hover, .card:focus-within { transform: none; box-shadow: none; border-color: var(--blue-1000); background: var(--blue-50); }
-.card:has(.card-link:focus-visible) { outline: 4px solid #000; outline-offset: 2px; box-shadow: 0 0 0 2px var(--yellow-300); }
+.card:has(.card-link:focus-visible) { outline: 2px solid var(--blue-1000); outline-offset: 2px; box-shadow: none; }
 .card .thumb { border-bottom: 1px solid var(--gray-200); }
 .card .no { background: #fff; color: var(--gray-800); border-left: 0; border-radius: 4px; font-size: 14px; }
 .card h3 { font-size: 20px; }
@@ -236,6 +233,7 @@ main a:any-link:focus-visible { background-color: var(--yellow-300); }
 /* ---- 作品・研究のページ ---- */
 .vplayer { border: 0; border-radius: 8px; }
 .vsound { border: 1px solid #fff; background: rgba(0, 0, 0, .75); }
+.vsound:focus-visible { outline-color: #fff; outline-offset: 3px; }
 .prose p { font-size: 16px; line-height: 1.7; }
 .data .window { padding: 24px; background: #ffffff; border-radius: 8px; }
 .data .window-title { font-size: 20px; border-bottom: 0; padding: 0; }
