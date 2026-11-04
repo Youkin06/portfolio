@@ -276,6 +276,7 @@
         .vplayer.unmuted .vsound { display: none; }
 
         .detail { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
+        .game .detail { grid-template-columns: 300px minmax(0, 1fr); }
         .prose p { margin: 0; font-size: 15px; line-height: 1.95; }
         .prose p + p { margin-top: 1em; }
         .data dl { margin: 0; display: grid; gap: 12px; font-size: 14px; }
@@ -310,7 +311,7 @@
 
         /* ---- 画面が狭いとき ---- */
         @media (max-width: 1180px) {
-            .detail { grid-template-columns: 1fr; }
+            .detail, .game .detail { grid-template-columns: 1fr; }
             .detail .data { order: -1; }
         }
         @media (max-width: 960px) {
@@ -479,16 +480,20 @@
                         <time class="exp-period">${esc(i.period)}</time>
                     </div>
                     <details class="exp-more"><summary>${esc(TEXT.more)}</summary>
-                        <p>${fixProjectLinks(i.html)}</p>
-                        ${i.image ? `<figure><img src="${esc(i.image.src)}" alt="${esc(i.image.alt)}" loading="lazy"><figcaption>${esc(i.image.caption)}</figcaption></figure>` : ''}
+                        <div class="exp-detail"${i.image ? ' data-photo' : ''}>
+                            <div class="exp-copy">
+                                <p>${fixProjectLinks(i.html)}</p>
+                                ${i.links.length ? `<div class="exp-links">${i.links.map(link).join('')}</div>` : ''}
+                            </div>
+                            ${i.image ? `<figure><img src="${esc(i.image.src)}" alt="${esc(i.image.alt)}" loading="lazy"><figcaption>${esc(i.image.caption)}</figcaption></figure>` : ''}
+                        </div>
                     </details>
-                    ${i.links.length ? `<div class="exp-links">${i.links.map(link).join('')}</div>` : ''}
                 </li>`;
             const itemHTML = a => `
                 <li class="item"><span class="item-text">${esc(a.text)}</span>
                 ${a.link ? `<div class="item-links">${link(a.link)}</div>` : ''}</li>`;
 
-            const gaugeHTML = rating => `<span class="gauge" aria-hidden="true">${[1, 2, 3, 4, 5].map(n => `<i class="${n <= rating ? 'on' : ''}"></i>`).join('')}<span class="gauge-score">${rating}/5</span></span>`;
+            const gaugeHTML = rating => `<span class="gauge" aria-hidden="true">${[1, 2, 3, 4, 5].map(n => `<i class="${n <= rating ? 'on' : ''}"></i>`).join('')}</span>`;
             const iconUrl = src => src.replace(/(cdn\.simpleicons\.org\/[^/]+)\/[0-9a-f]{6}$/i, `$1/${ICON_COLOR}`);
             const mailIcon = '<svg class="mail-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg>';
 
@@ -521,7 +526,7 @@
                                 </div>
                             </div>
                         </div>`) +
-                    block('skills', TEXT.skills, `<p class="skill-note">習熟度の自己評価（5段階）</p><div class="skills">${data.skills.map((cat, i) => `
+                    block('skills', TEXT.skills, `<div class="skills">${data.skills.map((cat, i) => `
                         <div class="skill-group" ${tone(i)}><h3 class="label">${esc(cat.category)}</h3>
                         <ul>${cat.items.map(item => `
                             <li data-level="${item.rating}"><span class="skill-name">${esc(item.name)}</span>${gaugeHTML(item.rating)}<span class="skill-word">${item.rating}/5：${esc(TEXT.skillLevels[item.rating] || '')}</span></li>`).join('')}
@@ -586,33 +591,35 @@
                     </div>
                 </div>` : '';
 
-            // 作品ページ：短い項目（ジャンル・期間・担当など）は右のデータ欄、長い説明は本文に。
-            const FACT_LABELS = ['ジャンル', '開発期間', '開発体制', '担当', '使用技術', '操作説明'];
+            // 作品情報は4項目に固定。使用技術は技術説明の末尾にタグで表示する。
+            const FACT_LABELS = ['ジャンル', '開発期間', '開発体制', '担当'];
             const gamePage = id => {
                 const index = projects.findIndex(p => p.id === id);
                 if (index < 0) return worksPage();
                 const p = projects[index];
-                const isFact = f => FACT_LABELS.includes(f.label) || f.plain.length < 60;
-                const facts = p.fields.filter(isFact);
-                const sections = p.fields.filter(f => !isFact(f));
+                const facts = FACT_LABELS.map(label => p.fields.find(f => f.label === label) || { label, html: '—' });
+                const sections = p.fields.filter(f => !FACT_LABELS.includes(f.label) && !['使用技術', 'GitHubリポジトリ'].includes(f.label));
+                const technologies = [...new Set(p.tech.split('、').map(name => name.trim()).filter(Boolean))];
+                const techHTML = technologies.length ? `<div class="tech-stack"><h3 class="label">使用技術</h3>${tagsHTML(technologies.map(label => ({ key: 'technology', label })))}</div>` : '';
+                const repositoryNote = p.fields.find(f => f.label === 'GitHubリポジトリ');
                 return `
                     <article class="page game" ${tone(index)}>
                         <a class="back" href="#works">${esc(TEXT.back)}</a>
                         ${pageHead(TEXT.works, p.title, p.summary)}
                         ${playerHTML(p.videoId, p.title)}
                         <div class="detail">
+                            <aside class="stack data workdata">
+                                ${block('data', TEXT.data, `<dl>${facts.map(f => `<div><dt>${esc(f.label)}</dt><dd>${fixProjectLinks(f.html)}</dd></div>`).join('')}</dl>`)}
+                                ${p.links.length || repositoryNote ? block('links', TEXT.links, `${p.links.length ? `<ul class="link-list">${p.links.map(l => `<li>${link(l)}</li>`).join('')}</ul>` : ''}${repositoryNote ? `<p class="repository-note">${esc(repositoryNote.label)}：${esc(repositoryNote.plain)}</p>` : ''}`) : ''}
+                            </aside>
                             <div class="stack detail-main">
                                 ${sections.map((f, i) => `
                                     <section class="window block" data-block="${esc(f.label)}" ${tone(index + i)}>
                                         <h2 class="window-title label">${esc(f.label)}</h2>
-                                        <div class="window-body prose">${paragraphs(fixProjectLinks(f.html))}</div>
+                                        <div class="window-body prose">${paragraphs(fixProjectLinks(f.html))}${f.label === '技術説明' ? techHTML : ''}</div>
                                     </section>`).join('')}
+                                ${!sections.some(f => f.label === '技術説明') && techHTML ? block('technology', '使用技術', tagsHTML(technologies.map(label => ({ key: 'technology', label })))) : ''}
                             </div>
-                            <aside class="stack data workdata">
-                                ${block('data', TEXT.data, `${tagsHTML(p.tags)}
-                                    <dl>${facts.map(f => `<div><dt>${esc(f.label)}</dt><dd>${fixProjectLinks(f.html)}</dd></div>`).join('')}</dl>`)}
-                                ${p.links.length ? block('links', TEXT.links, `<ul class="link-list">${p.links.map(l => `<li>${link(l)}</li>`).join('')}</ul>`) : ''}
-                            </aside>
                         </div>
                     </article>`;
             };

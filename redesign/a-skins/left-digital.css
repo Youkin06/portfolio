@@ -27,10 +27,10 @@
     --fg: var(--gray-800);
     --muted: var(--gray-600);
     --surface: #ffffff;
-    --surface-2: var(--gray-50);
+    --surface-2: #ffffff;
     --line: var(--gray-200);
     --navy: var(--gray-800);
-    --navy-2: var(--gray-100);
+    --navy-2: #ffffff;
     --cursor: var(--blue-1000);
     --accent: var(--blue-1000);
     --tag-bg: #ffffff;
@@ -91,7 +91,7 @@ main a:any-link:focus-visible { background-color: var(--yellow-300); }
 }
 
 /* ---- サイドバー（DADS Menu list） ---- */
-.sidebar { background: var(--gray-50); color: var(--fg); }
+.sidebar { background: #ffffff; color: var(--fg); }
 @media (min-width: 961px) { .sidebar { border-right: 1px solid var(--gray-200); } }
 .player { color: var(--fg); border-bottom: 1px solid var(--gray-200); }
 .player img { border: 1px solid var(--gray-200); }
@@ -102,8 +102,8 @@ main a:any-link:focus-visible { background-color: var(--yellow-300); }
 .menu-list a { color: var(--gray-800); font-size: 16px; padding: 10px 16px; border-radius: 8px; line-height: 1.3; }
 .menu-list a::before { content: none; }
 .menu-list .no, .menu-list .year { color: var(--muted); font-size: 14px; }
-@media (hover: hover) { .menu-list a:hover { background: var(--gray-100); color: var(--blue-1000); text-decoration: none; } }
-.menu-list a.active { background: var(--blue-100); color: var(--blue-1000); font-weight: 700; box-shadow: inset 3px 0 var(--blue-1000); }
+@media (hover: hover) { .menu-list a:hover { background: var(--blue-50); color: var(--blue-1000); text-decoration: none; } }
+.menu-list a.active { background: var(--blue-100); color: var(--blue-1000); font-weight: 700; }
 .menu-list a:focus-visible { outline: 4px solid #000; outline-offset: 2px; background: var(--yellow-300); }
 .menu-list a.active .no, .menu-list a.active .year { color: var(--blue-1000); }
 
@@ -143,30 +143,33 @@ main a:any-link:focus-visible { background-color: var(--yellow-300); }
 .contacts .mail { padding: 0; font-family: var(--mono); font-size: 15px; letter-spacing: 0; color: var(--fg); }
 
 /* ---- スキル：自己評価を5分割のゲージで示す ---- */
-.skill-note { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
 .skill-group h3 { color: var(--gray-800); font-size: 17px; font-weight: 700; margin-bottom: 4px; }
 .skill-group ul { gap: 0; font-size: 16px; }
 .skill-group li { grid-template-columns: minmax(0, 1fr) auto; padding: 10px 0; border-bottom: 1px solid var(--gray-200); }
 .gauge { display: inline-flex; align-items: center; gap: 4px; }
 .gauge i { width: 13px; height: 7px; border: 1px solid var(--gray-420); border-radius: 1px; background: transparent; }
 .gauge i.on { border-color: var(--blue-1000); background: var(--blue-1000); box-shadow: none; }
-.gauge-score { margin-left: 5px; color: var(--muted); font-family: var(--mono); font-size: 12px; font-variant-numeric: tabular-nums; }
 /* ゲージと同じ値・段階名を読み上げにも渡す。 */
 .skill-word { display: block; position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 
-/* ---- 経歴：期間｜役割・会社 ---- */
-.exp { display: grid; grid-template-columns: 10em minmax(0, 1fr); column-gap: 32px; padding: 20px 0; border-bottom: 1px solid var(--gray-200); }
+/* ---- 経歴：役割｜会社｜期間。詳細は開いたときだけ表示する ---- */
+.exp { position: relative; padding: 16px 112px 16px 0; border-bottom: 1px solid var(--gray-100); }
 .exp:first-child { padding-top: 0; }
-.exp-head { display: contents; }
-.exp-period { grid-column: 1; grid-row: 1 / span 4; margin: 0; color: var(--gray-800); font-size: 16px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.exp-role { grid-column: 2; grid-row: 1; font-size: 20px; line-height: 1.5; }
-.exp-org { grid-column: 2; grid-row: 2; font-size: 16px; }
-.exp-links { grid-column: 2; grid-row: 3; gap: 4px 24px; margin-top: 8px; font-size: 16px; }
-.exp-more { grid-column: 2; grid-row: 4; margin-top: 12px; }
-.exp-more p { font-size: 16px; line-height: 1.7; margin: 16px 0 0 32px; }
-.exp-more figure { margin-left: 32px; }
-.exp-more figure img { border: 0; }
-.exp-more figcaption { font-size: 14px; }
+.exp-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 10em; align-items: baseline; gap: 8px 20px; }
+.exp-period { grid-column: 3; grid-row: 1; margin: 0; color: var(--muted); font-size: 14px; font-weight: 400; font-variant-numeric: tabular-nums; }
+.exp-role { grid-column: 1; grid-row: 1; font-size: 16px; font-weight: 500; line-height: 1.6; }
+.exp-org { grid-column: 2; grid-row: 1; color: var(--fg); font-size: 16px; font-weight: 400; }
+.exp-links { gap: 4px 24px; margin: 12px 0 0; font-size: 14px; }
+.exp-more { margin: 0; }
+.exp-more summary { position: absolute; right: 0; top: 16px; }
+.exp:first-child .exp-more summary { top: 0; }
+.exp-detail { margin-top: 16px; }
+.exp-detail[data-photo] { display: grid; grid-template-columns: minmax(0, 1fr) 144px; align-items: start; gap: 24px; }
+.exp-copy { min-width: 0; }
+.exp-more p { font-size: 16px; line-height: 1.7; margin: 0; }
+.exp-more figure { width: 144px; margin: 0; }
+.exp-more figure img { width: 100%; height: auto; border: 0; }
+.exp-more figcaption { margin-top: 4px; font-size: 12px; }
 
 /* 詳しく見る（DADS Disclosure）：リンクではないので黒字、丸の中の▼だけ青 */
 .exp-more summary {
@@ -199,6 +202,8 @@ main a:any-link:focus-visible { background-color: var(--yellow-300); }
 .item-text { font-weight: 400; font-size: 16px; }
 .awards .item-text::before { content: none; }
 .item-links { font-size: 16px; margin-top: 4px; }
+.awards .item { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: baseline; gap: 8px 32px; }
+.awards .item-links { min-width: 0; margin-top: 0; }
 
 /* ---- 作品カード ---- */
 .card { border: 1px solid var(--gray-200); border-radius: 8px; box-shadow: none; overflow: hidden; }
@@ -208,18 +213,21 @@ main a:any-link:focus-visible { background-color: var(--yellow-300); }
 .card .no { background: #fff; color: var(--gray-800); border-left: 0; border-radius: 4px; font-size: 14px; }
 .card h3 { font-size: 20px; }
 .card .card-link:any-link { color: var(--gray-800); }
-.card .card-link::before { content: "→"; position: absolute; top: 10px; right: 10px; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--surface); color: var(--blue-1000); font-size: 18px; font-weight: 400; }
 .card:hover .card-link, .card:focus-within .card-link { color: var(--blue-1000); }
 .card h3 small { font-size: 14px; color: var(--muted); }
 .card p { font-size: 15px; color: var(--gray-800); }
 .featured .card h3 { font-size: 24px; }
 
 /* タグ（DADS Chip label） */
-.tag { font-size: 14px; line-height: 1.5; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--gray-420); background: var(--gray-50); color: var(--gray-800); font-weight: 400; }
+.tag { font-size: 14px; line-height: 1.5; padding: 2px 8px; border-radius: 4px; border: 1px solid var(--gray-420); background: #ffffff; color: var(--gray-800); font-weight: 400; }
 /* 技術は青、制作表現は紫、受賞・公開は緑。色に加えて名前でも分類を伝える。 */
 .tag-unity, .tag-python, .tag-pyxel, .tag-blender, .tag-android, .tag-vr { background: var(--blue-50); border-color: var(--blue-1000); color: var(--blue-1000); }
 .tag-illust, .tag-dot-e, .tag-modeling, .tag-two-d, .tag-three-d { background: #f6eefb; border-color: #7839a7; color: #64308a; }
 .tag-winner, .tag-gc-koshien, .tag-google-play { background: var(--green-50); border-color: var(--green-800); color: var(--green-800); font-weight: 700; }
+.tech-stack { margin-top: 24px; }
+.tech-stack h3 { margin: 0 0 8px; color: var(--muted); font-size: 14px; font-weight: 500; }
+.tag-technology { max-width: 100%; white-space: normal; overflow-wrap: anywhere; background: var(--blue-50); border-color: var(--blue-1000); color: var(--blue-1000); }
+.repository-note { margin: 16px 0 0; font-size: 14px; color: var(--muted); }
 
 @media (min-width: 601px) and (max-width: 1200px) {
     .skills { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -230,11 +238,13 @@ main a:any-link:focus-visible { background-color: var(--yellow-300); }
 .vcontrols button, .vsound { border: 1px solid #fff; border-radius: 6px; background: #000; font-size: 14px; }
 .vcontrols input[type=range] { accent-color: var(--yellow-300); }
 .prose p { font-size: 16px; line-height: 1.7; }
-.data .window { padding: 24px; background: var(--gray-50); border-radius: 8px; }
+.data .window { padding: 24px; background: #ffffff; border-radius: 8px; }
 .data .window-title { font-size: 20px; border-bottom: 0; padding: 0; }
 .data .window-body { padding-top: 12px; }
 .data dt { color: var(--gray-800); font-weight: 700; font-size: 14px; letter-spacing: .02em; }
 .data dd { font-size: 16px; }
+.game .detail { grid-template-columns: 280px minmax(0, 1fr); gap: 32px; }
+.game .detail-main { min-width: 0; }
 .link-list a { border: 0; font-weight: 400; font-size: 16px; }
 .research-title { font-size: 28px; padding-top: 24px; border-top: 1px solid var(--gray-420); }
 .research-item + .research-item { margin-top: 72px; }
@@ -243,16 +253,27 @@ main a:any-link:focus-visible { background-color: var(--yellow-300); }
 .pager a:hover { background: none; }
 .pager .label { font-size: 14px; }
 
+@media (max-width: 1180px) {
+    .game .detail { grid-template-columns: minmax(0, 1fr); }
+}
+
 @media (max-width: 960px) {
-    .sidebar { background: var(--gray-50); border: 1px solid var(--gray-200); }
-    .topbar { background: var(--gray-50); color: var(--gray-800); border-bottom: 1px solid var(--gray-200); }
+    .sidebar { background: #ffffff; border: 1px solid var(--gray-200); }
+    .topbar { background: #ffffff; color: var(--gray-800); border-bottom: 1px solid var(--gray-200); }
     .topbar button { border: 1px solid var(--gray-800); color: var(--gray-800); border-radius: 8px; }
-    .exp { grid-template-columns: 1fr; }
-    .exp-period, .exp-role, .exp-org, .exp-links, .exp-more { grid-column: 1; grid-row: auto; }
-    .exp-role { order: 1; }
-    .exp-org { order: 2; }
-    .exp-period { order: 3; }
-    .exp-more { order: 4; }
-    .exp-links { order: 5; }
+    .exp-head { grid-template-columns: minmax(0, 1fr) auto; gap: 2px 16px; }
+    .exp-role { grid-column: 1; grid-row: 1; }
+    .exp-org { grid-column: 1; grid-row: 2; }
+    .exp-period { grid-column: 2; grid-row: 1 / span 2; }
     .page-head h1 { font-size: 28px; }
+}
+
+@media (max-width: 600px) {
+    .exp { padding-right: 0; }
+    .exp-head { grid-template-columns: minmax(0, 1fr); }
+    .exp-period { grid-column: 1; grid-row: 3; }
+    .exp-more summary, .exp:first-child .exp-more summary { position: static; margin-top: 8px; }
+    .exp-detail[data-photo] { grid-template-columns: minmax(0, 1fr) 96px; gap: 12px; }
+    .exp-more figure { width: 96px; }
+    .awards .item { grid-template-columns: minmax(0, 1fr); gap: 4px; }
 }

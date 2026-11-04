@@ -8,7 +8,7 @@ window.SKIN = {
         research: '研究',
         status: '基本情報',
         skills: 'スキル',
-        data: '作品データ',
+        data: '作品情報',
         links: 'リンク',
         researchNo: '研究 No.',
         prev: '前へ',
