@@ -1,25 +1,24 @@
 /* カモとDepthDiaryは16×16ドット。1ドットの表示幅を共通にする。 */
 .profile-meadow { --profile-pixel-size: 6px; --ground-h: calc(8 * var(--profile-pixel-size)); }
-/* 技術スタックの下のドットの草原。キャラクターはこの中で暮らす。
-   プロフィールは1画面に収め、草原が残りの高さを埋めて画面の下端にそろう。
-   横はサイドバーの端から画面の右端まで（main の左右の余白40pxをはみ出す）。 */
+/* プロフィールは、サイドバーの右側すべてを空と草原にする。キャラクターはこの中で暮らす。
+   空は画面に固定し、草原は画面の下端にそろえる。プロフィールの内容はその上に重ねる。 */
 html:has(body[data-page="about/"]) { scrollbar-width: none; }
 html:has(body[data-page="about/"])::-webkit-scrollbar { display: none; }
-body[data-page="about/"] main {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    min-height: 100dvh;
-    padding-bottom: 0;
-}
-main > .page.about:has(.profile-meadow) { flex: 1; display: flex; flex-direction: column; }
 .profile-meadow {
-    position: relative;
-    flex: 1;
-    min-height: 240px;
-    width: calc(100vw - var(--sidebar-w));
-    margin: 48px 0 0 -40px;
+    position: fixed;
+    inset: 0 0 0 var(--sidebar-w);
     overflow: hidden;
+}
+.page.about > :not(.profile-meadow) { position: relative; z-index: 1; }
+/* 夕方と夜は空が暗いので、プロフィールの文字を白にする。黒いアイコンは白い台に載せる。
+   スマホでは空を出さないので、白地のまま。 */
+@media (min-width: 961px) {
+    :is([data-sky="evening"], [data-sky="night"]) body[data-page="about/"] main :is(.page-head, .page-head .label, .profile, .window-title) { color: #fff; }
+    :is([data-sky="evening"], [data-sky="night"]) body[data-page="about/"] .tech-stack-list .tech {
+        padding: 6px;
+        border-radius: 8px;
+        background: #ffffffe6;
+    }
 }
 /* 空。時間帯（profile-sky.js が html[data-sky] に書く）で色を段々に変える。 */
 .profile-sky {
@@ -31,14 +30,6 @@ main > .page.about:has(.profile-meadow) { flex: 1; display: flex; flex-direction
 [data-sky="dawn"] .profile-sky { --sky-bands: #8a9fd4 0 20%, #b3b3de 0 40%, #dcbcd8 0 60%, #f2cdbc 0 80%, #fae0b4 0; }
 [data-sky="evening"] .profile-sky { --sky-bands: #4f5c9c 0 20%, #85699f 0 40%, #c8737f 0 60%, #ec8f66 0 80%, #f6b45e 0; }
 [data-sky="night"] .profile-sky { --sky-bands: #161b38 0 20%, #1c2346 0 40%, #232b54 0 60%, #2b3462 0 80%, #343e70 0; }
-/* 技術スタックの白地から、空へなめらかにつなぐ。雲や星もこの下に溶け込む。 */
-.profile-sky::after {
-    content: "";
-    position: absolute;
-    inset: 0 0 auto;
-    height: min(180px, 50%);
-    background: linear-gradient(var(--bg, #fff), transparent);
-}
 .profile-sky > * { position: absolute; image-rendering: pixelated; background: no-repeat center / 100% 100%; }
 .profile-stars {
     inset: 0;
@@ -183,7 +174,8 @@ main > .page.about:has(.profile-meadow) { flex: 1; display: flex; flex-direction
 /* DepthDiaryのPlayer。操作を遮らず飛行し、進行方向に機首を向ける。 */
 .profile-flight {
     position: absolute;
-    inset: 70px 60px calc(var(--ground-h) + 60px);
+    /* プロフィールの内容より下の空だけを飛ぶ。 */
+    inset: 58% 60px calc(var(--ground-h) + 60px);
     z-index: 3;
     pointer-events: none;
 }
