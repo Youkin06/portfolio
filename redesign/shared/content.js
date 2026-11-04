@@ -48,7 +48,12 @@
             period: text(item.querySelector('.period')),
             html: body ? body.innerHTML.trim() : '',
             links: extraLinks,
-            image: img ? { src: img.getAttribute('src'), alt: img.alt, caption: text(detail.querySelector('figcaption')) } : null,
+            image: img ? {
+                src: img.getAttribute('src'), alt: img.alt,
+                width: Number(img.getAttribute('width')) || null,
+                height: Number(img.getAttribute('height')) || null,
+                caption: text(detail.querySelector('figcaption')),
+            } : null,
         };
     });
 
