@@ -70,7 +70,7 @@ a { color: var(--accent); }
 .menu-label::after { display: none; }
 .menu-list a { color: var(--fg); padding: 6px 10px; border-radius: 4px; font-size: 14px; }
 .menu-list a::before { display: none; }
-.menu-list a:hover { background: var(--section-bg); color: var(--section-fg); }
+.menu-list a:hover { background: transparent; color: var(--section-fg); }
 .menu-list a.active { background: var(--section-bg); color: var(--section-fg); font-weight: 700; }
 .menu-list .no, .menu-list .year { color: var(--fg); font-weight: 400; }
 .menu-list a.active .year, .menu-list a.active .no { color: var(--section-fg); }
@@ -95,7 +95,7 @@ a { color: var(--accent); }
 /* ---- プロフィール ---- */
 .portrait { border: 0; border-radius: var(--radius); }
 .contacts a { border: 1px solid var(--line); border-radius: 4px; color: var(--fg); background: var(--surface); font-weight: 700; }
-.contacts a:hover { border-color: var(--accent); background: var(--surface); color: var(--accent); }
+.contacts a:hover { background: var(--surface); color: var(--accent); }
 .gauge i { border-radius: 2px; background: var(--line); }
 .gauge i.on { background: var(--accent); box-shadow: none; }
 .exp, .item { border-bottom: 1px solid var(--line); }
@@ -148,7 +148,7 @@ a { color: var(--accent); }
 .featured, .grid { gap: 28px 22px; }
 .grid { grid-template-columns: repeat(3, 1fr); }
 .card { background: var(--surface); border: 1px solid #c9c9c4; border-radius: var(--radius); box-shadow: none; overflow: hidden; }
-.card:hover, .card:focus-within { transform: none; box-shadow: none; border-color: var(--accent); }
+.card:hover, .card:focus-within { transform: none; box-shadow: none; border-color: #c9c9c4; }
 .card .thumb { border: 0; border-bottom: 1px solid #c9c9c4; border-radius: 0; overflow: hidden; box-shadow: none; }
 .card .no { top: 8px; left: 8px; border: 0; border-radius: 4px; background: rgba(0, 0, 0, .6); color: #fff; font-size: 11px; letter-spacing: .04em; }
 .card .body { padding: 12px 14px 16px; }
@@ -210,7 +210,7 @@ a { color: var(--accent); }
 /* 作品情報・LINK の見出しを大きく */
 .data .window-title { font-size: 17px; font-weight: 800; letter-spacing: .02em; padding-top: 18px; }
 .pager a { border: 1px solid var(--line); box-shadow: none; }
-.pager a:hover { background: var(--surface-2); color: var(--fg); }
+.pager a:hover { background: var(--surface); color: var(--accent); }
 .pager a:hover .label { color: var(--muted); }
 
 /* ---- スマホ ---- */
@@ -248,47 +248,32 @@ a { color: var(--accent); }
 
 /* ---- リンクに触れたときの反応 ---- */
 .menu-list a, main a:not(.card-link), .exp-more summary {
-    transition: color .16s ease, background-color .16s ease, border-color .16s ease, transform .16s ease;
+    transition: color .16s ease;
 }
 main a:not(.card-link) {
     border-radius: 4px;
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
 }
-.card { transition: border-color .16s ease, background-color .16s ease, box-shadow .16s ease; }
 .card-link { transition: color .16s ease; }
 
-@media (hover: hover) and (pointer: fine) {
-    .menu-list a:hover {
-        background: var(--section-bg);
-        color: var(--section-fg);
-        transform: translateX(3px);
-    }
-    main a:not(.card-link):hover, .contacts a:hover, .exp-more summary:hover {
-        background: var(--section-bg);
-        color: var(--accent);
-    }
-    .contacts a:hover { transform: translateY(-2px); }
-    .back:hover { transform: translateX(-3px); }
-    .card:hover {
-        background: var(--section-bg);
-        border-color: var(--accent);
-        box-shadow: 0 3px 12px rgba(0, 0, 0, .07);
-    }
-}
+/* ホバーは文字色だけ。背景は現在選んでいる項目・開いている詳細に付ける。 */
+.menu-list a:hover, .contacts a:hover, .back:hover { transform: none; }
+main a:not(.card-link):hover, .exp-more summary:hover { color: var(--accent); }
+.menu-list a.active,
+.exp-more[data-expanded="true"] summary,
+.exp-more[open]:not([data-expanded]) summary { background: var(--section-bg); }
 
 a:focus-visible, .exp-more summary:focus-visible {
     outline: 2px solid var(--section-fg, var(--accent));
     outline-offset: 3px;
 }
 main a:not(.card-link):focus-visible, .menu-list a:focus-visible {
-    background: var(--section-bg);
     color: var(--section-fg);
 }
 .card:has(.card-link:focus-visible) {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
-    background: var(--section-bg);
 }
 .card:focus-within .card-link { color: var(--accent); }
 
