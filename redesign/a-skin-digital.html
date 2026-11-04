@@ -216,6 +216,9 @@
         .exp-org { color: var(--muted); font-size: 13px; }
         .exp-period { margin-left: auto; color: var(--muted); font-size: 13px; }
         .exp-more summary { cursor: pointer; font-size: 13px; color: var(--accent); margin-top: 4px; font-weight: 700; -webkit-user-select: none; user-select: none; }
+        .exp-more .exp-label-open { display: none; }
+        .exp-more[open] .exp-label-closed { display: none; }
+        .exp-more[open] .exp-label-open { display: inline; }
         .exp-more p { margin: 6px 0 0; font-size: 14px; line-height: 1.85; }
         .exp-more figure { margin: 10px 0 0; max-width: 340px; }
         .exp-more figure img { border-radius: 8px; border: 2px solid var(--navy); }
@@ -396,6 +399,7 @@
             prev: '◀ Prev',
             next: 'Next ▶',
             more: '詳しく見る',
+            less: '閉じる',
             count: n => `${n}件`,
             // スキルの段階（1〜5）の言葉
             skillLevels: ['', '学習中', '基礎', '応用', '習熟', '得意分野'],
@@ -492,7 +496,7 @@
                         ${i.role ? `<span class="exp-org">${esc(i.org)}</span>` : ''}
                         <time class="exp-period">${esc(i.period)}</time>
                     </div>
-                    <details class="exp-more"><summary>${esc(TEXT.more)}</summary>
+                    <details class="exp-more"><summary><span class="exp-label-closed">${esc(TEXT.more)}</span><span class="exp-label-open">${esc(TEXT.less)}</span></summary>
                         <div class="exp-detail"${i.image ? ' data-photo' : ''}>
                             <div class="exp-copy">
                                 <p>${fixProjectLinks(i.html)}</p>

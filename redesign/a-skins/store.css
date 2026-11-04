@@ -102,6 +102,13 @@ a { color: var(--accent); }
 .exp, .item { border-bottom: 1px solid var(--line); }
 .exp-more summary { color: var(--accent); }
 .awards .item-text::before { content: none; }
+.awards .item { display: grid; grid-template-columns: minmax(0, 1fr) minmax(200px, 320px); align-items: baseline; gap: 12px 24px; }
+.awards .item-links { justify-content: flex-end; min-width: 0; margin-top: 0; text-align: right; }
+.awards .item-links a { max-width: 100%; overflow-wrap: anywhere; }
+@media (max-width: 600px) {
+    .awards .item { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: start; gap: 12px; }
+    .awards .item-text { font-size: 14px; }
+}
 
 /* 詳細の写真は本文の右に小さく添える。閉じている間は details が隠す。 */
 .exp-detail[data-photo] {
@@ -270,7 +277,51 @@ main a:not(.card-link):focus-visible, .menu-label:focus-visible, .menu-list a:fo
 }
 .card:focus-within .card-link { color: var(--accent); }
 
+/* 開閉できることと現在の状態が伝わる、押せる詳細ボタン。 */
+.exp-more summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 112px;
+    min-height: 40px;
+    max-width: 100%;
+    margin-top: 8px;
+    padding: 7px 12px;
+    border: 1px solid currentColor;
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--accent);
+    list-style: none;
+}
+.exp-more summary::-webkit-details-marker { display: none; }
+.exp-more summary::marker { content: ""; }
+.exp-more summary::after {
+    content: "";
+    width: 7px;
+    height: 7px;
+    margin: 0 2px 3px auto;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform .18s ease;
+}
+.exp-more[open] summary { background: var(--section-bg); }
+.exp-more[open] summary::after { margin-bottom: -3px; transform: rotate(225deg); }
+.exp-more summary:active { transform: translateY(1px); }
+.exp-more .exp-detail { margin-top: 12px; }
+.exp-more[open] .exp-detail { animation: detail-reveal .18s ease-out; }
+@keyframes detail-reveal {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: none; }
+}
+@media (hover: hover) and (pointer: fine) {
+    .exp-more summary:hover { background: var(--accent); color: #fff; }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .menu-label, .menu-list a, main a, .card, .exp-more summary { transition: none; }
     .menu-label:hover, .menu-list a:hover, .contacts a:hover, .back:hover { transform: none; }
+    .exp-more summary:active { transform: none; }
+    .exp-more summary::after { transition: none; }
+    .exp-more[open] .exp-detail { animation: none; }
 }
