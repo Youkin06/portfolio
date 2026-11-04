@@ -25,7 +25,7 @@
             スキル li[data-level="1〜5"]（.skill-name / .gauge / .skill-word）
             経歴 .exp（.exp-period / .exp-role / .exp-org / .exp-more / .exp-links）
             リンク .link--work（作品へ）/ .link--external（外のサイト。印は .ext-mark）
-            About と研究はどの layout でも1ページ。中の項目へは #about/awards などで移り、読んでいる場所に合わせてサイドバーの選択が変わる
+            About はどの layout でも1ページ。中の項目へは #about/awards などで移り、読んでいる場所に合わせてサイドバーの選択が変わる。研究は1件ずつのページ
         ・build.sh は行頭の </head> を目印に差し込むので、閉じタグ </head> は必ず1行に単独で書く
     -->
     <style>
@@ -618,12 +618,16 @@
                         </aside>
                     </div>
                 </article>`;
-            // 研究も1ページにまとめる。サイドバーの各研究は、このページの中の場所へのリンクになる。
-            const researchPage = () => `
-                <article class="page research">
-                    ${pageHead('', TEXT.research)}
-                    ${research.map((r, i) => researchItemHTML(r, i, 'h2')).join('')}
-                </article>`;
+            // 研究は1件ずつのページ
+            const researchPage = id => {
+                const index = Math.max(0, research.findIndex(r => r.id === id));
+                const r = research[index];
+                return `
+                    <article class="page research">
+                        ${pageHead(TEXT.research, r.theme)}
+                        ${researchItemHTML(r, index, 'none')}
+                    </article>`;
+            };
 
             // 見えている動く見本だけ再生し、画面外に出たら止める。
             const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -651,9 +655,7 @@
             // ---- 1ページにまとめた About と研究：中の項目の場所 ----
             const anchorsOf = section => section === 'about'
                 ? ABOUT_SECTIONS.map(id => ({ key: id, el: document.getElementById(`block-${id || 'profile'}`) }))
-                : section === 'research'
-                    ? research.map(r => ({ key: r.id, el: document.getElementById(`research-${r.id}`) }))
-                    : [];
+                : [];
 
             // サイドバーの選択と、body の目印を今いる場所に合わせる
             const markActive = (section, subKey) => {
@@ -704,13 +706,14 @@
                 const [route, rawSub] = location.hash.slice(1).split('/');
                 const sub = rawSub ? decodeURIComponent(rawSub) : '';
                 const section = ['about', 'works', 'research'].includes(route) ? route : 'about';
-                const onePage = section === 'about' || section === 'research';
+                // 1ページにまとめているのは About だけ
+                const onePage = section === 'about';
 
                 // 同じ1ページの中の移動なら、作り直さずにその場所までスクロールするだけ
                 if (!(onePage && renderedSection === section)) {
                     main.innerHTML =
                         section === 'about' ? aboutPage() :
-                        section === 'research' ? researchPage() :
+                        section === 'research' ? researchPage(sub) :
                         sub ? gamePage(sub) : worksPage();
                     renderedSection = section;
                     clipObserver.disconnect();
