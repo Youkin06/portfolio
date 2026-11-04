@@ -135,7 +135,11 @@ a { color: var(--accent); }
 
 /* ---- About：箱をやめて、作品一覧と同じく地の上に直接置く ---- */
 [data-section="about"] .window { background: none; border: 0; border-radius: 0; box-shadow: none; }
-[data-section="about"] .window-title { padding: 0 0 8px; font-size: 18px; letter-spacing: 0; color: var(--fg); border-bottom: 1px solid var(--line); }
+[data-section="about"] .window-title { padding: 0 0 10px; font-size: 26px; font-weight: 900; letter-spacing: .01em; color: var(--fg); border-bottom: 2px solid var(--fg); }
+[data-section="about"] .window-title .count { font-size: 14px; font-weight: 700; }
+/* スキルはプロフィールの中の小見出し */
+[data-section="about"] [data-block="skills"] .window-title { font-size: 17px; font-weight: 800; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+[data-section="about"] [data-block="skills"] { margin-top: -12px; }
 [data-section="about"] .window-body,
 [data-section="about"] .window-body:first-child { padding: 14px 0 0; }
 [data-section="about"] .stack { gap: 40px; }
