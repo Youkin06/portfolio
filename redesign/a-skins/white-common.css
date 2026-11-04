@@ -39,3 +39,14 @@ main a:not(.card-link, .contacts a):active { background: color-mix(in srgb, var(
 @media (prefers-reduced-motion: reduce) {
     .contacts a:active, .back:active, .exp-more summary:active, .card:has(.card-link:active) { transform: none; }
 }
+
+/* ---- 作品一覧：カーソルが当たっているカード ----
+   カードは持ち上げず、枠を Works の青に変え、うすい影を付ける。サムネイルは枠の中で少しだけ大きくなる。 */
+.card .thumb img, .card .thumb video { transition: transform .35s cubic-bezier(.2, .8, .2, 1); }
+.card { transition: border-color .16s ease, box-shadow .16s ease, transform .08s ease; }
+.card:hover, .card:focus-within { border-color: var(--section-fg); box-shadow: 0 4px 16px #00000014; }
+.card:hover .thumb { border-bottom-color: var(--section-fg); }
+.card:hover .thumb :is(img, video) { transform: scale(1.04); }
+@media (prefers-reduced-motion: reduce) {
+    .card:hover .thumb :is(img, video) { transform: none; }
+}
