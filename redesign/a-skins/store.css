@@ -100,6 +100,23 @@ a { color: var(--accent); }
 .gauge i.on { background: var(--accent); box-shadow: none; }
 .exp, .item { border-bottom: 1px solid var(--line); }
 .exp-more summary { width: fit-content; max-width: 100%; color: var(--accent); }
+.exp-more summary { list-style: none; }
+.exp-more summary::-webkit-details-marker { display: none; }
+.exp-more summary::marker { content: ""; }
+.exp-more summary::before {
+    content: "";
+    display: inline-block;
+    width: .42em;
+    height: .42em;
+    margin: 0 .55em .1em .1em;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    vertical-align: middle;
+    transform: rotate(-45deg);
+    transition: transform .24s cubic-bezier(.2, .8, .2, 1);
+}
+.exp-more[data-expanded="true"] summary::before,
+.exp-more[open]:not([data-expanded]) summary::before { transform: rotate(45deg); }
 .awards .item-text::before { content: none; }
 .awards .item { display: grid; grid-template-columns: minmax(0, 1fr) minmax(200px, 320px); align-items: baseline; gap: 12px 24px; }
 .awards .item-links { justify-content: flex-end; min-width: 0; margin-top: 0; text-align: right; }
@@ -278,4 +295,5 @@ main a:not(.card-link):focus-visible, .menu-list a:focus-visible {
 @media (prefers-reduced-motion: reduce) {
     .menu-list a, main a, .card, .exp-more summary { transition: none; }
     .menu-list a:hover, .contacts a:hover, .back:hover { transform: none; }
+    .exp-more summary::before { transition: none; }
 }

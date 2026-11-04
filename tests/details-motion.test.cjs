@@ -10,6 +10,7 @@ function createDetails({ reduced = false, animationSupported = true } = {}) {
     let visibleHeight;
     const details = {
         open: false,
+        dataset: {},
         style: { height: '', overflow: '' },
         matches: selector => selector === 'details.exp-more',
         getBoundingClientRect: () => {
@@ -43,15 +44,19 @@ test('details expand and collapse to their measured height, then release the fix
     const page = createDetails();
     page.click();
     assert.equal(page.details.open, true);
+    assert.equal(page.details.dataset.expanded, 'true');
     assert.equal(page.animations[0].frames[1].height, '240px');
     page.animations[0].onfinish();
     assert.equal(page.details.style.height, '');
+    assert.equal(page.details.dataset.expanded, undefined);
     page.click();
     assert.equal(page.details.open, true, 'content stays visible during collapse');
+    assert.equal(page.details.dataset.expanded, 'false', 'arrow starts closing immediately');
     assert.equal(page.animations[1].frames[1].height, '28px');
     page.animations[1].onfinish();
     assert.equal(page.details.open, false);
     assert.equal(page.details.style.overflow, '');
+    assert.equal(page.details.dataset.expanded, undefined);
 });
 
 test('rapid clicks reverse from the visible height and keep the last requested state', () => {

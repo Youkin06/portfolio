@@ -17,6 +17,8 @@
         const original = previous?.original || { height: details.style.height, overflow: details.style.overflow };
         // 連打時は、その時点で見えている高さから逆向きに動かす。
         const from = details.getBoundingClientRect().height;
+        // 閉じる間も open は残るため、矢印には操作直後の向きを別に伝える。
+        details.dataset.expanded = String(opening);
         if (previous) {
             previous.animation.onfinish = null;
             previous.animation.cancel();
@@ -27,6 +29,7 @@
             details.open = opening;
             details.style.height = original.height;
             details.style.overflow = original.overflow;
+            delete details.dataset.expanded;
             states.delete(details);
         };
         if (reducedMotion.matches || typeof details.animate !== 'function') {
