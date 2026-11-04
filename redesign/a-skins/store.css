@@ -1,0 +1,130 @@
+@import url("left.css");
+
+/*
+ * ゲーム投稿サイト案：unityroom や itch.io のような「ゲームを並べて見せる場所」の雰囲気。
+ * - 飾りは最小限。主役は作品の画像と動く見本
+ * - 白い地に、黒に近い文字。差し色は今のサイトの4色からオレンジ1色だけ
+ * - 作品ページは、左に説明、右に「作品の情報」の表と「遊ぶ・見る」ボタン
+ * 文言は A 案のまま変えない。
+ */
+:root {
+    --bg: #f6f6f4;
+    --fg: #222222;
+    --muted: #707070;
+    --surface: #ffffff;
+    --surface-2: #f1f1ef;
+    --line: #e2e2de;
+    --navy: #222222;
+    --navy-2: #3a3a3a;
+    --cursor: #ff7a2f;
+    --red: #ff7a2f;
+    --orange: #ff7a2f;
+    --sky: #ff7a2f;
+    --green: #ff7a2f;
+    --accent: #e8621c;
+    --tag-bg: #f1f1ef;
+    --tag-fg: #444444;
+    --highlight-bg: #fff1e6;
+    --highlight-fg: #b5470d;
+    --radius: 6px;
+    --font: "Lato", "Noto Sans JP", "Hiragino Sans", sans-serif;
+}
+
+body { background: var(--bg); background-image: none; font-size: 15px; }
+.label { letter-spacing: .06em; text-transform: none; font-weight: 700; color: var(--muted); }
+a { color: var(--accent); }
+
+/* ---- サイドバー：作者ページの左の列 ---- */
+.sidebar { background: var(--surface); color: var(--fg); border-right: 1px solid var(--line); }
+.player { flex-direction: column; align-items: flex-start; gap: 10px; padding: 26px 22px 20px; border-bottom: 1px solid var(--line); color: var(--fg); }
+.player img { width: 84px; height: 84px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface-2); }
+.player strong { font-size: 18px; }
+.player .label { color: var(--muted); font-size: 12px; }
+.menu { padding: 10px 12px 20px; }
+.menu-group { margin-top: 16px; }
+.menu-label { color: var(--fg); font-size: 12px; padding: 0 10px; }
+.menu-label::after { display: none; }
+.menu-list a { color: #444; padding: 6px 10px; border-radius: 4px; font-size: 14px; }
+.menu-list a::before { display: none; }
+.menu-list a:hover { background: var(--surface-2); color: var(--fg); }
+.menu-list a.active { background: var(--highlight-bg); color: var(--highlight-fg); font-weight: 700; }
+.menu-list .no, .menu-list .year { color: #a0a0a0; font-weight: 400; }
+.menu-list a.active .year, .menu-list a.active .no { color: var(--highlight-fg); }
+
+/* ---- 見出し ---- */
+.page { max-width: 1120px; }
+.page-head { margin-bottom: 26px; }
+.page-head .label { color: var(--muted); }
+.page-head h1 { font-size: clamp(26px, 3vw, 34px); font-weight: 800; }
+.page-head p { color: var(--muted); }
+.back { color: var(--muted); font-weight: 700; font-size: 13px; }
+.back:hover { color: var(--accent); text-decoration: none; }
+
+/* ---- 中身の箱：線1本の白い箱、見出しは本文の上に置くだけ ---- */
+.window { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: none; }
+.window-title { background: none; color: var(--fg); border-radius: 0; padding: 16px 20px 0; font-size: 13px; letter-spacing: .04em; }
+.window-title::before { display: none; }
+.window-title .count { color: var(--muted); font-weight: 400; }
+.window-body { padding: 10px 20px 18px; }
+
+/* ---- プロフィール ---- */
+.portrait { border: 0; border-radius: var(--radius); }
+.contacts a { border: 1px solid var(--line); border-radius: 4px; color: var(--fg); background: var(--surface); font-weight: 700; }
+.contacts a:hover { border-color: var(--accent); background: var(--surface); color: var(--accent); }
+.gauge i { border-radius: 2px; background: var(--line); }
+.gauge i.on { background: var(--accent); box-shadow: none; }
+.exp, .item { border-bottom: 1px solid var(--line); }
+.exp-more summary { color: var(--accent); }
+.awards .item-text::before { color: var(--accent); }
+
+/* ---- 作品一覧：ゲームの並ぶ棚 ---- */
+.featured, .grid { gap: 28px 22px; }
+.grid { grid-template-columns: repeat(3, 1fr); }
+.card { background: none; border: 0; border-radius: 0; box-shadow: none; overflow: visible; }
+.card:hover, .card:focus-within { transform: none; box-shadow: none; }
+.card .thumb { border: 0; border-radius: var(--radius); overflow: hidden; box-shadow: 0 1px 2px rgba(0, 0, 0, .12); transition: transform .15s ease, box-shadow .15s ease; }
+.card:hover .thumb { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(0, 0, 0, .14); }
+.card .no { top: 8px; left: 8px; border: 0; border-radius: 4px; background: rgba(0, 0, 0, .6); color: #fff; font-size: 11px; letter-spacing: .04em; }
+.card .body { padding: 10px 2px 0; }
+.card h3 { font-size: 16px; font-weight: 800; }
+.featured .card h3 { font-size: 19px; }
+.card-link { color: var(--fg); }
+.card:hover .card-link { color: var(--accent); }
+.card p { font-size: 13px; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.card .tags { margin-top: 8px; }
+.tag { border: 0; border-radius: 3px; background: var(--tag-bg); color: var(--tag-fg); font-weight: 700; font-size: 11px; padding: 4px 7px; }
+.tag-winner, .tag-gc-koshien, .tag-google-play { background: var(--highlight-bg); color: var(--highlight-fg); }
+
+/* ---- 作品ページ：左に説明、右に作品の情報 ---- */
+.vplayer { border: 0; border-radius: var(--radius); box-shadow: 0 2px 8px rgba(0, 0, 0, .12); }
+.vsound { border-radius: 50%; border: 0; background: rgba(0, 0, 0, .6); }
+@media (min-width: 1181px) {
+    .game .detail { grid-template-columns: minmax(0, 1fr) 300px; }
+    .game .detail .data { order: 2; position: sticky; top: 24px; }
+}
+.game .detail-main .window { border: 0; background: none; }
+.game .detail-main .window-title { padding: 0 0 8px; font-size: 18px; letter-spacing: 0; border-bottom: 1px solid var(--line); }
+.game .detail-main .window-body { padding: 12px 0 0; }
+.prose p { font-size: 15px; line-height: 1.9; }
+/* 作品の情報：表のように */
+.data dl { gap: 0; }
+.data dl > div { display: grid; grid-template-columns: 6em 1fr; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.data dl > div:last-child { border-bottom: 0; }
+.data dt { color: var(--muted); font-size: 13px; letter-spacing: 0; }
+.data dd { margin: 0; font-size: 14px; }
+/* 遊ぶ・見るボタン：最初の1つだけ目立たせる */
+.link-list { gap: 8px; }
+.link-list a { border: 1px solid var(--line); border-radius: 4px; color: var(--fg); background: var(--surface); text-align: center; }
+.link-list a:hover { border-color: var(--accent); color: var(--accent); background: var(--surface); }
+.link-list li:first-child a { background: var(--accent); border-color: var(--accent); color: #fff; }
+.link-list li:first-child a:hover { background: #cf5414; color: #fff; }
+.pager a { border: 1px solid var(--line); box-shadow: none; }
+.pager a:hover { background: var(--surface-2); color: var(--fg); }
+.pager a:hover .label { color: var(--muted); }
+
+/* ---- スマホ ---- */
+.topbar { background: var(--surface); color: var(--fg); border-bottom: 1px solid var(--line); }
+.topbar img { border-radius: 50%; }
+.topbar button { border: 1px solid var(--line); color: var(--fg); border-radius: 4px; }
+@media (max-width: 960px) { .grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }

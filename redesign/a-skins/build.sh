@@ -29,3 +29,5 @@ build left-digital '左端デジタル庁案' 'family=Noto+Sans+Mono:wght@400;70
 build digital 'デジタル庁案' 'family=Noto+Sans+Mono:wght@400;700'
 # スマホゲー案（カジュアルゲームのUI。文言は A 案のまま）
 build game-mobile 'スマホゲー案' 'family=M+PLUS+Rounded+1c:wght@500;700;800'
+# ゲーム投稿サイト案（unityroom・itch.io のような、ゲームを並べて見せる場所の雰囲気。文言は A 案のまま）
+build store 'ゲーム投稿サイト案' 'family=Lato:wght@400;700;900'
