@@ -2,6 +2,7 @@
 window.SKIN = {
     iconColor: '222222',
     text: {
+        about: 'About me',
         data: '作品情報',
         researchData: '研究情報',
         links: 'Link',
