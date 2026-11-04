@@ -524,14 +524,7 @@
                 </nav>`;
 
             // ---- About ----
-            const aboutBlocks = {
-                '': (single = false) => block('profile', single ? null : TEXT.profile, `
-                        <div class="profile">
-                            <div class="profile-visual">
-                              <div class="portrait">
-                                <img src="${esc(data.profile.photo)}" alt="顔写真" width="600" height="600" loading="eager" fetchpriority="high" decoding="async">
-                                ${data.profile.pixel ? `<img class="pixel" src="${esc(data.profile.pixel)}" alt="">` : ''}
-                              </div>
+            const profileCharacter = `
                               <div class="profile-walkway" aria-hidden="true">
                                 <div class="profile-character">
                                   <div class="profile-character-facing">
@@ -545,7 +538,13 @@
                                     </div>
                                   </div>
                                 </div>
-                              </div>
+                              </div>`;
+            const aboutBlocks = {
+                '': (single = false) => block('profile', single ? null : TEXT.profile, `
+                        <div class="profile">
+                            <div class="portrait">
+                                <img src="${esc(data.profile.photo)}" alt="顔写真" width="600" height="600" loading="eager" fetchpriority="high" decoding="async">
+                                ${data.profile.pixel ? `<img class="pixel" src="${esc(data.profile.pixel)}" alt="">` : ''}
                             </div>
                             <div>
                                 <p class="profile-name">${esc(data.profile.name)}</p>
@@ -572,6 +571,7 @@
                     <article class="page page--narrow about">
                         ${pageHead(TEXT.about, aboutLabel(id))}
                         <div class="stack" data-single>${aboutBlocks[id](true)}</div>
+                        ${id === '' ? profileCharacter : ''}
                     </article>`;
             };
 

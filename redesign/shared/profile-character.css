@@ -1,12 +1,18 @@
-/* 写真の下を散歩。16秒のうち、待機 → 右へ歩く → 待機 → 左へ歩く。 */
-.profile-visual { min-width: 0; }
+/* プロフィール画面の下端を散歩。待機 → 右へ歩く → 待機 → 左へ歩く。 */
 .profile-walkway {
-    position: relative;
-    height: 92px;
-    margin-top: 8px;
+    --profile-cycle: 32s;
+    position: fixed;
+    left: calc(var(--sidebar-w) + 16px);
+    right: 16px;
+    bottom: 0;
+    height: 76px;
+    z-index: 5;
     overflow: hidden;
-    border-bottom: 1px solid var(--line, #e2e5eb);
     pointer-events: none;
+}
+main:has(.profile-walkway) { padding-bottom: 100px; }
+@media (max-width: 960px) {
+    .profile-walkway { left: 16px; }
 }
 .profile-character {
     position: absolute;
@@ -14,12 +20,12 @@
     left: 0;
     width: 76px;
     height: 76px;
-    animation: profile-stroll 16s linear infinite;
+    animation: profile-stroll var(--profile-cycle) linear infinite;
 }
 .profile-character-facing {
     width: 100%;
     height: 100%;
-    animation: profile-facing 16s steps(1, end) infinite;
+    animation: profile-facing var(--profile-cycle) steps(1, end) infinite;
 }
 .profile-character-pose { position: absolute; inset: 0; }
 .profile-character-pose img {
@@ -30,8 +36,8 @@
     object-fit: contain;
 }
 /* フェードせず2枚を交互に切り替え、元の手描きアニメーションを保つ。 */
-.profile-character-idle { animation: profile-idle 16s steps(1, end) infinite; }
-.profile-character-walk { animation: profile-walk 16s steps(1, end) infinite; }
+.profile-character-idle { animation: profile-idle var(--profile-cycle) steps(1, end) infinite; }
+.profile-character-walk { animation: profile-walk var(--profile-cycle) steps(1, end) infinite; }
 .profile-character-idle img + img { animation: profile-frame 800ms steps(1, end) infinite; }
 .profile-character-walk img + img { animation: profile-frame 320ms steps(1, end) infinite; }
 @keyframes profile-stroll {
