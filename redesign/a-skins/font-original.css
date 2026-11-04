@@ -1,0 +1,4 @@
+@import url("font-base.css");
+
+/* 標準書体の変更前の案も比較用に残す。 */
+:root { --font: "Lato", "Noto Sans JP", "Hiragino Sans", sans-serif; }

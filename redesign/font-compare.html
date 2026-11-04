@@ -29,13 +29,13 @@
     <header>
         <div class="heading"><h1>フォント比較</h1><span>A-ゲーム投稿サイト案・文字色やサイズは共通</span></div>
         <nav aria-label="フォントを選ぶ">
-            <a href="a-skin-store.html#about" data-font="noto" aria-current="true">01 Lato＋Noto Sans JP（現行）</a>
+            <a href="a-skin-font-original.html#about" data-font="noto">01 Lato＋Noto Sans JP（以前）</a>
             <a href="a-skin-font-zen.html#about" data-font="zen">02 Zen角ゴシック</a>
             <a href="a-skin-font-ud.html#about" data-font="ud">03 BIZ UDPゴシック</a>
-            <a href="a-skin-font-maru.html#about" data-font="maru">04 Zen丸ゴシック</a>
+            <a href="a-skin-store.html#about" data-font="maru" aria-current="true">04 Zen丸ゴシック（現行）</a>
             <a href="a-skin-font-mincho.html#about" data-font="mincho">05 明朝の見出し</a>
         </nav>
-        <p id="description" aria-live="polite">現行の書体（英数字は Lato、日本語は Noto Sans JP）。比較の基準です。</p>
+        <p id="description" aria-live="polite">現行の Zen Maru Gothic。丸みのある書体を標準にしています。</p>
         <div class="tools">
             <div class="pages" aria-label="比較するページ">
                 <button type="button" data-page="works">作品一覧</button>
@@ -51,13 +51,13 @@
         const preview = document.getElementById('preview');
         const choices = [...document.querySelectorAll('[data-font]')];
         const descriptions = {
-            noto: '現行の書体（英数字は Lato、日本語は Noto Sans JP）。比較の基準です。',
+            noto: '以前の書体（英数字は Lato、日本語は Noto Sans JP）。',
             zen: 'Zen Kaku Gothic New：角を少し和らげた、落ち着いたゴシック。',
             ud: 'BIZ UDPGothic：文字をはっきり見せる、実直な印象。',
-            maru: 'Zen Maru Gothic：丸みがあり、ゲームや個人制作に親しみを添える案。',
-            mincho: 'Zen Old Mincho：作品名と見出しだけを明朝体に。本文は現行の Lato＋Noto Sans JP。',
+            maru: '現行の Zen Maru Gothic。丸みのある書体を標準にしています。',
+            mincho: 'Zen Old Mincho：作品名と見出しだけを明朝体に。本文は現行の Zen Maru Gothic。',
         };
-        let selected = choices.find(a => a.dataset.font === new URLSearchParams(location.search).get('font')) || choices[0];
+        let selected = choices.find(a => a.dataset.font === new URLSearchParams(location.search).get('font')) || choices.find(a => a.dataset.font === 'maru');
         let page = location.hash.slice(1) || 'about';
         let restoreY = 0;
         let navigation = 0;

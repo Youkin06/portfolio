@@ -27,7 +27,7 @@
     --highlight-bg: #fff1e6;
     --highlight-fg: #b5470d;
     --radius: 6px;
-    --font: "Lato", "Noto Sans JP", "Hiragino Sans", sans-serif;
+    --font: "Zen Maru Gothic", "Noto Sans JP", "Hiragino Sans", sans-serif;
 }
 
 body { background: var(--bg); background-image: none; font-size: 15px; }
@@ -84,12 +84,11 @@ a { color: var(--accent); }
 /* ---- 作品一覧：ゲームの並ぶ棚 ---- */
 .featured, .grid { gap: 28px 22px; }
 .grid { grid-template-columns: repeat(3, 1fr); }
-.card { background: none; border: 0; border-radius: 0; box-shadow: none; overflow: visible; }
-.card:hover, .card:focus-within { transform: none; box-shadow: none; }
-.card .thumb { border: 0; border-radius: var(--radius); overflow: hidden; box-shadow: 0 1px 2px rgba(0, 0, 0, .12); transition: transform .15s ease, box-shadow .15s ease; }
-.card:hover .thumb { transform: translateY(-3px); box-shadow: 0 8px 18px rgba(0, 0, 0, .14); }
+.card { background: var(--surface); border: 1px solid #c9c9c4; border-radius: var(--radius); box-shadow: none; overflow: hidden; }
+.card:hover, .card:focus-within { transform: none; box-shadow: none; border-color: var(--accent); }
+.card .thumb { border: 0; border-bottom: 1px solid #c9c9c4; border-radius: 0; overflow: hidden; box-shadow: none; }
 .card .no { top: 8px; left: 8px; border: 0; border-radius: 4px; background: rgba(0, 0, 0, .6); color: #fff; font-size: 11px; letter-spacing: .04em; }
-.card .body { padding: 10px 2px 0; }
+.card .body { padding: 12px 14px 16px; }
 .card h3 { font-size: 16px; font-weight: 800; }
 .featured .card h3 { font-size: 19px; }
 .card-link { color: var(--fg); }
@@ -176,7 +175,7 @@ a { color: var(--accent); }
 .menu-list .year { display: none; }
 
 /* ---- 作品一覧：画像は動かさず、タイトルの色だけ変える ---- */
-.card:hover .thumb { transform: none; box-shadow: 0 1px 2px rgba(0, 0, 0, .12); }
+.card:hover .thumb { transform: none; box-shadow: none; }
 
 /* ---- 見出しの下の線はなし ---- */
 [data-section="about"] .window-title,
