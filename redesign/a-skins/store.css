@@ -139,3 +139,12 @@ a { color: var(--accent); }
 [data-section="about"] .window-body,
 [data-section="about"] .window-body:first-child { padding: 14px 0 0; }
 [data-section="about"] .stack { gap: 40px; }
+
+/* ---- サイドバーをすっきり：アイコン・名前・肩書き、境目の線、作品の年を出さない ---- */
+.sidebar .player { display: none; }
+.sidebar { border-right: 0; }
+.sidebar .menu { padding-top: 22px; }
+.menu-list .year { display: none; }
+
+/* ---- 作品一覧：画像は動かさず、タイトルの色だけ変える ---- */
+.card:hover .thumb { transform: none; box-shadow: 0 1px 2px rgba(0, 0, 0, .12); }
