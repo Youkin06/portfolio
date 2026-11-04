@@ -32,9 +32,9 @@ body[data-section="research"], .menu-group[data-section="research"] { --section-
 .contacts a:active, .back:active, .exp-more summary:active { transform: translateY(1px) scale(.98); }
 /* 文中のリンク（作品ページの「Link」、インターンの「会社の公式サイト」など）は、ふだんから色付きなので、
    乗せると各色の薄い地と太い下線、押すと地が濃くなる。地を付けても文字の位置がずれないよう、余白の分だけ外へ広げる。 */
-main a:not(.card-link, .contacts a) { padding: 1px 4px; margin: -1px -4px; transition: color .16s ease, background-color .16s ease; }
-main a:not(.card-link, .contacts a):hover { background: var(--section-bg); text-decoration-thickness: 2px; }
-main a:not(.card-link, .contacts a):active { background: color-mix(in srgb, var(--section-fg) 22%, #ffffff); color: var(--section-fg); }
+main a:not(.card-link, .contacts a, .profile-stats a) { padding: 1px 4px; margin: -1px -4px; transition: color .16s ease, background-color .16s ease; }
+main a:not(.card-link, .contacts a, .profile-stats a):hover { background: var(--section-bg); text-decoration-thickness: 2px; }
+main a:not(.card-link, .contacts a, .profile-stats a):active { background: color-mix(in srgb, var(--section-fg) 22%, #ffffff); color: var(--section-fg); }
 .card:has(.card-link:active) { transform: scale(.985); }
 @media (prefers-reduced-motion: reduce) {
     .contacts a:active, .back:active, .exp-more summary:active, .card:has(.card-link:active) { transform: none; }
@@ -53,3 +53,35 @@ main a:not(.card-link, .contacts a):active { background: color-mix(in srgb, var(
 
 /* ---- プロフィールの写真は円形 ---- */
 .portrait { border-radius: 50%; }
+
+/* ---- プロフィールの版（?profile=intro|numbers|history） ---- */
+.profile-role { margin: 2px 0 12px; font-size: 14px; }
+.profile-goal { margin: 0 0 14px; font-weight: 700; line-height: 1.7; }
+.profile-goal::before { content: "目標　"; color: var(--section-fg); }
+/* ひとことと紹介文 */
+.profile-lead { margin: 0 0 12px; font-size: 26px; font-weight: 900; line-height: 1.35; }
+.profile-bio { margin: 0 0 12px; max-width: 40em; line-height: 1.9; }
+.profile-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 14px; padding: 0; list-style: none; }
+.profile-chips li { padding: 3px 10px; border-radius: 999px; background: var(--section-bg); color: var(--section-fg); font-size: 13px; font-weight: 700; }
+/* 数字で見る */
+.profile-stats { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin: 28px 0 0; padding: 0; list-style: none; }
+.profile-stats a {
+    display: block;
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--fg);
+    text-decoration: none;
+    transition: border-color .16s ease, transform .08s ease;
+}
+.profile-stats a:hover { border-color: var(--section-fg); }
+.profile-stats a:active { transform: translateY(1px) scale(.98); }
+.profile-stats strong { display: block; color: var(--section-fg); font-size: 32px; font-weight: 900; line-height: 1.1; }
+.profile-stats span { font-size: 13px; font-weight: 700; }
+/* これまで */
+.profile-history { display: grid; gap: 10px; max-width: 760px; margin: 28px 0 0; padding: 0; list-style: none; }
+.profile-history li { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 12px; font-size: 14px; }
+.profile-history time { color: var(--section-fg); font-weight: 700; }
+@media (max-width: 960px) {
+    .profile-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
