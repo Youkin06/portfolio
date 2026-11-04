@@ -247,6 +247,8 @@ a { color: var(--accent); }
 [data-section="about"] [data-block="skills"] .window-title,
 .game .detail-main .window-title { border-bottom: 0; }
 [data-section="about"] [data-block="skills"] { margin-top: 0; }
+/* プロフィールでは技術スタックを写真の段に少し寄せ、下の空との間をあける。 */
+[data-page="about/"] [data-block="skills"] { margin-top: -16px; }
 
 /* ---- リンクに触れたときの反応 ---- */
 .menu-list a, main a:not(.card-link), .exp-more summary {
