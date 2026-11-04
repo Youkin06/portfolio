@@ -1,0 +1,15 @@
+@import url("white-common.css");
+
+/* 白・マーカー：選んでいる項目の文字の下半分に、各色の蛍光ペンのような線を引く。文字は黒。
+   サイドバーは白、本文との間は細い線1本。 */
+:root { --sidebar-bg: #ffffff; }
+.sidebar { border-right: 1px solid var(--line); }
+.menu-group[data-section="about"] { --marker: #f9b9c0; }
+.menu-group[data-section="works"] { --marker: #a9d8f5; }
+.menu-group[data-section="research"] { --marker: #c5e79c; }
+/* 項目の幅を文字に合わせ、その下半分にだけ色を引く。 */
+.menu-list a.active, .menu-list a.active:hover {
+    width: fit-content;
+    color: var(--fg);
+    background: linear-gradient(transparent 40%, var(--marker) 40%, var(--marker) 76%, transparent 76%);
+}

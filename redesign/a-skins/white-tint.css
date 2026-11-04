@@ -1,0 +1,11 @@
+@import url("white-common.css");
+
+/* 白・色の札（黒文字）：選んでいる項目を各色の濃いめの淡色で塗り、文字は黒のまま太くする。
+   サイドバーは白、本文との間は細い線1本。 */
+:root { --sidebar-bg: #ffffff; }
+.sidebar { border-right: 1px solid var(--line); }
+.menu-group[data-section="about"] { --tint: #f8c9ce; }
+.menu-group[data-section="works"] { --tint: #c4e3f6; }
+.menu-group[data-section="research"] { --tint: #d3ebb6; }
+.menu-list a.active, .menu-list a.active:hover { background: var(--tint); color: var(--fg); }
+.menu-list a.active .year, .menu-list a.active .no { color: var(--fg); }

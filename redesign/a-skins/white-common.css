@@ -22,3 +22,16 @@ body[data-section="research"], .menu-group[data-section="research"] { --section-
 .sidebar { border-right: 0; }
 .card, .card:hover, .card:focus-within { border-color: var(--card-line); }
 .card .thumb { border-bottom-color: var(--card-line); }
+
+/* ---- 押したときの反応 ----
+   押している間、ボタンや項目は少し沈み、文中のリンクは各色の薄い地が付く。カードは少しだけ縮む。 */
+.menu-list a, .contacts a, .back, .card, .exp-more summary {
+    transition: color .16s ease, background-color .16s ease, transform .08s ease;
+}
+.menu-list a:active, .contacts a:active, .back:active, .exp-more summary:active { transform: translateY(1px) scale(.98); }
+.menu-list a:active { background: var(--section-bg); }
+main a:not(.card-link, .contacts a):active { background: var(--section-bg); color: var(--section-fg); }
+.card:has(.card-link:active) { transform: scale(.985); }
+@media (prefers-reduced-motion: reduce) {
+    .menu-list a:active, .contacts a:active, .back:active, .exp-more summary:active, .card:has(.card-link:active) { transform: none; }
+}
