@@ -27,15 +27,15 @@
 </head>
 <body>
     <header>
-        <div class="heading"><h1>フォント比較</h1><span>A-左端デジタル庁案・文字色やサイズは共通</span></div>
+        <div class="heading"><h1>フォント比較</h1><span>A-ゲーム投稿サイト案・文字色やサイズは共通</span></div>
         <nav aria-label="フォントを選ぶ">
-            <a href="a-skin-left-digital.html#works" data-font="noto" aria-current="true">01 Noto Sans JP（現行）</a>
-            <a href="a-skin-font-zen.html#works" data-font="zen">02 Zen角ゴシック</a>
-            <a href="a-skin-font-ud.html#works" data-font="ud">03 BIZ UDPゴシック</a>
-            <a href="a-skin-font-maru.html#works" data-font="maru">04 Zen丸ゴシック</a>
-            <a href="a-skin-font-mincho.html#works" data-font="mincho">05 明朝の見出し</a>
+            <a href="a-skin-store.html#about" data-font="noto" aria-current="true">01 Lato＋Noto Sans JP（現行）</a>
+            <a href="a-skin-font-zen.html#about" data-font="zen">02 Zen角ゴシック</a>
+            <a href="a-skin-font-ud.html#about" data-font="ud">03 BIZ UDPゴシック</a>
+            <a href="a-skin-font-maru.html#about" data-font="maru">04 Zen丸ゴシック</a>
+            <a href="a-skin-font-mincho.html#about" data-font="mincho">05 明朝の見出し</a>
         </nav>
-        <p id="description" aria-live="polite">現行の書体。比較の基準です。</p>
+        <p id="description" aria-live="polite">現行の書体（英数字は Lato、日本語は Noto Sans JP）。比較の基準です。</p>
         <div class="tools">
             <div class="pages" aria-label="比較するページ">
                 <button type="button" data-page="works">作品一覧</button>
@@ -43,22 +43,22 @@
                 <button type="button" data-page="about">プロフィール</button>
                 <button type="button" data-page="about/internships">インターン</button>
             </div>
-            <a id="open-page" href="a-skin-left-digital.html#works" target="_blank" rel="noopener">この案を別タブで開く ↗</a>
+            <a id="open-page" href="a-skin-store.html#about" target="_blank" rel="noopener">この案を別タブで開く ↗</a>
         </div>
     </header>
-    <iframe id="preview" title="選択したフォントのポートフォリオ" src="a-skin-left-digital.html#works"></iframe>
+    <iframe id="preview" title="選択したフォントのポートフォリオ" src="a-skin-store.html#about"></iframe>
     <script>
         const preview = document.getElementById('preview');
         const choices = [...document.querySelectorAll('[data-font]')];
         const descriptions = {
-            noto: '現行の書体。比較の基準です。',
+            noto: '現行の書体（英数字は Lato、日本語は Noto Sans JP）。比較の基準です。',
             zen: 'Zen Kaku Gothic New：角を少し和らげた、落ち着いたゴシック。',
             ud: 'BIZ UDPGothic：文字をはっきり見せる、実直な印象。',
             maru: 'Zen Maru Gothic：丸みがあり、ゲームや個人制作に親しみを添える案。',
-            mincho: 'Zen Old Mincho：作品名と見出しだけを明朝体に。本文は現行のゴシック。',
+            mincho: 'Zen Old Mincho：作品名と見出しだけを明朝体に。本文は現行の Lato＋Noto Sans JP。',
         };
         let selected = choices.find(a => a.dataset.font === new URLSearchParams(location.search).get('font')) || choices[0];
-        let page = location.hash.slice(1) || 'works';
+        let page = location.hash.slice(1) || 'about';
         let restoreY = 0;
         let navigation = 0;
         const pageURL = () => selected.getAttribute('href').split('#')[0] + '#' + page;
@@ -95,7 +95,7 @@
             const current = navigation;
             const win = preview.contentWindow;
             win.addEventListener('hashchange', () => {
-                page = win.location.hash.slice(1) || 'works';
+                page = win.location.hash.slice(1) || 'about';
                 updateToolbar();
             });
             // 作品などの読み込みとフォントの反映を待って、同じ位置に戻す。
