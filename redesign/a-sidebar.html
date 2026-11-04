@@ -298,16 +298,15 @@
         .pager a:hover .label { color: #aeb7d6; }
         .pager .next { text-align: right; grid-column: 2; }
 
-        /* ページの一番下の「次へ」。さらに下へスクロールすると、ゲージがたまって次のページへ移る */
-        .next-page { margin-top: 72px; padding: 28px 0 8px; border-top: 1px solid var(--line); text-align: center; }
+        /* ページの一番下の「次へ」。下まで来るとふわっと出て、さらに下へスクロールすると次のページへ移る */
+        .next-page { margin-top: 72px; padding: 32px 0 40px; text-align: center; opacity: 0; transform: translateY(16px); transition: opacity .45s ease, transform .45s ease; }
+        .next-page.is-visible { opacity: 1; transform: none; }
         .next-link { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; color: var(--fg); text-decoration: none; }
         .next-link .label { color: var(--muted); }
         .next-link strong { font-size: clamp(20px, 2.4vw, 26px); }
         .next-link strong::after { content: " ↓"; color: var(--accent); }
         .next-link:hover strong { color: var(--accent); }
-        .next-gauge { width: min(240px, 60%); height: 4px; margin: 16px auto 0; border-radius: 4px; background: var(--line); overflow: hidden; }
-        .next-gauge i { display: block; width: 100%; height: 100%; background: var(--accent); transform: scaleX(var(--p, 0)); transform-origin: left; transition: transform .12s linear; }
-        .next-hint { margin: 10px 0 0; font-size: 12px; color: var(--muted); }
+        @media (prefers-reduced-motion: reduce) { .next-page { transition: none; } }
 
         .topbar { display: none; }
 
@@ -398,7 +397,6 @@
             more: '詳しく見る',
             // ページの一番下の「次へ」
             nextLabel: '次へ',
-            nextHint: 'このまま下にスクロールすると移動します',
             count: n => `${n}件`,
             // スキルの段階（1〜5）の言葉
             skillLevels: ['', '学習中', '基礎', '応用', '習熟', '得意分野'],
@@ -695,26 +693,22 @@
             const nextHTML = next => `
                 <nav class="next-page" aria-label="${esc(TEXT.nextLabel)}" data-next="${esc(next.href)}">
                     <a class="next-link" href="${esc(next.href)}"><span class="label">${esc(TEXT.nextLabel)}</span><strong>${esc(next.label)}</strong></a>
-                    <div class="next-gauge" aria-hidden="true"><i></i></div>
-                    <p class="next-hint">${esc(TEXT.nextHint)}</p>
                 </nav>`;
 
-            // 一番下でさらに下へスクロールしたら、ゲージをためて次のページへ。
+            // 「次へ」が見えて一番下にいるとき、さらに下へスクロールしたら次のページへ。
             // ページを開いた直後は慣性のスクロールで続けて進まないように、少し待ってから受け付ける。
-            const PULL_NEEDED = 320;
+            const PULL_NEEDED = 160;
             let pull = 0;
             let pullReadyAt = 0;
             let pullResetTimer = 0;
             const atBottom = () => window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
             const setPull = value => {
                 pull = Math.max(0, value);
-                const gauge = main.querySelector('.next-gauge i');
-                if (gauge) gauge.style.setProperty('--p', Math.min(1, pull / PULL_NEEDED));
                 clearTimeout(pullResetTimer);
-                if (pull > 0) pullResetTimer = setTimeout(() => setPull(0), 700);
+                if (pull > 0) pullResetTimer = setTimeout(() => setPull(0), 500);
             };
             const addPull = amount => {
-                const next = main.querySelector('.next-page');
+                const next = main.querySelector('.next-page.is-visible');
                 if (!next || Date.now() < pullReadyAt || !atBottom()) return setPull(0);
                 setPull(pull + amount);
                 if (pull >= PULL_NEEDED) {
@@ -722,6 +716,10 @@
                     location.hash = next.dataset.next.slice(1);
                 }
             };
+            // 下まで来たら「次へ」をふわっと出す
+            const nextObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('is-visible');
+            }), { threshold: .4 });
             window.addEventListener('wheel', event => (event.deltaY > 0 ? addPull(event.deltaY) : setPull(0)), { passive: true });
             let touchY = null;
             window.addEventListener('touchstart', event => { touchY = event.touches[0].clientY; }, { passive: true });
@@ -765,6 +763,8 @@
                 // 1ページにまとめた形では、About と研究は1ページなので中の項目を見ない
                 const next = nextOf(LAYOUT === 'flat' && section !== 'works' ? `${section}/` : `${section}/${subKey}`);
                 if (next) main.querySelector('.page')?.insertAdjacentHTML('beforeend', nextHTML(next));
+                nextObserver.disconnect();
+                main.querySelectorAll('.next-page').forEach(el => nextObserver.observe(el));
                 setPull(0);
                 pullReadyAt = Date.now() + 900;
 
