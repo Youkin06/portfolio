@@ -8,7 +8,7 @@
     bottom: 0;
     height: var(--character-size);
     z-index: 5;
-    overflow: hidden;
+    overflow: visible;
     pointer-events: none;
 }
 main:has(.profile-walkway) { padding-bottom: 144px; }
@@ -173,4 +173,63 @@ main:has(.profile-walkway) { padding-bottom: 144px; }
     .profile-kamo, .profile-kamo-facing, .profile-kamo-frame { animation: none; }
     .profile-kamo-frame + .profile-kamo-frame { opacity: 0; }
     .profile-flight { display: none; }
+}
+
+/* キャラクターに触れると、その場で待って作品へ案内する。 */
+[data-profile-guest] { pointer-events: auto; }
+[data-profile-guest][data-paused],
+[data-profile-guest][data-paused] * { animation-play-state: paused !important; }
+.profile-guest-trigger {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    padding: 0;
+    border-radius: 16px;
+    background: transparent;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+.profile-guest-trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+main a.profile-guest-link {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    z-index: 2;
+    display: grid;
+    gap: 3px;
+    width: max-content;
+    max-width: min(200px, 60vw);
+    padding: 9px 13px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface, #fff);
+    color: var(--fg);
+    box-shadow: 0 3px 12px #00000014;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.4;
+    text-align: center;
+    text-decoration: none;
+    transform: translateX(-50%);
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+/* 本体と吹き出しの間でもhoverを途切れさせない。 */
+.profile-guest-link::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 10px;
+}
+.profile-guest-link span { font-size: 11px; font-weight: 400; color: var(--muted); }
+[data-profile-guest][data-paused] .profile-guest-link {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
 }

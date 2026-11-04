@@ -365,6 +365,7 @@
     <script src="shared/ui.js"></script>
     <script src="shared/details-motion.js"></script>
     <script src="shared/menu-keyboard.js"></script>
+    <script src="shared/profile-guests.js"></script>
     <script>
         const { esc, tagsHTML, thumbUrl, linkHTML } = PortfolioUI;
 
@@ -528,8 +529,10 @@
 
             // ---- About ----
             const profileCharacter = `
-                              <div class="profile-walkway" aria-hidden="true">
-                                <div class="profile-character">
+                              <div class="profile-walkway">
+                                <div class="profile-character" data-profile-guest>
+                                  <button class="profile-guest-trigger" type="button" aria-label="ぼくのにっきのキャラクター：作品リンクを表示" aria-expanded="false"></button>
+                                  <a class="profile-guest-link" href="#works/boku-no-nikki">ぼくのにっき<span>作品を見る →</span></a>
                                   <div class="profile-character-facing">
                                     <div class="profile-character-pose profile-character-idle">
                                       <img src="../Images/profile-character/idle1.png" alt="" width="1280" height="1280">
@@ -541,15 +544,19 @@
                                     </div>
                                   </div>
                                 </div>
-                                <div class="profile-kamo">
+                                <div class="profile-kamo" data-profile-guest>
+                                  <button class="profile-guest-trigger" type="button" aria-label="KamoRogueのキャラクター：作品リンクを表示" aria-expanded="false"></button>
+                                  <a class="profile-guest-link" href="#works/project-6">KamoRogue<span>作品を見る →</span></a>
                                   <div class="profile-kamo-facing">
                                     <span class="profile-kamo-frame"><img src="../Images/profile-character/kamo-run1.png" alt="" width="16" height="16"></span>
                                     <span class="profile-kamo-frame"><img src="../Images/profile-character/kamo-run2.png" alt="" width="16" height="16"></span>
                                   </div>
                                 </div>
                               </div>
-                              <div class="profile-flight" aria-hidden="true">
-                                <div class="profile-depth-player">
+                              <div class="profile-flight">
+                                <div class="profile-depth-player" data-profile-guest>
+                                  <button class="profile-guest-trigger" type="button" aria-label="DEPTH DIARYのキャラクター：作品リンクを表示" aria-expanded="false"></button>
+                                  <a class="profile-guest-link" href="#works/depth-diary">DEPTH DIARY<span>作品を見る →</span></a>
                                   <div class="profile-depth-player-facing">
                                     <img src="../Images/profile-character/depth-player1.png" alt="" width="512" height="512" style="--frame-index: 0">
                                     <img src="../Images/profile-character/depth-player2.png" alt="" width="512" height="512" style="--frame-index: 1">
