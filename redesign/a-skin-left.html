@@ -491,7 +491,8 @@
                     <div class="window-body">${body}</div>
                 </section>`;
 
-            // 説明は「詳しく見る」で開く。一度に開くのは1つだけ（details-motion.js が、ほかの開いている項目を閉じる）。
+            // 説明は「詳しく見る」で開く。一度に開くのは1つだけ。
+            // 開閉の動きがあるスキンは details-motion.js が、ないスキンはブラウザの name 属性が、ほかの開いている項目を閉じる。
             const expHTML = i => `
                 <li class="exp">
                     <div class="exp-head">
@@ -499,7 +500,7 @@
                         ${i.role ? `<span class="exp-org">${esc(i.org)}</span>` : ''}
                         <time class="exp-period">${esc(i.period)}</time>
                     </div>
-                    <details class="exp-more"><summary>${esc(TEXT.more)}</summary>
+                    <details class="exp-more"${SKIN.detailsMotion ? '' : ' name="exp"'}><summary>${esc(TEXT.more)}</summary>
                         <div class="exp-content"><div class="exp-detail"${i.image ? ' data-photo' : ''}>
                             <div class="exp-copy">
                                 <p>${fixProjectLinks(i.html)}</p>
