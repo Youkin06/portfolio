@@ -448,8 +448,8 @@
                 groupHTML('works', '#works',
                     `<li><a href="#works" data-key="works/">${esc(TEXT.worksList)}</a></li>` +
                     projects.map(p => `<li><a href="#works/${esc(p.id)}" data-key="works/${esc(p.id)}">${esc(p.title)}<span class="year">${yearOf(p)}</span></a></li>`).join('')) +
-                groupHTML('research', LAYOUT === 'flat' ? '#research' : `#research/${research[0]?.id || ''}`, research.map((r, i) =>
-                    `<li><a href="#research/${r.id}" data-key="research/${r.id}"><span class="no">${no(i)}</span>${esc(r.theme)}</a></li>`).join(''));
+                groupHTML('research', LAYOUT === 'flat' ? '#research' : `#research/${research[0]?.id || ''}`, research.map(r =>
+                    `<li><a href="#research/${r.id}" data-key="research/${r.id}">${esc(r.theme)}</a></li>`).join(''));
 
             // ---- 部品 ----
             // 本文中の「制作作品：〇〇」（#project-〇〇）は、そのゲームのページへ。
