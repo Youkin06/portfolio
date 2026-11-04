@@ -524,9 +524,9 @@
                         <ul>${cat.items.map(item => `
                             <li data-level="${item.rating}"><span class="skill-name">${esc(item.name)}</span>${gaugeHTML(item.rating)}<span class="skill-word">${item.rating}/5：${esc(TEXT.skillLevels[item.rating] || '')}</span></li>`).join('')}
                         </ul></div>`).join('')}</div>`),
-                internships: (single = false) => block('internships', single ? null : TEXT.internships, `<ol class="exp-list timeline">${data.internships.map(expHTML).join('')}</ol>`, data.internships.length),
-                awards: (single = false) => block('awards', single ? null : TEXT.awards, `<ul class="item-list awards">${data.awards.map(itemHTML).join('')}</ul>`, data.awards.length),
-                media: (single = false) => block('media', single ? null : TEXT.media, `<ul class="item-list media">${data.media.map(itemHTML).join('')}</ul>`, data.media.length),
+                internships: (single = false) => block('internships', single ? null : TEXT.internships, `<ol class="exp-list timeline">${data.internships.map(expHTML).join('')}</ol>`),
+                awards: (single = false) => block('awards', single ? null : TEXT.awards, `<ul class="item-list awards">${data.awards.map(itemHTML).join('')}</ul>`),
+                media: (single = false) => block('media', single ? null : TEXT.media, `<ul class="item-list media">${data.media.map(itemHTML).join('')}</ul>`),
             };
             // About は1ページにまとめる（プロフィール → 受賞歴 → インターン・バイト経験 → メディア掲載）。
             // サイドバーの中の項目は、このページの中の場所へのリンクになる。
