@@ -491,7 +491,7 @@
                 <li class="item"><span class="item-text">${esc(a.text)}</span>
                 ${a.link ? `<div class="item-links">${link(a.link)}</div>` : ''}</li>`;
 
-            const gaugeHTML = rating => `<span class="gauge" aria-hidden="true">${[1, 2, 3, 4, 5].map(n => `<i class="${n <= rating ? 'on' : ''}"></i>`).join('')}</span>`;
+            const gaugeHTML = rating => `<span class="gauge" aria-hidden="true">${[1, 2, 3, 4, 5].map(n => `<i class="${n <= rating ? 'on' : ''}"></i>`).join('')}<span class="gauge-score">${rating}/5</span></span>`;
             const iconUrl = src => src.replace(/(cdn\.simpleicons\.org\/[^/]+)\/[0-9a-f]{6}$/i, `$1/${ICON_COLOR}`);
             const mailIcon = '<svg class="mail-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg>';
 
@@ -524,10 +524,10 @@
                                 </div>
                             </div>
                         </div>`) +
-                    block('skills', TEXT.skills, `<div class="skills">${data.skills.map((cat, i) => `
+                    block('skills', TEXT.skills, `<p class="skill-note">習熟度の自己評価（5段階）</p><div class="skills">${data.skills.map((cat, i) => `
                         <div class="skill-group" ${tone(i)}><h3 class="label">${esc(cat.category)}</h3>
                         <ul>${cat.items.map(item => `
-                            <li data-level="${item.rating}"><span class="skill-name">${esc(item.name)}</span>${gaugeHTML(item.rating)}<span class="skill-word">${esc(TEXT.skillLevels[item.rating] || '')}</span></li>`).join('')}
+                            <li data-level="${item.rating}"><span class="skill-name">${esc(item.name)}</span>${gaugeHTML(item.rating)}<span class="skill-word">${item.rating}/5：${esc(TEXT.skillLevels[item.rating] || '')}</span></li>`).join('')}
                         </ul></div>`).join('')}</div>`),
                 internships: () => block('internships', TEXT.internships, `<ol class="exp-list timeline">${data.internships.map(expHTML).join('')}</ol>`, data.internships.length),
                 awards: () => block('awards', TEXT.awards, `<ul class="item-list awards">${data.awards.map(itemHTML).join('')}</ul>`, data.awards.length),

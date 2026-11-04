@@ -2,7 +2,8 @@
 
 /*
  * 左端案＋デジタル庁デザインシステム（DADS）。
- * 配置は左端案のまま、色・文字・リンク・フォーカス・開閉部品をDADSの決まりに合わせる。
+ * 配置は左端案のまま、色・文字・フォーカス・開閉部品はDADSを参考にする。
+ * リンクの下線とスキル表示は、このポートフォリオ向けに調整する。
  * 値は @digital-go-jp/design-tokens 2.1.0 と公式のコンポーネント例から。
  */
 :root {
@@ -47,11 +48,24 @@
 body { background: var(--bg); font-size: 16px; line-height: 1.7; letter-spacing: .02em; }
 .label { font-size: 14px; letter-spacing: .02em; text-transform: none; }
 
-/* ---- リンク（DADS Link） ---- */
-main a:any-link { color: var(--blue-1000); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
-main a:visited { color: var(--magenta-900); }
-@media (hover: hover) { main a:any-link:hover { color: var(--blue-900); text-decoration-thickness: 3px; } }
-main a:any-link:active { color: var(--orange-800); text-decoration-thickness: 1px; }
+/* ---- リンク：下線の代わりに色・矢印と背景で示す ---- */
+main a:any-link { color: var(--blue-1000); text-decoration: none; border-radius: 4px; }
+main a:visited { color: var(--blue-1000); }
+@media (hover: hover) { main a:any-link:hover { color: var(--blue-900); text-decoration: none; } }
+main a:any-link:active { color: var(--orange-800); }
+.item-links a, .exp-links a, .link-list a, main .back {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 4px;
+    padding: 5px 8px;
+    margin-left: -8px;
+}
+.prose a:any-link { background: var(--blue-50); padding: 1px 3px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+@media (hover: hover) {
+    .item-links a:hover, .exp-links a:hover, .link-list a:hover, main .back:hover,
+    .contacts a:hover, .prose a:any-link:hover { background: var(--blue-50); }
+}
+main a:any-link:focus-visible { background-color: var(--yellow-300); }
 /* 作品ページへは「→」、外のサイトへは印（元の「↗」は使わない） */
 .link--work::before { content: "→ "; display: inline-block; white-space: pre; text-decoration: none; }
 .ext-mark { display: none; }
@@ -84,12 +98,13 @@ main a:any-link:active { color: var(--orange-800); text-decoration-thickness: 1p
 .player .label { color: var(--muted); font-weight: 400; }
 .menu-label { color: var(--gray-800); font-size: 14px; padding: 2px 16px; }
 .menu-label::after { background: var(--gray-200); opacity: 1; height: 1px; }
-@media (hover: hover) { .menu-label:hover { text-decoration: underline; text-underline-offset: 3px; } }
+@media (hover: hover) { .menu-label:hover { color: var(--blue-1000); text-decoration: none; } }
 .menu-list a { color: var(--gray-800); font-size: 16px; padding: 10px 16px; border-radius: 8px; line-height: 1.3; }
 .menu-list a::before { content: none; }
 .menu-list .no, .menu-list .year { color: var(--muted); font-size: 14px; }
-@media (hover: hover) { .menu-list a:hover { background: var(--gray-100); color: var(--gray-800); text-decoration: underline; text-underline-offset: 3px; } }
-.menu-list a.active { background: var(--blue-100); color: var(--blue-1000); font-weight: 700; }
+@media (hover: hover) { .menu-list a:hover { background: var(--gray-100); color: var(--blue-1000); text-decoration: none; } }
+.menu-list a.active { background: var(--blue-100); color: var(--blue-1000); font-weight: 700; box-shadow: inset 3px 0 var(--blue-1000); }
+.menu-list a:focus-visible { outline: 4px solid #000; outline-offset: 2px; background: var(--yellow-300); }
 .menu-list a.active .no, .menu-list a.active .year { color: var(--blue-1000); }
 
 /* ---- 見出し ---- */
@@ -123,19 +138,21 @@ main a:any-link:active { color: var(--orange-800); text-decoration-thickness: 1p
 .portrait { border: 0; border-radius: 8px; }
 .profile-name { font-size: 24px; font-weight: 700; }
 .contacts { gap: 8px 24px; margin-top: 20px; }
-.contacts a { border: 0; padding: 0; font-weight: 400; font-size: 16px; }
-.contacts a:hover { background: none; }
+.contacts a { border: 0; padding: 4px 8px; margin-left: -8px; font-weight: 400; font-size: 16px; }
+@media (hover: hover) { .contacts a:hover { background: var(--blue-50); } }
 .contacts .mail { padding: 0; font-family: var(--mono); font-size: 15px; letter-spacing: 0; color: var(--fg); }
 
-/* ---- スキル：ゲージではなく言葉 ---- */
+/* ---- スキル：自己評価を5分割のゲージで示す ---- */
+.skill-note { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
 .skill-group h3 { color: var(--gray-800); font-size: 17px; font-weight: 700; margin-bottom: 4px; }
 .skill-group ul { gap: 0; font-size: 16px; }
 .skill-group li { grid-template-columns: minmax(0, 1fr) auto; padding: 10px 0; border-bottom: 1px solid var(--gray-200); }
-.gauge { display: none; }
-.skill-word { display: block; padding: 3px 8px; border: 1px solid var(--gray-420); border-radius: 4px; background: var(--gray-50); font-size: 14px; line-height: 1.5; white-space: nowrap; color: var(--gray-800); }
-.skill-group li[data-level="3"] .skill-word,
-.skill-group li[data-level="4"] .skill-word { background: var(--blue-50); border-color: var(--blue-1000); color: var(--blue-1000); }
-.skill-group li[data-level="5"] .skill-word { background: var(--green-50); border-color: var(--green-800); color: var(--green-800); font-weight: 700; }
+.gauge { display: inline-flex; align-items: center; gap: 4px; }
+.gauge i { width: 13px; height: 7px; border: 1px solid var(--gray-420); border-radius: 1px; background: transparent; }
+.gauge i.on { border-color: var(--blue-1000); background: var(--blue-1000); box-shadow: none; }
+.gauge-score { margin-left: 5px; color: var(--muted); font-family: var(--mono); font-size: 12px; font-variant-numeric: tabular-nums; }
+/* ゲージと同じ値・段階名を読み上げにも渡す。 */
+.skill-word { display: block; position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 
 /* ---- 経歴：期間｜役割・会社 ---- */
 .exp { display: grid; grid-template-columns: 10em minmax(0, 1fr); column-gap: 32px; padding: 20px 0; border-bottom: 1px solid var(--gray-200); }
@@ -164,7 +181,7 @@ main a:any-link:active { color: var(--orange-800); text-decoration-thickness: 1p
     list-style: none;
 }
 .exp-more summary::-webkit-details-marker { display: none; }
-@media (hover: hover) { .exp-more summary:hover { text-decoration: underline; text-underline-offset: 3px; } }
+@media (hover: hover) { .exp-more summary:hover { color: var(--blue-1000); background: var(--blue-50); border-radius: 4px; } }
 .exp-more summary::before {
     content: "";
     flex-shrink: 0;
@@ -185,13 +202,14 @@ main a:any-link:active { color: var(--orange-800); text-decoration-thickness: 1p
 
 /* ---- 作品カード ---- */
 .card { border: 1px solid var(--gray-200); border-radius: 8px; box-shadow: none; overflow: hidden; }
-.card:hover, .card:focus-within { transform: none; box-shadow: none; border-color: var(--blue-1000); }
+.card:hover, .card:focus-within { transform: none; box-shadow: none; border-color: var(--blue-1000); background: var(--blue-50); }
 .card:has(.card-link:focus-visible) { outline: 4px solid #000; outline-offset: 2px; box-shadow: 0 0 0 2px var(--yellow-300); }
 .card .thumb { border-bottom: 1px solid var(--gray-200); }
 .card .no { background: #fff; color: var(--gray-800); border-left: 0; border-radius: 4px; font-size: 14px; }
 .card h3 { font-size: 20px; }
-.card .card-link:any-link { color: var(--blue-1000); }
-.card:hover .card-link { text-decoration-thickness: 3px; }
+.card .card-link:any-link { color: var(--gray-800); }
+.card .card-link::before { content: "→"; position: absolute; top: 10px; right: 10px; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--surface); color: var(--blue-1000); font-size: 18px; font-weight: 400; }
+.card:hover .card-link, .card:focus-within .card-link { color: var(--blue-1000); }
 .card h3 small { font-size: 14px; color: var(--muted); }
 .card p { font-size: 15px; color: var(--gray-800); }
 .featured .card h3 { font-size: 24px; }
@@ -217,8 +235,7 @@ main a:any-link:active { color: var(--orange-800); text-decoration-thickness: 1p
 .data .window-body { padding-top: 12px; }
 .data dt { color: var(--gray-800); font-weight: 700; font-size: 14px; letter-spacing: .02em; }
 .data dd { font-size: 16px; }
-.link-list a { border: 0; padding: 0; font-weight: 400; font-size: 16px; }
-.link-list a:hover { background: none; }
+.link-list a { border: 0; font-weight: 400; font-size: 16px; }
 .research-title { font-size: 28px; padding-top: 24px; border-top: 1px solid var(--gray-420); }
 .research-item + .research-item { margin-top: 72px; }
 .pager { border-top: 1px solid var(--gray-420); padding-top: 24px; }
