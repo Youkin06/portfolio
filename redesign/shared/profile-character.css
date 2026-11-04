@@ -1,3 +1,5 @@
+/* カモとDepthDiaryは16×16ドット。1ドットの表示幅を共通にする。 */
+.profile-walkway, .profile-flight { --profile-pixel-size: 6px; }
 /* プロフィール画面の下端を散歩。待機 → 右へ歩く → 待機 → 左へ歩く。 */
 .profile-walkway {
     --profile-cycle: 32s;
@@ -69,7 +71,7 @@ main:has(.profile-walkway) { padding-bottom: 144px; }
 /* KamoRogue: Player.py の画像バンク0、(0, 0) / (16, 0) の16px画像。
    ゲームと同じ6フレームごと（30fpsで200ms）に走行画像を切り替える。 */
 .profile-kamo {
-    --kamo-size: 96px;
+    --kamo-size: calc(16 * var(--profile-pixel-size));
     position: absolute;
     bottom: 0;
     width: var(--kamo-size);
@@ -121,8 +123,8 @@ main:has(.profile-walkway) { padding-bottom: 144px; }
 }
 .profile-depth-player {
     position: absolute;
-    width: 96px;
-    height: 96px;
+    width: calc(16 * var(--profile-pixel-size));
+    height: calc(16 * var(--profile-pixel-size));
     transform: translate(-50%, -50%);
     animation: profile-depth-player-flight 30s linear -7s infinite;
 }
