@@ -27,3 +27,5 @@ build left '左端案' ''
 build left-digital '左端デジタル庁案' 'family=Noto+Sans+Mono:wght@400;700'
 # デジタル庁デザインシステム、中の項目なし（About me／Works／研究 の3ページ）
 build digital 'デジタル庁案' 'family=Noto+Sans+Mono:wght@400;700'
+# スマホゲー案（カジュアルゲームのUI。文言は A 案のまま）
+build game-mobile 'スマホゲー案' 'family=M+PLUS+Rounded+1c:wght@500;700;800'
