@@ -378,6 +378,7 @@
             data: 'Data',
             links: 'Links',
             researchBody: '研究内容',
+            researchData: 'Data',
             // ページ上部のラベル
             worksList: '作品一覧',
             worksLead: '',
@@ -612,7 +613,7 @@
                             ${block(`research-body-${r.id}`, TEXT.researchBody, `<div class="prose">${paragraphs(r.body)}</div>`)}
                         </div>
                         <aside class="stack data">
-                            ${block(`research-data-${r.id}`, TEXT.data, `<dl>${r.lab ? `<div><dt>${esc(TEXT.researchLab)}</dt><dd>${esc(r.lab)}</dd></div>` : ''}<div><dt>${esc(TEXT.researchPeriod)}</dt><dd>${esc(r.period)}</dd></div></dl>`)}
+                            ${block(`research-data-${r.id}`, TEXT.researchData, `<dl>${r.lab ? `<div><dt>${esc(TEXT.researchLab)}</dt><dd>${esc(r.lab)}</dd></div>` : ''}<div><dt>${esc(TEXT.researchPeriod)}</dt><dd>${esc(r.period)}</dd></div></dl>`)}
                             ${r.links.length ? block(`research-links-${r.id}`, TEXT.links, `<ul class="link-list">${r.links.map(l => `<li>${link(l)}</li>`).join('')}</ul>`) : ''}
                         </aside>
                     </div>

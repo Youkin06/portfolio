@@ -140,10 +140,12 @@ a { color: var(--accent); }
 .data dd { margin: 0; font-size: 14px; }
 /* 遊ぶ・見るボタン：最初の1つだけ目立たせる */
 .link-list { gap: 8px; }
-.link-list a { border: 1px solid var(--line); border-radius: 4px; color: var(--fg); background: var(--surface); text-align: center; }
-.link-list a:hover { border-color: var(--accent); color: var(--accent); background: var(--surface); }
-.link-list li:first-child a { background: var(--accent); border-color: var(--accent); color: #fff; }
-.link-list li:first-child a:hover { background: #cf5414; color: #fff; }
+/* リンクはすべて同じ見た目（オレンジの文字と枠、押すと薄いオレンジ） */
+.link-list a { border: 1px solid var(--accent); border-radius: 4px; color: var(--accent); background: var(--surface); text-align: left; }
+.link-list a:hover { background: var(--highlight-bg); color: var(--highlight-fg); }
+
+/* 作品情報・LINK の見出しを大きく */
+.data .window-title { font-size: 17px; font-weight: 800; letter-spacing: .02em; padding-top: 18px; }
 .pager a { border: 1px solid var(--line); box-shadow: none; }
 .pager a:hover { background: var(--surface-2); color: var(--fg); }
 .pager a:hover .label { color: var(--muted); }
