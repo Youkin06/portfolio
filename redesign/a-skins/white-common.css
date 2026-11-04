@@ -24,12 +24,12 @@ body[data-section="research"], .menu-group[data-section="research"] { --section-
 .card .thumb { border-bottom-color: var(--card-line); }
 
 /* ---- 押したときの反応 ----
-   押している間、ボタンや項目は少し沈み、文中のリンクは各色の薄い地が付く。カードは少しだけ縮む。 */
-.menu-list a, .contacts a, .back, .card, .exp-more summary {
+   押している間、ボタンは少し沈み、文中のリンクは各色の薄い地が付く。カードは少しだけ縮む。
+   サイドバーの項目は押しても変わらない。 */
+.contacts a, .back, .card, .exp-more summary {
     transition: color .16s ease, background-color .16s ease, transform .08s ease;
 }
-.menu-list a:active, .contacts a:active, .back:active, .exp-more summary:active { transform: translateY(1px) scale(.98); }
-.menu-list a:active { background: var(--section-bg); }
+.contacts a:active, .back:active, .exp-more summary:active { transform: translateY(1px) scale(.98); }
 /* 文中のリンク（作品ページの「Link」、インターンの「会社の公式サイト」など）は、ふだんから色付きなので、
    乗せると各色の薄い地と太い下線、押すと地が濃くなる。地を付けても文字の位置がずれないよう、余白の分だけ外へ広げる。 */
 main a:not(.card-link, .contacts a) { padding: 1px 4px; margin: -1px -4px; transition: color .16s ease, background-color .16s ease; }
@@ -37,5 +37,5 @@ main a:not(.card-link, .contacts a):hover { background: var(--section-bg); text-
 main a:not(.card-link, .contacts a):active { background: color-mix(in srgb, var(--section-fg) 22%, #ffffff); color: var(--section-fg); }
 .card:has(.card-link:active) { transform: scale(.985); }
 @media (prefers-reduced-motion: reduce) {
-    .menu-list a:active, .contacts a:active, .back:active, .exp-more summary:active, .card:has(.card-link:active) { transform: none; }
+    .contacts a:active, .back:active, .exp-more summary:active, .card:has(.card-link:active) { transform: none; }
 }
