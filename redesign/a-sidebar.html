@@ -455,9 +455,10 @@
             const fixProjectLinks = html => html.replace(/href="#project-/g, 'href="#works/');
             const link = l => fixProjectLinks(linkHTML(l)).replace('class="link--internal" href="#works/', 'class="link--work" href="#works/');
 
+            // title を null にすると見出しを出さない（ページの見出しと同じ言葉が重なるとき）
             const block = (key, title, body, count) => `
                 <section class="window block" data-block="${key}" id="block-${key}">
-                    <h2 class="window-title label">${esc(title)}${count !== undefined ? `<span class="count">${esc(TEXT.count(count))}</span>` : ''}</h2>
+                    ${title === null ? '' : `<h2 class="window-title label">${esc(title)}${count !== undefined ? `<span class="count">${esc(TEXT.count(count))}</span>` : ''}</h2>`}
                     <div class="window-body">${body}</div>
                 </section>`;
 
@@ -520,9 +521,9 @@
                         <ul>${cat.items.map(item => `
                             <li data-level="${item.rating}"><span class="skill-name">${esc(item.name)}</span>${gaugeHTML(item.rating)}<span class="skill-word">${item.rating}/5：${esc(TEXT.skillLevels[item.rating] || '')}</span></li>`).join('')}
                         </ul></div>`).join('')}</div>`),
-                internships: () => block('internships', TEXT.internships, `<ol class="exp-list timeline">${data.internships.map(expHTML).join('')}</ol>`, data.internships.length),
-                awards: () => block('awards', TEXT.awards, `<ul class="item-list awards">${data.awards.map(itemHTML).join('')}</ul>`, data.awards.length),
-                media: () => block('media', TEXT.media, `<ul class="item-list media">${data.media.map(itemHTML).join('')}</ul>`, data.media.length),
+                internships: (single = false) => block('internships', single ? null : TEXT.internships, `<ol class="exp-list timeline">${data.internships.map(expHTML).join('')}</ol>`, data.internships.length),
+                awards: (single = false) => block('awards', single ? null : TEXT.awards, `<ul class="item-list awards">${data.awards.map(itemHTML).join('')}</ul>`, data.awards.length),
+                media: (single = false) => block('media', single ? null : TEXT.media, `<ul class="item-list media">${data.media.map(itemHTML).join('')}</ul>`, data.media.length),
             };
             const aboutPage = sub => {
                 if (LAYOUT === 'flat') {
@@ -537,7 +538,7 @@
                 return `
                     <article class="page page--narrow">
                         ${pageHead(TEXT.about, aboutLabel(id))}
-                        <div class="stack"${id ? ' data-single' : ''}>${aboutBlocks[id]()}</div>
+                        <div class="stack"${id ? ' data-single' : ''}>${aboutBlocks[id](Boolean(id))}</div>
                     </article>`;
             };
 

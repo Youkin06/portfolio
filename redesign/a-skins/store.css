@@ -66,6 +66,7 @@ a { color: var(--accent); }
 .window-title::before { display: none; }
 .window-title .count { color: var(--muted); font-weight: 400; }
 .window-body { padding: 10px 20px 18px; }
+.window-body:first-child { padding-top: 18px; }
 
 /* ---- プロフィール ---- */
 .portrait { border: 0; border-radius: var(--radius); }
