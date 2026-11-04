@@ -3,7 +3,7 @@
 /*
  * ゲーム投稿サイト案：unityroom や itch.io のような「ゲームを並べて見せる場所」の雰囲気。
  * - 飾りは最小限。主役は作品の画像と動く見本
- * - 白い地に、黒に近い文字。About は赤、Works は黄緑、Research は水色
+ * - 白い地に、黒に近い文字。About は赤、Works は水色、Research は黄緑
  * - 作品ページは、左に説明、右に「作品の情報」の表と「遊ぶ・見る」ボタン
  * 文言は A 案のまま変えない。
  */
@@ -30,21 +30,21 @@
     --font: "Zen Maru Gothic", "Noto Sans JP", "Hiragino Sans", sans-serif;
 }
 
-/* main の PROFILE＝赤・PROJECTS＝黄緑と、水色を受け継ぐ。文字は白地で読める濃さに。 */
+/* main の赤・水色・黄緑を受け継ぐ。文字は白地で読める濃さに。 */
 body[data-section="about"], .menu-group[data-section="about"] {
     --section-color: #ff0000;
     --section-fg: #bc2934;
     --section-bg: #fff0f1;
 }
 body[data-section="works"], .menu-group[data-section="works"] {
-    --section-color: #adff2f;
-    --section-fg: #426d14;
-    --section-bg: #eff9df;
-}
-body[data-section="research"], .menu-group[data-section="research"] {
     --section-color: #87ceeb;
     --section-fg: #126d96;
     --section-bg: #eaf7fd;
+}
+body[data-section="research"], .menu-group[data-section="research"] {
+    --section-color: #adff2f;
+    --section-fg: #426d14;
+    --section-bg: #eff9df;
 }
 body[data-section] {
     --accent: var(--section-fg);
