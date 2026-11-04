@@ -101,7 +101,25 @@ a { color: var(--accent); }
 .gauge i.on { background: var(--accent); box-shadow: none; }
 .exp, .item { border-bottom: 1px solid var(--line); }
 .exp-more summary { color: var(--accent); }
-.awards .item-text::before { color: var(--accent); }
+.awards .item-text::before { content: none; }
+
+/* 詳細の写真は本文の右に小さく添える。閉じている間は details が隠す。 */
+.exp-detail[data-photo] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 112px;
+    align-items: start;
+    gap: 20px;
+    margin-top: 12px;
+}
+.exp-detail[data-photo] .exp-copy { min-width: 0; }
+.exp-detail[data-photo] .exp-copy p { margin-top: 0; }
+.exp-detail[data-photo] figure { width: 112px; max-width: 100%; margin: 0; }
+.exp-detail[data-photo] figure img { width: 100%; height: auto; border: 0; border-radius: var(--radius); }
+.exp-detail[data-photo] figcaption { margin-top: 4px; font-size: 11px; }
+@media (max-width: 600px) {
+    .exp-detail[data-photo] { grid-template-columns: minmax(0, 1fr) 80px; gap: 12px; }
+    .exp-detail[data-photo] figure { width: 80px; }
+}
 
 /* ---- 作品一覧：ゲームの並ぶ棚 ---- */
 .featured, .grid { gap: 28px 22px; }
@@ -196,7 +214,7 @@ a { color: var(--accent); }
 .sidebar .menu { padding-top: 22px; }
 .menu-list .year { display: none; }
 
-/* ---- 作品一覧：画像は動かさず、タイトルの色だけ変える ---- */
+/* ---- 作品一覧：画像の位置を保つ ---- */
 .card:hover .thumb { transform: none; box-shadow: none; }
 
 /* ---- 見出しの下の線はなし ---- */
@@ -204,3 +222,55 @@ a { color: var(--accent); }
 [data-section="about"] [data-block="skills"] .window-title,
 .game .detail-main .window-title { border-bottom: 0; }
 [data-section="about"] [data-block="skills"] { margin-top: 0; }
+
+/* ---- リンクに触れたときの反応 ---- */
+.menu-label, .menu-list a, main a:not(.card-link), .exp-more summary {
+    transition: color .16s ease, background-color .16s ease, border-color .16s ease, transform .16s ease;
+}
+.menu-label { border-radius: 4px; }
+main a:not(.card-link) {
+    border-radius: 4px;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+}
+.card { transition: border-color .16s ease, background-color .16s ease, box-shadow .16s ease; }
+.card-link { transition: color .16s ease; }
+
+@media (hover: hover) and (pointer: fine) {
+    .menu-label:hover, .menu-list a:hover {
+        background: var(--section-bg);
+        color: var(--section-fg);
+        transform: translateX(3px);
+    }
+    main a:not(.card-link):hover, .contacts a:hover, .exp-more summary:hover {
+        background: var(--section-bg);
+        color: var(--accent);
+    }
+    .contacts a:hover { transform: translateY(-2px); }
+    .back:hover { transform: translateX(-3px); }
+    .card:hover {
+        background: var(--section-bg);
+        border-color: var(--accent);
+        box-shadow: 0 3px 12px rgba(0, 0, 0, .07);
+    }
+}
+
+a:focus-visible, .exp-more summary:focus-visible {
+    outline: 2px solid var(--section-fg, var(--accent));
+    outline-offset: 3px;
+}
+main a:not(.card-link):focus-visible, .menu-label:focus-visible, .menu-list a:focus-visible {
+    background: var(--section-bg);
+    color: var(--section-fg);
+}
+.card:has(.card-link:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    background: var(--section-bg);
+}
+.card:focus-within .card-link { color: var(--accent); }
+
+@media (prefers-reduced-motion: reduce) {
+    .menu-label, .menu-list a, main a, .card, .exp-more summary { transition: none; }
+    .menu-label:hover, .menu-list a:hover, .contacts a:hover, .back:hover { transform: none; }
+}
