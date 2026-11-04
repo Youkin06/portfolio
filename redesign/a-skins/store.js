@@ -2,6 +2,7 @@
 window.SKIN = {
     iconColor: '222222',
     detailsMotion: true,
+    menuHeadings: true,
     text: {
         about: 'About me',
         data: '作品情報',

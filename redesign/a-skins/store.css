@@ -66,8 +66,7 @@ a { color: var(--accent); }
 .menu-group { margin-top: 22px; }
 .menu-group:first-child { margin-top: 6px; }
 /* 大項目（About / Works / Research）は大きく、中の項目と差をつける */
-.menu-label { color: var(--section-fg); font-size: 20px; font-weight: 900; letter-spacing: .01em; padding: 0 10px; margin-bottom: 6px; }
-.menu-label:hover { color: var(--section-fg); }
+.menu-label { color: var(--section-fg); font-size: 20px; font-weight: 900; line-height: inherit; letter-spacing: .01em; padding: 0 10px; margin-bottom: 6px; }
 .menu-label::after { display: none; }
 .menu-list a { color: var(--fg); padding: 6px 10px; border-radius: 4px; font-size: 14px; }
 .menu-list a::before { display: none; }
@@ -100,7 +99,7 @@ a { color: var(--accent); }
 .gauge i { border-radius: 2px; background: var(--line); }
 .gauge i.on { background: var(--accent); box-shadow: none; }
 .exp, .item { border-bottom: 1px solid var(--line); }
-.exp-more summary { color: var(--accent); }
+.exp-more summary { width: fit-content; max-width: 100%; color: var(--accent); }
 .awards .item-text::before { content: none; }
 .awards .item { display: grid; grid-template-columns: minmax(0, 1fr) minmax(200px, 320px); align-items: baseline; gap: 12px 24px; }
 .awards .item-links { justify-content: flex-end; min-width: 0; margin-top: 0; text-align: right; }
@@ -231,10 +230,9 @@ a { color: var(--accent); }
 [data-section="about"] [data-block="skills"] { margin-top: 0; }
 
 /* ---- リンクに触れたときの反応 ---- */
-.menu-label, .menu-list a, main a:not(.card-link), .exp-more summary {
+.menu-list a, main a:not(.card-link), .exp-more summary {
     transition: color .16s ease, background-color .16s ease, border-color .16s ease, transform .16s ease;
 }
-.menu-label { border-radius: 4px; }
 main a:not(.card-link) {
     border-radius: 4px;
     -webkit-box-decoration-break: clone;
@@ -244,7 +242,7 @@ main a:not(.card-link) {
 .card-link { transition: color .16s ease; }
 
 @media (hover: hover) and (pointer: fine) {
-    .menu-label:hover, .menu-list a:hover {
+    .menu-list a:hover {
         background: var(--section-bg);
         color: var(--section-fg);
         transform: translateX(3px);
@@ -266,7 +264,7 @@ a:focus-visible, .exp-more summary:focus-visible {
     outline: 2px solid var(--section-fg, var(--accent));
     outline-offset: 3px;
 }
-main a:not(.card-link):focus-visible, .menu-label:focus-visible, .menu-list a:focus-visible {
+main a:not(.card-link):focus-visible, .menu-list a:focus-visible {
     background: var(--section-bg);
     color: var(--section-fg);
 }
@@ -278,6 +276,6 @@ main a:not(.card-link):focus-visible, .menu-label:focus-visible, .menu-list a:fo
 .card:focus-within .card-link { color: var(--accent); }
 
 @media (prefers-reduced-motion: reduce) {
-    .menu-label, .menu-list a, main a, .card, .exp-more summary { transition: none; }
-    .menu-label:hover, .menu-list a:hover, .contacts a:hover, .back:hover { transform: none; }
+    .menu-list a, main a, .card, .exp-more summary { transition: none; }
+    .menu-list a:hover, .contacts a:hover, .back:hover { transform: none; }
 }

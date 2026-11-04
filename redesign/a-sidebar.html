@@ -459,7 +459,7 @@
 
             const groupHTML = (section, href, items) => `
                 <div class="menu-group" data-section="${section}">
-                    <a class="menu-label label" href="${href}">${esc(TEXT[section])}</a>
+                    ${SKIN.menuHeadings ? `<h2 class="menu-label label">${esc(TEXT[section])}</h2>` : `<a class="menu-label label" href="${href}">${esc(TEXT[section])}</a>`}
                     ${LAYOUT === 'flat' ? '' : `<ul class="menu-list">${items}</ul>`}
                 </div>`;
             document.getElementById('menu').innerHTML =
@@ -684,7 +684,7 @@
                     const active = group.dataset.section === section;
                     active ? group.setAttribute('data-active', '') : group.removeAttribute('data-active');
                     const label = group.querySelector('.menu-label');
-                    active ? label.setAttribute('aria-current', 'page') : label.removeAttribute('aria-current');
+                    if (label.tagName === 'A') active ? label.setAttribute('aria-current', 'page') : label.removeAttribute('aria-current');
                 });
                 document.querySelectorAll('[data-key]').forEach(a => {
                     const active = a.dataset.key === `${section}/${subKey}`;
