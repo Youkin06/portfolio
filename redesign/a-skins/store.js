@@ -5,5 +5,6 @@ window.SKIN = {
         data: '作品情報',
         researchData: '研究情報',
         links: 'Link',
+        skills: '技術スタック',
     },
 };
