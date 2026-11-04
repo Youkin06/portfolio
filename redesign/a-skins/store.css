@@ -41,8 +41,11 @@ a { color: var(--accent); }
 .player strong { font-size: 18px; }
 .player .label { color: var(--muted); font-size: 12px; }
 .menu { padding: 10px 12px 20px; }
-.menu-group { margin-top: 16px; }
-.menu-label { color: var(--fg); font-size: 12px; padding: 0 10px; }
+.menu-group { margin-top: 22px; }
+.menu-group:first-child { margin-top: 6px; }
+/* 大項目（About / Works / Research）は大きく、中の項目と差をつける */
+.menu-label { color: var(--fg); font-size: 20px; font-weight: 900; letter-spacing: .01em; padding: 0 10px; margin-bottom: 6px; }
+.menu-label:hover { color: var(--accent); }
 .menu-label::after { display: none; }
 .menu-list a { color: #444; padding: 6px 10px; border-radius: 4px; font-size: 14px; }
 .menu-list a::before { display: none; }
