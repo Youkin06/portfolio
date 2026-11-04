@@ -3,5 +3,3 @@
 /* 白・色の札：選んでいる項目を各色で塗り、白い文字にする。いちばん色がはっきり出る。 */
 .menu-list a.active, .menu-list a.active:hover { background: var(--section-fg); color: #ffffff; }
 .menu-list a.active .year, .menu-list a.active .no { color: #ffffff; }
-/* 押したときは、色の札のまま沈むだけ（薄い地に変えると白い文字が読めなくなるため）。 */
-.menu-list a.active:active { background: var(--section-fg); color: #ffffff; }
