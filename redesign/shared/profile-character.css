@@ -35,11 +35,12 @@ main:has(.profile-walkway) { padding-bottom: 100px; }
     height: 100%;
     object-fit: contain;
 }
-/* フェードせず2枚を交互に切り替え、元の手描きアニメーションを保つ。 */
+/* 表示するのは常に1枚だけ。透過部分に前のフレームを残さない。 */
 .profile-character-idle { animation: profile-idle var(--profile-cycle) steps(1, end) infinite; }
 .profile-character-walk { animation: profile-walk var(--profile-cycle) steps(1, end) infinite; }
-.profile-character-idle img + img { animation: profile-frame 800ms steps(1, end) infinite; }
-.profile-character-walk img + img { animation: profile-frame 320ms steps(1, end) infinite; }
+.profile-character-idle img { animation: profile-frame-first 800ms steps(1, end) infinite; }
+.profile-character-walk img { animation: profile-frame-first 320ms steps(1, end) infinite; }
+.profile-character-pose img + img { animation-name: profile-frame; }
 @keyframes profile-stroll {
     0%, 20%, 90%, 100% { left: 0; }
     45%, 65% { left: calc(100% - 76px); }
@@ -60,8 +61,12 @@ main:has(.profile-walkway) { padding-bottom: 100px; }
     0%, 100% { opacity: 0; }
     50% { opacity: 1; }
 }
+@keyframes profile-frame-first {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
 @media (prefers-reduced-motion: reduce) {
     .profile-character, .profile-character-facing,
-    .profile-character-pose, .profile-character-pose img + img { animation: none; }
+    .profile-character-pose, .profile-character-pose img { animation: none; }
     .profile-character-walk, .profile-character-idle img + img { opacity: 0; }
 }
