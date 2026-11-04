@@ -7,9 +7,12 @@
         root.style.setProperty(`--${prefix}-x`, `${8 + 84 * t}%`);
         root.style.setProperty(`--${prefix}-y`, `${88 - 70 * Math.sin(Math.PI * t)}%`);
     };
+    // 確認用：?sky=dawn|day|evening|night を付けると、その時間帯の代表的な時刻で表示する。
+    const PREVIEW = { dawn: 6, day: 12, evening: 17, night: 23 };
+    const preview = PREVIEW[new URLSearchParams(location.search).get('sky')];
     const update = () => {
         const now = new Date();
-        const h = now.getHours() + now.getMinutes() / 60;
+        const h = preview ?? now.getHours() + now.getMinutes() / 60;
         root.dataset.sky = h >= 5 && h < 7 ? 'dawn'
             : h >= 7 && h < 16 ? 'day'
             : h >= 16 && h < 18 ? 'evening'
