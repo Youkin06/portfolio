@@ -121,8 +121,8 @@ main:has(.profile-walkway) { padding-bottom: 144px; }
 }
 .profile-depth-player {
     position: absolute;
-    width: 164px;
-    height: 164px;
+    width: 96px;
+    height: 96px;
     transform: translate(-50%, -50%);
     animation: profile-depth-player-flight 30s linear -7s infinite;
 }
@@ -164,7 +164,6 @@ main:has(.profile-walkway) { padding-bottom: 144px; }
 @media (max-width: 960px) {
     .profile-walkway { --character-size: 112px; }
     .profile-flight { left: 32px; right: 32px; }
-    .profile-depth-player { width: 132px; height: 132px; }
 }
 @media (prefers-reduced-motion: reduce) {
     .profile-character, .profile-character-facing,
