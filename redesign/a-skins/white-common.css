@@ -50,3 +50,6 @@ main a:not(.card-link, .contacts a):active { background: color-mix(in srgb, var(
 @media (prefers-reduced-motion: reduce) {
     .card:hover .thumb :is(img, video) { transform: none; }
 }
+
+/* ---- プロフィールの写真は円形 ---- */
+.portrait { border-radius: 50%; }
