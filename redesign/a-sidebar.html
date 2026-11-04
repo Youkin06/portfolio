@@ -120,6 +120,8 @@
             font-size: 14px;
             line-height: 1.45;
         }
+        .menu-icon { width: 24px; height: 24px; flex-shrink: 0; align-self: center; object-fit: cover; }
+        .menu-list a:has(.menu-icon) { align-items: center; }
         .menu-list .no, .menu-list .year { font-size: 12px; color: #8790b3; flex-shrink: 0; font-variant-numeric: tabular-nums; }
         .menu-list .no { width: 1.6em; }
         .menu-list .year { margin-left: auto; }
@@ -416,6 +418,8 @@
 
         // 動く見本（6秒のループ）と、作品ページの全編動画の置き場所
         const CLIP_BASE = new URL('../Images/clips/', location.href).href;
+        // サイドバーの作品アイコン（Images/icons/<作品の id>.jpg。ない作品はアイコンなし）
+        const ICON_BASE = new URL('../Images/icons/', location.href).href;
         const MEDIA_BASE = 'https://youkin06.github.io/portfolio-media/videos/';
 
         document.body.dataset.layout = LAYOUT;
@@ -450,7 +454,7 @@
                     `<li><a href="${id ? `#about/${id}` : '#about'}" data-key="about/${id}">${esc(aboutLabel(id))}</a></li>`).join('')) +
                 groupHTML('works', '#works',
                     `<li><a href="#works" data-key="works/">${esc(TEXT.worksList)}</a></li>` +
-                    projects.map(p => `<li><a href="#works/${esc(p.id)}" data-key="works/${esc(p.id)}">${esc(p.title)}<span class="year">${yearOf(p)}</span></a></li>`).join('')) +
+                    projects.map(p => `<li><a href="#works/${esc(p.id)}" data-key="works/${esc(p.id)}"><img class="menu-icon" src="${ICON_BASE}${esc(p.id)}.jpg" alt="" loading="lazy" onerror="this.remove()">${esc(p.title)}<span class="year">${yearOf(p)}</span></a></li>`).join('')) +
                 groupHTML('research', LAYOUT === 'flat' ? '#research' : `#research/${research[0]?.id || ''}`, research.map(r =>
                     `<li><a href="#research/${r.id}" data-key="research/${r.id}">${esc(r.theme)}</a></li>`).join(''));
 
