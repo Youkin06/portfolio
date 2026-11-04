@@ -90,6 +90,21 @@ main:has(.profile-walkway) { padding-bottom: 144px; }
     animation: profile-frame-first 400ms steps(1, end) infinite;
 }
 .profile-kamo img + img { animation-name: profile-frame; }
+/* 元画像で透過している目の1ドットを黒くし、頭の上下動に合わせる。 */
+.profile-kamo-facing::after {
+    content: "";
+    position: absolute;
+    left: 62.5%;
+    top: 25%;
+    width: 6.25%;
+    height: 6.25%;
+    background: #000;
+    animation: profile-kamo-eye 400ms steps(1, end) infinite;
+}
+@keyframes profile-kamo-eye {
+    0%, 100% { top: 25%; }
+    50% { top: 31.25%; }
+}
 @keyframes profile-kamo-run {
     0%, 100% { left: 0; }
     50% { left: calc(100% - var(--kamo-size)); }
@@ -144,7 +159,8 @@ main:has(.profile-walkway) { padding-bottom: 144px; }
     .profile-character-pose, .profile-character-pose img { animation: none; }
     .profile-character-walk, .profile-character-idle img + img { opacity: 0; }
     .profile-kamo { left: calc(100% - var(--kamo-size)); }
-    .profile-kamo, .profile-kamo-facing, .profile-kamo img { animation: none; }
+    .profile-kamo, .profile-kamo-facing, .profile-kamo img,
+    .profile-kamo-facing::after { animation: none; }
     .profile-kamo img + img { opacity: 0; }
     .profile-flight { display: none; }
 }
