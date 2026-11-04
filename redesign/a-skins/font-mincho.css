@@ -1,0 +1,6 @@
+@import url("font-base.css");
+
+/* 本文と操作項目は読みやすいゴシックのまま、作品名と見出しに明朝を使う。 */
+.page-head h1, .window-title, .card h3, .research-title, .profile-name {
+    font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif;
+}

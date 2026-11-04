@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>フォント比較 | 矢追陽平 Portfolio</title>
+    <style>
+        * { box-sizing: border-box; }
+        html, body { margin: 0; height: 100%; }
+        body { display: flex; flex-direction: column; background: #fff; color: #333; font: 14px/1.6 "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif; }
+        header { padding: 12px 20px; border-bottom: 1px solid #ccc; }
+        .heading { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 16px; }
+        h1 { margin: 0; font-size: 18px; }
+        p { margin: 4px 0 0; }
+        nav { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+        a { color: #00118f; text-decoration: none; }
+        nav a, button { display: inline-block; padding: 6px 12px; border: 1px solid #ccc; border-radius: 4px; background: #fff; color: #333; font: inherit; cursor: pointer; }
+        nav a:hover, button:hover { border-color: #00118f; }
+        nav a[aria-current] { border-color: #00118f; background: #e8f1fe; color: #00118f; font-weight: 700; }
+        .tools { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 16px; margin-top: 8px; }
+        .pages { display: flex; flex-wrap: wrap; gap: 6px; }
+        .pages button { padding: 3px 8px; }
+        :focus-visible { outline: 2px solid #00118f; outline-offset: 2px; }
+        iframe { flex: 1; width: 100%; min-height: 0; border: 0; background: #fff; }
+        @media (max-width: 600px) { header { padding: 10px 12px; } nav a { padding: 5px 8px; } }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="heading"><h1>フォント比較</h1><span>A-左端デジタル庁案・文字色やサイズは共通</span></div>
+        <nav aria-label="フォントを選ぶ">
+            <a href="a-skin-left-digital.html#works" data-font="noto" aria-current="true">01 Noto Sans JP（現行）</a>
+            <a href="a-skin-font-zen.html#works" data-font="zen">02 Zen角ゴシック</a>
+            <a href="a-skin-font-ud.html#works" data-font="ud">03 BIZ UDPゴシック</a>
+            <a href="a-skin-font-maru.html#works" data-font="maru">04 Zen丸ゴシック</a>
+            <a href="a-skin-font-mincho.html#works" data-font="mincho">05 明朝の見出し</a>
+        </nav>
+        <p id="description" aria-live="polite">現行の書体。比較の基準です。</p>
+        <div class="tools">
+            <div class="pages" aria-label="比較するページ">
+                <button type="button" data-page="works">作品一覧</button>
+                <button type="button" data-page="works/zelly-swipe">作品詳細</button>
+                <button type="button" data-page="about">プロフィール</button>
+                <button type="button" data-page="about/internships">インターン</button>
+            </div>
+            <a id="open-page" href="a-skin-left-digital.html#works" target="_blank" rel="noopener">この案を別タブで開く ↗</a>
+        </div>
+    </header>
+    <iframe id="preview" title="選択したフォントのポートフォリオ" src="a-skin-left-digital.html#works"></iframe>
+    <script>
+        const preview = document.getElementById('preview');
+        const choices = [...document.querySelectorAll('[data-font]')];
+        const descriptions = {
+            noto: '現行の書体。比較の基準です。',
+            zen: 'Zen Kaku Gothic New：角を少し和らげた、落ち着いたゴシック。',
+            ud: 'BIZ UDPGothic：文字をはっきり見せる、実直な印象。',
+            maru: 'Zen Maru Gothic：丸みがあり、ゲームや個人制作に親しみを添える案。',
+            mincho: 'Zen Old Mincho：作品名と見出しだけを明朝体に。本文は現行のゴシック。',
+        };
+        let selected = choices.find(a => a.dataset.font === new URLSearchParams(location.search).get('font')) || choices[0];
+        let page = location.hash.slice(1) || 'works';
+        let restoreY = 0;
+        let navigation = 0;
+        const pageURL = () => selected.getAttribute('href').split('#')[0] + '#' + page;
+        function updateToolbar() {
+            choices.forEach(a => {
+                if (a === selected) a.setAttribute('aria-current', 'true');
+                else a.removeAttribute('aria-current');
+                a.hash = page;
+            });
+            document.getElementById('description').textContent = descriptions[selected.dataset.font];
+            document.getElementById('open-page').href = pageURL();
+            history.replaceState(null, '', '?font=' + selected.dataset.font + '#' + page);
+        }
+        function navigate() {
+            navigation++;
+            updateToolbar();
+            preview.src = pageURL();
+        }
+        choices.forEach(a => a.addEventListener('click', event => {
+            if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            event.preventDefault();
+            if (selected === a) return;
+            page = preview.contentWindow.location.hash.slice(1) || page;
+            restoreY = preview.contentWindow.scrollY;
+            selected = a;
+            navigate();
+        }));
+        document.querySelectorAll('[data-page]').forEach(button => button.addEventListener('click', () => {
+            page = button.dataset.page;
+            restoreY = 0;
+            navigate();
+        }));
+        preview.addEventListener('load', async () => {
+            const current = navigation;
+            const win = preview.contentWindow;
+            win.addEventListener('hashchange', () => {
+                page = win.location.hash.slice(1) || 'works';
+                updateToolbar();
+            });
+            // 作品などの読み込みとフォントの反映を待って、同じ位置に戻す。
+            const waitForContent = () => new Promise(resolve => {
+                if (win.document.querySelector('main > article')) return resolve();
+                const observer = new MutationObserver(() => {
+                    if (win.document.querySelector('main > article')) { observer.disconnect(); resolve(); }
+                });
+                observer.observe(win.document.body, { childList: true, subtree: true });
+                win.setTimeout(() => { observer.disconnect(); resolve(); }, 8000);
+            });
+            await waitForContent();
+            await win.document.fonts.ready;
+            if (current === navigation) win.scrollTo(0, restoreY);
+        });
+        navigate();
+    </script>
+</body>
+</html>
