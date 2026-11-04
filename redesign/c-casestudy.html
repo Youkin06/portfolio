@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C ケーススタディ案 | 矢追陽平 Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=Noto+Serif+JP:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="shared/base.css">
+    <style>
+        :root {
+            --bg: #fbfaf7;
+            --fg: #1f1d1a;
+            --muted: #6b665e;
+            --surface: #ffffff;
+            --surface-2: #f2efe8;
+            --line: #e3ded4;
+            --accent: #d2492a;
+            --tag-bg: #f2efe8;
+            --tag-fg: #4a463f;
+            --highlight-bg: #1f1d1a;
+            --highlight-fg: #fbfaf7;
+            --serif: "Noto Serif JP", serif;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #171614; --fg: #ece8e1; --muted: #a49d92; --surface: #1f1e1b; --surface-2: #2a2824;
+                --line: #37342f; --accent: #ff7a59; --tag-bg: #2a2824; --tag-fg: #d6d0c6;
+                --highlight-bg: #ece8e1; --highlight-fg: #171614;
+            }
+        }
+
+        .wrap { width: min(1040px, 100% - 32px); margin-inline: auto; }
+        .narrow { width: min(760px, 100% - 32px); margin-inline: auto; }
+
+        .topbar { display: flex; justify-content: space-between; align-items: center; padding: 22px 0; font-size: 14px; }
+        .topbar strong { font-family: var(--serif); font-size: 17px; }
+        .topbar nav { display: flex; gap: 18px; }
+        .topbar nav a { color: var(--fg); text-decoration: none; }
+        .topbar nav a:hover { color: var(--accent); }
+
+        /* ---- 冒頭：3行で自分を伝える ---- */
+        .hero { padding: 56px 0 40px; border-bottom: 1px solid var(--line); }
+        .hero .eyebrow { color: var(--accent); font-weight: 700; font-size: 13px; letter-spacing: .1em; margin: 0 0 10px; }
+        .hero h1 { font-family: var(--serif); font-size: clamp(30px, 5vw, 52px); margin: 0 0 20px; letter-spacing: .01em; }
+        .hero .about { color: var(--muted); max-width: 640px; margin: 0; }
+        .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin-top: 36px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+        .stats div { background: var(--surface); padding: 16px 18px; }
+        .stats b { display: block; font-family: var(--serif); font-size: 30px; line-height: 1.2; }
+        .stats span { font-size: 12px; color: var(--muted); }
+
+        section { padding: 64px 0 0; scroll-margin-top: 16px; }
+        .kicker { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; margin-bottom: 28px; }
+        .kicker h2 { font-family: var(--serif); font-size: 28px; margin: 0; }
+        .kicker span { color: var(--muted); font-size: 14px; }
+
+        /* ---- 注目作品：ケーススタディ ---- */
+        .case { display: grid; grid-template-columns: 1.15fr 1fr; gap: 36px; align-items: start; padding: 0 0 56px; margin-bottom: 56px; border-bottom: 1px solid var(--line); }
+        .case:nth-of-type(even) .case-media { order: 2; }
+        .case-num { font-family: var(--serif); color: var(--accent); font-size: 14px; }
+        .case h3 { font-family: var(--serif); font-size: 28px; margin: 4px 0 8px; }
+        .case .one-liner { margin: 0 0 14px; color: var(--muted); }
+        .case dl { display: grid; grid-template-columns: 5.5em 1fr; gap: 6px 12px; font-size: 14px; margin: 16px 0; }
+        .case dt { color: var(--muted); }
+        .case dd { margin: 0; }
+        .case .point { background: var(--surface-2); border-radius: 10px; padding: 14px 16px; font-size: 14px; }
+        .case .point b { display: block; font-size: 12px; color: var(--accent); margin-bottom: 4px; letter-spacing: .06em; }
+        .read-more {
+            margin-top: 16px;
+            border: 0;
+            background: none;
+            padding: 0;
+            color: var(--accent);
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .case-full { grid-column: 1 / -1; padding: 8px 0 0; }
+        .case-full .detail-video, .case-full .detail-title, .case-full .detail-summary, .case-full .tags { display: none; }
+        .case-full .facts { display: none; }
+
+        /* ---- その他の作品：一覧表 ---- */
+        .archive { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .archive th { text-align: left; font-weight: 400; color: var(--muted); font-size: 12px; padding: 8px 10px; border-bottom: 1px solid var(--fg); }
+        .archive td { padding: 14px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+        .archive tr.item { cursor: pointer; }
+        .archive tr.item:hover td { background: var(--surface-2); }
+        .archive .title { font-weight: 700; }
+        .archive .title small { display: block; font-weight: 400; color: var(--muted); }
+        .archive .tags { margin: 0; }
+        .archive tr.open-row td { background: var(--surface); padding: 20px 10px 28px; }
+        .archive .arrow { color: var(--muted); text-align: right; white-space: nowrap; }
+
+        /* ---- 経験 ---- */
+        .exp { display: grid; grid-template-columns: 150px 1fr; gap: 8px 28px; padding: 18px 0; border-top: 1px solid var(--line); }
+        .exp .when { color: var(--muted); font-size: 13px; }
+        .exp h3 { margin: 0; font-size: 17px; }
+        .exp h3 small { font-weight: 400; color: var(--muted); font-size: 13px; margin-left: 8px; }
+        .exp p { margin: 6px 0 0; font-size: 14px; }
+        .exp .links { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 6px; font-size: 13px; }
+        .exp details summary { cursor: pointer; color: var(--accent); font-size: 13px; margin-top: 4px; }
+        .group-title { font-size: 13px; letter-spacing: .1em; color: var(--muted); margin: 36px 0 6px; }
+
+        .skill-line { display: grid; grid-template-columns: 120px 1fr; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); font-size: 14px; }
+        .skill-line b { color: var(--muted); font-weight: 400; }
+        .skill-line ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; }
+
+        footer { margin-top: 80px; padding: 40px 0 56px; border-top: 1px solid var(--line); }
+        footer h2 { font-family: var(--serif); font-size: 26px; margin: 0 0 12px; }
+        footer .links { display: flex; flex-wrap: wrap; gap: 10px 22px; }
+
+        @media (max-width: 760px) {
+            .topbar nav { display: none; }
+            .stats { grid-template-columns: 1fr 1fr; }
+            .case { grid-template-columns: 1fr; gap: 18px; }
+            .case:nth-of-type(even) .case-media { order: 0; }
+            .archive thead, .archive .col-genre, .archive .col-tags { display: none; }
+            .exp, .skill-line { grid-template-columns: 1fr; gap: 2px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="topbar">
+            <strong>Yohei Yaoi</strong>
+            <nav><a href="#selected">Selected Works</a><a href="#archive">All Works</a><a href="#experience">Experience</a><a href="#contact">Contact</a></nav>
+        </div>
+    </div>
+    <div id="app"><p class="wrap">読み込み中…</p></div>
+
+    <script src="shared/content.js"></script>
+    <script src="shared/ui.js"></script>
+    <script>
+        const { esc, FEATURED, tagsHTML, videoFacade, detailHTML, starsHTML, linkHTML } = PortfolioUI;
+
+        /** 長い説明から最初の1〜2文だけを取り出す（要点表示用）。 */
+        const firstSentences = (str, count = 2) => (str.match(/[^。]+。/g) || [str]).slice(0, count).join('');
+
+        loadPortfolio().then(data => {
+            const projects = data.projects;
+            const featured = FEATURED.map(id => projects.find(p => p.id === id)).filter(Boolean);
+            const others = projects.filter(p => !FEATURED.includes(p.id));
+            const fieldText = (p, label) => p.fields.find(f => f.label === label)?.plain || '';
+
+            const stats = [
+                [data.awards.length, '受賞・選出'],
+                [projects.length, '制作したゲーム'],
+                [data.internships.length, 'インターン・バイト'],
+                [projects.filter(p => p.tags.some(t => t.key === 'google-play')).length, 'ストアリリース'],
+            ];
+
+            const caseHTML = (p, i) => `
+                <article class="case" id="case-${esc(p.id)}">
+                    <div class="case-media">${videoFacade(p.videoId, p.title, 'hqdefault')}</div>
+                    <div>
+                        <div class="case-num">Case ${String(i + 1).padStart(2, '0')}</div>
+                        <h3>${esc(p.title)}</h3>
+                        <p class="one-liner">${esc(p.summary)}</p>
+                        ${tagsHTML(p.tags)}
+                        <dl>
+                            ${[['期間', p.period], ['体制', p.team], ['担当', p.role], ['技術', p.tech]].filter(([, v]) => v)
+                                .map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('')}
+                        </dl>
+                        ${fieldText(p, '技術説明') ? `<div class="point"><b>エンジニアとしての工夫</b>${esc(firstSentences(fieldText(p, '技術説明')))}</div>` : ''}
+                        <button class="read-more" type="button" data-expand="${esc(p.id)}" aria-expanded="false">詳しく読む ↓</button>
+                    </div>
+                    <div class="case-full" id="full-${esc(p.id)}" hidden></div>
+                </article>`;
+
+            const expHTML = (item, kind) => `
+                <div class="exp">
+                    <div class="when">${esc(item.period)}</div>
+                    <div>
+                        <h3>${esc(item.role || item.org)}${item.role ? `<small>${esc(item.org)}</small>` : ''}</h3>
+                        <details><summary>内容を見る</summary><p>${item.html}</p></details>
+                        ${item.links.length ? `<div class="links">${item.links.map(linkHTML).join('')}</div>` : ''}
+                    </div>
+                </div>`;
+
+            document.getElementById('app').innerHTML = `
+                <header class="hero"><div class="wrap">
+                    <p class="eyebrow">UNITY GAME ENGINEER</p>
+                    <h1>${esc(data.hero.tagline)}</h1>
+                    <p class="about">${esc(data.profile.name)}<br>${data.profile.aboutHtml}</p>
+                    <div class="stats">${stats.map(([n, l]) => `<div><b>${n}</b><span>${esc(l)}</span></div>`).join('')}</div>
+                </div></header>
+
+                <section id="selected"><div class="wrap">
+                    <div class="kicker"><h2>Selected Works</h2><span>特に見てほしい${featured.length}作品</span></div>
+                    ${featured.map(caseHTML).join('')}
+                </div></section>
+
+                <section id="archive"><div class="wrap">
+                    <div class="kicker"><h2>All Works</h2><span>そのほかの${others.length}作品（行を押すと開きます）</span></div>
+                    <table class="archive">
+                        <thead><tr><th>タイトル</th><th class="col-genre">ジャンル</th><th class="col-tags">タグ</th><th></th></tr></thead>
+                        <tbody>${others.map(p => `
+                            <tr class="item" data-id="${esc(p.id)}" tabindex="0">
+                                <td class="title">${esc(p.title)}<small>${esc(p.summary)}</small></td>
+                                <td class="col-genre">${esc(p.genre)}</td>
+                                <td class="col-tags">${tagsHTML(p.tags)}</td>
+                                <td class="arrow">開く ↓</td>
+                            </tr>`).join('')}</tbody>
+                    </table>
+                </div></section>
+
+                <section id="experience"><div class="narrow">
+                    <div class="kicker"><h2>Experience</h2></div>
+                    <p class="group-title">インターン・バイト</p>
+                    ${data.internships.map(i => expHTML(i)).join('')}
+                    <p class="group-title">研究</p>
+                    ${data.research.map(r => expHTML(r)).join('')}
+                    <p class="group-title">受賞・メディア</p>
+                    ${data.awards.concat(data.media).map(a => `
+                        <div class="exp"><div class="when">${a.link && a.link.href.startsWith('#') ? '受賞' : 'メディア'}</div>
+                        <div><h3 style="font-size:15px">${esc(a.text)}</h3>${a.link ? `<div class="links">${linkHTML(a.link)}</div>` : ''}</div></div>`).join('')}
+                </div></section>
+
+                <section id="skills"><div class="narrow">
+                    <div class="kicker"><h2>Skills</h2></div>
+                    ${data.skills.map(cat => `
+                        <div class="skill-line"><b>${esc(cat.category)}</b>
+                        <ul>${cat.items.map(i => `<li>${esc(i.name)} ${starsHTML(i.rating)}</li>`).join('')}</ul></div>`).join('')}
+                </div></section>
+
+                <footer id="contact"><div class="narrow">
+                    <h2>Contact</h2>
+                    <div class="links">
+                        ${data.profile.emails.map(m => `<a href="mailto:${esc(m)}">${esc(m)}</a>`).join('')}
+                        ${data.profile.socials.map(s => `<a href="${esc(s.href)}" target="_blank" rel="noopener noreferrer">${esc(s.label)} ↗</a>`).join('')}
+                    </div>
+                </div></footer>`;
+
+            // ---- 注目作品：その場で全文を開く ----
+            const expandCase = (id, scroll) => {
+                const full = document.getElementById(`full-${id}`);
+                const button = document.querySelector(`[data-expand="${id}"]`);
+                if (!full) return false;
+                const open = full.hidden;
+                if (open && !full.innerHTML) full.innerHTML = detailHTML(projects.find(p => p.id === id), { video: false });
+                full.hidden = !open;
+                button.setAttribute('aria-expanded', String(open));
+                button.textContent = open ? '閉じる ↑' : '詳しく読む ↓';
+                if (scroll) document.getElementById(`case-${id}`).scrollIntoView({ behavior: 'smooth' });
+                return true;
+            };
+            document.addEventListener('click', event => {
+                const button = event.target.closest('[data-expand]');
+                if (button) expandCase(button.dataset.expand);
+            });
+
+            // ---- 一覧表：行の下に詳細を差し込む ----
+            const toggleRow = row => {
+                const next = row.nextElementSibling;
+                if (next && next.classList.contains('open-row')) {
+                    next.remove();
+                    row.querySelector('.arrow').textContent = '開く ↓';
+                    return;
+                }
+                const project = projects.find(p => p.id === row.dataset.id);
+                const detail = document.createElement('tr');
+                detail.className = 'open-row';
+                detail.innerHTML = `<td colspan="4">${detailHTML(project)}</td>`;
+                row.after(detail);
+                row.querySelector('.arrow').textContent = '閉じる ↑';
+            };
+            const tbody = document.querySelector('.archive tbody');
+            tbody.addEventListener('click', event => {
+                const row = event.target.closest('tr.item');
+                if (row) toggleRow(row);
+            });
+            tbody.addEventListener('keydown', event => {
+                const row = event.target.closest('tr.item');
+                if (row && event.key === 'Enter') toggleRow(row);
+            });
+
+            document.addEventListener('open-project', event => {
+                const id = event.detail;
+                if (FEATURED.includes(id)) {
+                    if (document.getElementById(`full-${id}`).hidden) expandCase(id, true);
+                    else document.getElementById(`case-${id}`).scrollIntoView({ behavior: 'smooth' });
+                    return;
+                }
+                const row = tbody.querySelector(`tr.item[data-id="${CSS.escape(id)}"]`);
+                if (!row) return;
+                if (!row.nextElementSibling?.classList.contains('open-row')) toggleRow(row);
+                row.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ポートフォリオ改修案</title>
+    <link rel="stylesheet" href="shared/base.css">
+    <style>
+        :root { --bg: #f6f7f9; --fg: #1d2330; --muted: #5f6878; --surface: #fff; --surface-2: #eef1f5; --line: #d9dee6; --accent: #2f6fde; --tag-bg: #eef1f5; --tag-fg: #3a4252; --highlight-bg: #ffe08a; --highlight-fg: #4a3500; }
+        @media (prefers-color-scheme: dark) {
+            :root { --bg: #12151b; --fg: #e7eaf0; --muted: #9aa3b2; --surface: #1a1f27; --surface-2: #232a35; --line: #2f3845; --accent: #7aa7ff; --tag-bg: #232a35; --tag-fg: #c9d0dc; }
+        }
+        main { width: min(960px, 100% - 32px); margin: 40px auto 80px; }
+        h1 { margin: 0 0 6px; }
+        .lead { color: var(--muted); margin: 0 0 28px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .card { display: block; padding: 20px; border-radius: 14px; background: var(--surface); border: 1px solid var(--line); color: inherit; text-decoration: none; transition: border-color .15s ease; }
+        .card:hover { border-color: var(--accent); }
+        .card b { font-size: 13px; color: var(--accent); }
+        .card h2 { margin: 2px 0 8px; font-size: 20px; }
+        .card p { margin: 0 0 8px; font-size: 14px; }
+        .card ul { margin: 0; padding-left: 18px; font-size: 13px; color: var(--muted); }
+        .note { margin-top: 28px; padding: 18px 20px; border-radius: 14px; background: var(--surface-2); font-size: 14px; }
+        .note h2 { font-size: 16px; margin: 0 0 6px; }
+        .note ul { margin: 0; padding-left: 18px; }
+        @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>ポートフォリオ改修案（4案）</h1>
+        <p class="lead">内容はすべて本番の index.html から読み込んでいます。index.html を直すと4案すべてに反映されます。</p>
+
+        <div class="grid">
+            <a class="card" href="a-sidebar.html">
+                <b>A</b>
+                <h2>サイドバー型（ゲームメニュー）</h2>
+                <p>サイドバーをRPGのコマンドウィンドウ風に。WORKS（作品一覧と全作品）・RESEARCH（研究ごとのページ）・ABOUT を並べ、選んだ項目に ▶ カーソル。</p>
+                <ul>
+                    <li>最初に開くのは作品一覧</li>
+                    <li>研究は作品と同じく1つずつページに</li>
+                    <li>ドット絵のアイコンとドットフォントで自分らしさを出す
+                </ul>
+            </a>
+            <a class="card" href="b-gallery.html">
+                <b>B</b>
+                <h2>ギャラリー型</h2>
+                <p>上部に受賞歴と注目4作品を大きく。下にカテゴリのボタンで絞り込める3列のサムネイル一覧。</p>
+                <ul>
+                    <li>ゲームの見た目で一目で惹きつける</li>
+                    <li>経験はインターンと研究をまとめた年表</li>
+                    <li>今のサイトの雰囲気（暗め）に近い</li>
+                </ul>
+            </a>
+            <a class="card" href="c-casestudy.html">
+                <b>C</b>
+                <h2>ケーススタディ型</h2>
+                <p>注目4作品だけを「期間・体制・担当・工夫」付きで大きく紹介。残りは表形式で、行を押すとその場で開く。</p>
+                <ul>
+                    <li>採用担当が見たい「自分の役割と工夫」が最初に読める</li>
+                    <li>実績の数字（受賞数・作品数など）を冒頭に</li>
+                    <li>読みやすさ最優先の明るい配色</li>
+                </ul>
+            </a>
+            <a class="card" href="d-bento.html">
+                <b>D</b>
+                <h2>ダッシュボード型</h2>
+                <p>最初の1画面にプロフィール・注目作品・いま参加中のこと・受賞・連絡先をタイルで並べ、下はタブで切り替え。</p>
+                <ul>
+                    <li>スクロールしなくても全体像がわかる</li>
+                    <li>長いページにならない</li>
+                    <li>今のサイトの4色をアクセントに使用</li>
+                </ul>
+            </a>
+        </div>
+
+        <div class="note">
+            <h2>4案に共通の軽量化</h2>
+            <ul>
+                <li>動画はサムネイル画像（1枚 約7KB）だけを表示し、再生ボタンを押したときに YouTube を読み込む。今のサイトはスクロールで近づいた動画から順に YouTube プレイヤー（1本ごとに数百KB〜のスクリプト）を読み込み、見えている動画をすべて自動再生している（全12本）。</li>
+                <li>背景アニメーション用の p5.js（約950KB）と常に動く Canvas をやめた。</li>
+                <li>光るエフェクト（box-shadow の多用）を減らし、スクロールを軽くした。</li>
+            </ul>
+        </div>
+    </main>
+</body>
+</html>

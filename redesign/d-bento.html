@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D ダッシュボード案 | 矢追陽平 Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="shared/base.css">
+    <style>
+        /* 今のサイトの4色（赤・オレンジ・水色・黄緑）を引き継ぐ */
+        :root {
+            --bg: #0b0f1a;
+            --fg: #e9edf5;
+            --muted: #8f99ad;
+            --surface: #121829;
+            --surface-2: #1a2236;
+            --line: #243049;
+            --accent: #87ceeb;
+            --red: #ff5a5a;
+            --orange: #ffa500;
+            --sky: #87ceeb;
+            --green: #adff2f;
+            --tag-bg: #1a2236;
+            --tag-fg: #cdd5e3;
+            --highlight-bg: #ffa500;
+            --highlight-fg: #1d1200;
+        }
+
+        .wrap { width: min(1200px, 100% - 32px); margin-inline: auto; padding: 24px 0 64px; }
+
+        /* ---- 1画面で全体がわかるタイル ---- */
+        .bento {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: minmax(120px, auto);
+            gap: 12px;
+        }
+        .tile {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            padding: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+        .tile h2 { margin: 0 0 10px; font-size: 12px; letter-spacing: .12em; color: var(--muted); font-weight: 700; }
+        .tile::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 3px; background: var(--tile-color, var(--line)); }
+
+        .t-profile { grid-column: span 2; display: flex; gap: 18px; align-items: center; --tile-color: var(--sky); }
+        .t-profile img { width: 96px; height: 96px; border-radius: 16px; object-fit: cover; flex-shrink: 0; }
+        .t-profile h1 { margin: 0; font-size: 24px; font-weight: 900; }
+        .t-profile .tagline { margin: 2px 0 8px; color: var(--sky); font-weight: 700; }
+        .t-profile p { margin: 0; font-size: 13px; color: var(--muted); }
+
+        .t-video { grid-column: span 2; grid-row: span 2; padding: 0; --tile-color: var(--orange); }
+        .t-video .yt-facade, .t-video .yt-frame { height: 100%; aspect-ratio: auto; border-radius: 0; }
+        .t-video .caption {
+            position: absolute; left: 12px; bottom: 12px; padding: 6px 12px; border-radius: 999px;
+            background: rgba(0, 0, 0, .7); font-size: 13px; pointer-events: none;
+        }
+
+        .t-now { grid-column: span 2; --tile-color: var(--green); }
+        .now-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 14px; }
+        .now-list li { display: flex; gap: 10px; align-items: baseline; }
+        .now-list .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; box-shadow: 0 0 8px var(--green); }
+        .now-list small { color: var(--muted); margin-left: auto; white-space: nowrap; }
+
+        .t-awards { grid-column: span 2; --tile-color: var(--orange); }
+        .t-awards ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 14px; }
+        .t-awards a { color: var(--fg); text-decoration: none; }
+        .t-awards a:hover { color: var(--orange); }
+
+        .t-stat { --tile-color: var(--red); display: flex; flex-direction: column; justify-content: space-between; }
+        .t-stat div { display: flex; align-items: baseline; gap: 8px; }
+        .t-stat b { font-size: 48px; font-weight: 900; line-height: 1; }
+        .t-stat span { font-size: 13px; color: var(--muted); }
+
+        .t-contact { --tile-color: var(--sky); }
+        .t-contact div { display: grid; gap: 4px; font-size: 13px; }
+        .t-contact a { color: var(--fg); text-decoration: none; overflow-wrap: anywhere; }
+        .t-contact a:hover { color: var(--sky); }
+
+        /* ---- タブ ---- */
+        .tabs {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            display: flex;
+            gap: 6px;
+            margin: 28px 0 18px;
+            padding: 10px 0;
+            background: var(--bg);
+            border-bottom: 1px solid var(--line);
+            overflow-x: auto;
+        }
+        .tabs button {
+            border: 0;
+            background: none;
+            color: var(--muted);
+            font: inherit;
+            font-weight: 700;
+            font-size: 15px;
+            padding: 8px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .tabs button[aria-selected="true"] { color: var(--bg); background: var(--sky); }
+        .tabs button small { font-weight: 400; margin-left: 4px; opacity: .8; }
+
+        .filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+        .filter-row select, .filter-row input {
+            background: var(--surface);
+            color: var(--fg);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 8px 12px;
+            font: inherit;
+            font-size: 14px;
+        }
+        .filter-row input { flex: 1; min-width: 180px; }
+
+        .works { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .work {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            overflow: hidden;
+            cursor: pointer;
+            padding: 0;
+            color: inherit;
+            font: inherit;
+            text-align: left;
+            transition: border-color .15s ease, transform .15s ease;
+        }
+        .work:hover, .work:focus-visible { border-color: var(--sky); transform: translateY(-2px); outline: none; }
+        .work img { aspect-ratio: 16 / 9; width: 100%; object-fit: cover; background: #000; }
+        .work div { padding: 10px 12px 14px; }
+        .work h3 { margin: 0; font-size: 15px; }
+        .work p { margin: 2px 0 0; font-size: 12px; color: var(--muted); }
+
+        .list { display: grid; gap: 10px; }
+        .entry { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; }
+        .entry-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 12px; }
+        .entry-head strong { font-size: 15px; }
+        .entry-head span { color: var(--muted); font-size: 13px; }
+        .entry p { margin: 8px 0 0; font-size: 14px; color: #c3cad8; }
+        .entry .links { display: flex; flex-wrap: wrap; gap: 12px; font-size: 13px; margin-top: 8px; }
+        .entry details summary { cursor: pointer; color: var(--sky); font-size: 13px; margin-top: 6px; }
+
+        .skills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .skills ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 14px; }
+        .skills li { display: flex; justify-content: space-between; }
+        .skills h3 { margin: 0 0 10px; font-size: 14px; color: var(--sky); }
+
+        /* ---- 作品詳細 ---- */
+        dialog {
+            width: min(860px, 100% - 24px);
+            max-height: 90vh;
+            padding: 0;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: var(--surface);
+            color: var(--fg);
+        }
+        dialog::backdrop { background: rgba(3, 6, 14, .75); }
+        .dialog-body { padding: 24px 28px 36px; }
+        .dialog-close {
+            position: sticky; top: 10px; float: right; margin: 10px 10px 0 0;
+            width: 36px; height: 36px; border-radius: 50%;
+            border: 1px solid var(--line); background: var(--surface-2); color: var(--fg); font-size: 18px; cursor: pointer;
+        }
+
+        @media (max-width: 980px) {
+            .bento { grid-template-columns: 1fr 1fr; }
+            .t-video { grid-row: span 1; aspect-ratio: 16 / 9; }
+            .works { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 640px) {
+            .bento { grid-template-columns: 1fr 1fr; }
+            .t-profile, .t-video, .t-now, .t-awards { grid-column: 1 / -1; }
+            .t-profile { flex-direction: column; align-items: flex-start; }
+            .t-contact, .t-stat { grid-column: 1 / -1; }
+            .works { grid-template-columns: 1fr 1fr; }
+            .skills { grid-template-columns: 1fr; }
+            .dialog-body { padding: 16px 16px 28px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="bento" id="bento"><p>読み込み中…</p></div>
+        <div class="tabs" role="tablist" id="tabs"></div>
+        <div id="panel" role="tabpanel"></div>
+    </div>
+
+    <dialog id="dialog" aria-label="作品の詳細">
+        <button class="dialog-close" type="button" aria-label="閉じる">×</button>
+        <div class="dialog-body" id="dialog-body"></div>
+    </dialog>
+
+    <script src="shared/content.js"></script>
+    <script src="shared/ui.js"></script>
+    <script>
+        const { esc, FEATURED, CATEGORY_RULES, categoriesOf, tagsHTML, thumbUrl, videoFacade, detailHTML, starsHTML, linkHTML } = PortfolioUI;
+
+        loadPortfolio().then(data => {
+            const projects = data.projects;
+            const headline = projects.find(p => p.id === FEATURED[0]);
+            // 「〜」で終わる期間（進行中・予定）を「いまやっていること」として出す。
+            const now = data.internships.filter(i => /[~〜]/.test(i.period));
+
+            document.getElementById('bento').innerHTML = `
+                <div class="tile t-profile">
+                    <img src="${esc(data.profile.photo)}" alt="">
+                    <div>
+                        <h1>${esc(data.profile.name)}</h1>
+                        <p class="tagline">${esc(data.hero.tagline)}</p>
+                        <p>${data.profile.aboutHtml}</p>
+                    </div>
+                </div>
+                <div class="tile t-video">
+                    ${videoFacade(headline.videoId, headline.title, 'maxresdefault')}
+                    <span class="caption">注目作品：${esc(headline.title)}</span>
+                </div>
+                <div class="tile t-now">
+                    <h2>NOW</h2>
+                    <ul class="now-list">${now.map(i => `<li><span class="dot"></span>${esc(i.role)} / ${esc(i.org)}<small>${esc(i.period)}</small></li>`).join('')}</ul>
+                </div>
+                <div class="tile t-awards">
+                    <h2>AWARDS</h2>
+                    <ul>${data.awards.map(a => `<li>🏆 ${a.link ? `<a href="${esc(a.link.href)}">${esc(a.text)}</a>` : esc(a.text)}</li>`).join('')}</ul>
+                </div>
+                <div class="tile t-stat"><h2>WORKS</h2><div><b>${projects.length}</b><span>制作したゲーム</span></div></div>
+                <div class="tile t-contact">
+                    <h2>CONTACT</h2>
+                    <div>${data.profile.socials.map(s => `<a href="${esc(s.href)}" target="_blank" rel="noopener noreferrer">${esc(s.label)} ↗</a>`).join('')}
+                    ${data.profile.emails.slice(0, 1).map(m => `<a href="mailto:${esc(m)}">${esc(m)}</a>`).join('')}</div>
+                </div>`;
+            document.querySelector('.t-video .yt-facade img').onerror = function () {
+                this.onerror = null;
+                this.src = thumbUrl(headline.videoId, 'hqdefault');
+            };
+
+            // ---- タブの中身 ----
+            const entryHTML = item => `
+                <div class="entry">
+                    <div class="entry-head"><strong>${esc(item.role ? `${item.role} / ${item.org}` : item.org)}</strong><span>${esc(item.period)}</span></div>
+                    <details><summary>詳しく見る</summary><p>${item.html}</p></details>
+                    ${item.links.length ? `<div class="links">${item.links.map(linkHTML).join('')}</div>` : ''}
+                </div>`;
+
+            const state = { category: '', query: '' };
+            const ordered = [...projects].sort((a, b) => {
+                const fa = FEATURED.indexOf(a.id), fb = FEATURED.indexOf(b.id);
+                return (fa < 0 ? 99 : fa) - (fb < 0 ? 99 : fb) || a.order - b.order;
+            });
+            const renderWorks = () => {
+                const q = state.query.trim().toLowerCase();
+                const list = ordered.filter(p =>
+                    (!state.category || categoriesOf(p).includes(state.category)) &&
+                    (!q || [p.title, p.summary, p.tech, ...p.tags.map(t => t.label)].join(' ').toLowerCase().includes(q)));
+                document.getElementById('works').innerHTML = list.map(p => `
+                    <button class="work" type="button" data-id="${esc(p.id)}">
+                        ${p.videoId ? `<img src="${thumbUrl(p.videoId, 'mqdefault')}" alt="" loading="lazy">` : ''}
+                        <div><h3>${esc(p.title)}</h3><p>${esc(p.genre || p.summary)}</p></div>
+                    </button>`).join('') || '<p>条件に合う作品がありません。</p>';
+            };
+
+            const tabs = [
+                { id: 'works', label: 'Works', count: projects.length, render: () => `
+                    <div class="filter-row">
+                        <select id="category" aria-label="カテゴリ">
+                            <option value="">すべてのカテゴリ</option>
+                            ${CATEGORY_RULES.filter(r => projects.some(p => categoriesOf(p).includes(r.label)))
+                                .map(r => `<option${r.label === state.category ? ' selected' : ''}>${esc(r.label)}</option>`).join('')}
+                        </select>
+                        <input id="query" type="search" placeholder="作品名・技術で検索" value="${esc(state.query)}">
+                    </div>
+                    <div class="works" id="works"></div>` },
+                { id: 'internships', label: 'インターン・バイト', count: data.internships.length,
+                  render: () => `<div class="list">${data.internships.map(entryHTML).join('')}</div>` },
+                { id: 'research', label: '研究', count: data.research.length,
+                  render: () => `<div class="list">${data.research.map(entryHTML).join('')}</div>` },
+                { id: 'history', label: '経歴・メディア', count: data.history.length + data.media.length,
+                  render: () => `<div class="list">
+                    ${data.media.map(m => `<div class="entry"><div class="entry-head"><strong>${esc(m.text)}</strong></div>${m.link ? `<div class="links">${linkHTML(m.link)}</div>` : ''}</div>`).join('')}
+                    ${data.history.map(h => `<div class="entry"><div class="entry-head"><strong>${esc(h.title)}</strong></div><details><summary>詳しく見る</summary>${h.html}</details></div>`).join('')}
+                  </div>` },
+                { id: 'skills', label: 'Skills', render: () => `<div class="skills">${data.skills.map(cat => `
+                    <div class="entry"><h3>${esc(cat.category)}</h3>
+                    <ul>${cat.items.map(i => `<li><span>${esc(i.name)}</span>${starsHTML(i.rating)}</li>`).join('')}</ul></div>`).join('')}</div>` },
+            ];
+
+            const tabBar = document.getElementById('tabs');
+            const showTab = id => {
+                const tab = tabs.find(t => t.id === id);
+                tabBar.innerHTML = tabs.map(t => `<button type="button" role="tab" aria-selected="${t.id === id}" data-tab="${t.id}">${esc(t.label)}${t.count ? `<small>${t.count}</small>` : ''}</button>`).join('');
+                document.getElementById('panel').innerHTML = tab.render();
+                if (id === 'works') {
+                    renderWorks();
+                    document.getElementById('category').addEventListener('change', e => { state.category = e.target.value; renderWorks(); });
+                    document.getElementById('query').addEventListener('input', e => { state.query = e.target.value; renderWorks(); });
+                }
+            };
+            showTab('works');
+            tabBar.addEventListener('click', event => {
+                const button = event.target.closest('[data-tab]');
+                if (button) showTab(button.dataset.tab);
+            });
+
+            // ---- 詳細 ----
+            const dialog = document.getElementById('dialog');
+            const openProject = id => {
+                const project = projects.find(p => p.id === id);
+                if (!project) return;
+                document.getElementById('dialog-body').innerHTML = detailHTML(project);
+                dialog.showModal();
+                dialog.scrollTop = 0;
+            };
+            document.getElementById('panel').addEventListener('click', event => {
+                const work = event.target.closest('.work[data-id]');
+                if (work) openProject(work.dataset.id);
+            });
+            document.addEventListener('open-project', event => openProject(event.detail));
+            dialog.querySelector('.dialog-close').addEventListener('click', () => dialog.close());
+            dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); });
+            dialog.addEventListener('close', () => { document.getElementById('dialog-body').innerHTML = ''; });
+        });
+    </script>
+</body>
+</html>

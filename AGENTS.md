@@ -9,6 +9,16 @@
 - `script.js` ほか `*.js` … アコーディオン、モーダル、背景描画、動画の遅延読み込みなど
 - `Images/` … 画像素材
 - `tests/` … Node標準のテスト（`node --test tests/*.cjs`）
+- `redesign/` … 全体改修の試作4案（A〜D）。`redesign/shared/content.js` が本番の `index.html` から内容を読み取って表示するため、内容の修正は `index.html` だけでよい。
+  - 本命は A 案（`redesign/a-sidebar.html`）。見た目違いの「スキン」は `redesign/a-skins/*.css` と `build.sh` で作る。
+- `Images/clips/` … 作品一覧で動かす6秒のループ動画と静止画（ファイル名は YouTube の動画 ID）。
+- 作品ページの全編動画は別リポジトリ `Youkin06/portfolio-media`（GitHub Pages）に置き、`https://youkin06.github.io/portfolio-media/videos/<動画ID>.mp4` で読み込む。
+
+## 改修の分担（複数の Claude セッションで作業するとき）
+
+- **機能**（構造・JS・内容の読み込み・動画・本番への反映）：`main` ブランチで作業する。`redesign/a-sidebar.html` と `redesign/shared/` はこちらだけが編集する。
+- **デザイン**（色・フォント・余白・飾り）：worktree `../portfolio-skins`（ブランチ `visual-skins`）で `redesign/a-skins/` だけを編集する。構造や動きを変えたいときは機能側に頼む。
+- 機能側の変更は `main` にコミットし、デザイン側は `main` を取り込んでから `sh redesign/a-skins/build.sh` でスキンを作り直す。
 
 ## 作業ルール
 

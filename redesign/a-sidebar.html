@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A サイドバー案 | 矢追陽平 Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="shared/base.css">
+    <style>
+        /*
+         * テーマ：ゲームのメニュー画面。
+         * サイドバーはRPGのコマンドウィンドウ、中身はタイトルバー付きのウィンドウで統一する。
+         * 色は今のサイトの4色（赤・オレンジ・水色・黄緑）。
+         */
+        :root {
+            --bg: #e9edf5;
+            --fg: #1c2238;
+            --muted: #5d6680;
+            --surface: #ffffff;
+            --surface-2: #f2f4f9;
+            --line: #d9deea;
+            --navy: #1c2238;
+            --navy-2: #2a3258;
+            --cursor: #ffd84d;
+            --red: #ff5a5a;
+            --orange: #ffa51f;
+            --sky: #4fb6e8;
+            --green: #8fd11c;
+            --accent: #2b78c5;
+            --tag-bg: #f2f4f9;
+            --tag-fg: #1c2238;
+            --highlight-bg: #ffd84d;
+            --highlight-fg: #1c2238;
+            --sidebar-w: 312px;
+            --radius: 12px;
+        }
+
+        /* 方眼紙のようなドットの背景 */
+        body {
+            background-color: var(--bg);
+            background-image: radial-gradient(rgba(28, 34, 56, .12) 1px, transparent 1.2px);
+            background-size: 18px 18px;
+        }
+
+        /* ラベル（WORKS・No.01 など）は同じフォントで、字間を広げて小さく */
+        .label { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+
+        /* ---- サイドバー：コマンドウィンドウ ---- */
+        .sidebar {
+            position: fixed;
+            inset: 16px auto 16px 16px;
+            width: var(--sidebar-w);
+            display: flex;
+            flex-direction: column;
+            background: var(--navy);
+            color: #fff;
+            border: 3px solid #fff;
+            outline: 3px solid var(--navy);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        .player {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 18px;
+            border-bottom: 2px dashed rgba(255, 255, 255, .22);
+            color: #fff;
+            text-decoration: none;
+        }
+        .player img { width: 52px; height: 52px; border-radius: 8px; image-rendering: pixelated; background: #fff; border: 2px solid #fff; }
+        .player strong { display: block; font-size: 16px; }
+        .player .label { color: #aeb7d6; font-size: 11px; }
+
+        .menu { flex: 1; overflow-y: auto; padding: 8px 10px 16px; }
+        .menu-group { margin-top: 12px; }
+        .menu-label { display: flex; align-items: center; gap: 10px; margin: 0 0 4px; padding: 2px 10px; color: var(--k); }
+        .menu-label::after { content: ""; flex: 1; height: 2px; background: currentColor; opacity: .35; }
+        .menu-list { list-style: none; margin: 0; padding: 0; }
+        .menu-list a {
+            position: relative;
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            padding: 7px 10px 7px 28px;
+            border-radius: 6px;
+            color: #dfe4f3;
+            text-decoration: none;
+            font-size: 14px;
+            line-height: 1.45;
+        }
+        .menu-list .no, .menu-list .year { font-size: 12px; color: #8790b3; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+        .menu-list .no { width: 1.6em; }
+        .menu-list .year { margin-left: auto; }
+        .menu-list a::before { content: "▶"; position: absolute; left: 10px; top: 9px; font-size: 10px; color: var(--cursor); opacity: 0; }
+        .menu-list a:hover { background: var(--navy-2); color: #fff; }
+        .menu-list a:hover::before { opacity: .5; }
+        .menu-list a.active { background: var(--navy-2); color: #fff; font-weight: 700; }
+        .menu-list a.active::before { opacity: 1; }
+
+        /* ---- 右側 ---- */
+        main { margin-left: calc(var(--sidebar-w) + 32px); padding: 28px 40px 96px; }
+        .page { max-width: 1100px; animation: pop .2s ease; }
+        @keyframes pop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+        .page-head { margin: 4px 0 22px; }
+        .page-head .label { color: var(--k, var(--accent)); }
+        .page-head h1 { margin: 4px 0 0; font-size: clamp(26px, 3.2vw, 36px); font-weight: 900; line-height: 1.3; }
+        .page-head p { margin: 6px 0 0; color: var(--muted); }
+
+        /* すべての中身はこのウィンドウに入れる */
+        .window { background: var(--surface); border: 3px solid var(--navy); border-radius: var(--radius); box-shadow: 0 5px 0 rgba(28, 34, 56, .16); }
+        .window-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background: var(--navy);
+            color: #fff;
+            border-radius: calc(var(--radius) - 4px) calc(var(--radius) - 4px) 0 0;
+        }
+        .window-title::before { content: ""; width: 10px; height: 10px; background: var(--k, var(--cursor)); flex-shrink: 0; }
+        .window-title .count { margin-left: auto; color: #aeb7d6; letter-spacing: .04em; }
+        .window-body { padding: 18px 22px; }
+        .stack { display: grid; gap: 20px; align-content: start; }
+
+        /* About：プロフィール */
+        .profile { display: grid; grid-template-columns: 190px 1fr; gap: 22px; align-items: start; }
+        .portrait { position: relative; aspect-ratio: 1; border: 3px solid var(--navy); border-radius: var(--radius); overflow: hidden; background: #fff; }
+        .portrait img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity .2s ease; }
+        .portrait .pixel { opacity: 0; image-rendering: pixelated; }
+        .portrait:hover .pixel { opacity: 1; }
+        .profile h2 { margin: 0 0 8px; font-size: 22px; }
+        .profile p { margin: 0; }
+        .buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+        .buttons a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border: 2px solid var(--navy);
+            border-radius: 8px;
+            color: var(--fg);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .buttons a:hover { background: var(--navy); color: #fff; }
+        .buttons img { width: 16px; height: 16px; }
+
+        /* Skills：ブロックのゲージ */
+        .skills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 24px; }
+        .skills .label { margin: 0 0 8px; color: var(--muted); }
+        .skills ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 14px; }
+        .skills li { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; }
+        .gauge { display: flex; gap: 3px; }
+        .gauge i { width: 12px; height: 12px; background: var(--line); }
+        .gauge i.on { background: var(--k, var(--sky)); box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .18); }
+
+        /* 一覧の行（受賞歴・インターン・メディア） */
+        .row { padding: 14px 0; border-bottom: 2px dotted var(--line); }
+        .row:first-child { padding-top: 0; }
+        .row:last-child { border-bottom: 0; padding-bottom: 0; }
+        .row-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 14px; }
+        .row-head strong { font-size: 15px; }
+        .row-head strong small { font-weight: 400; color: var(--muted); font-size: 13px; margin-left: 6px; }
+        .row-head span { color: var(--muted); font-size: 13px; }
+        .row p { margin: 6px 0 0; font-size: 14px; line-height: 1.85; }
+        .row .links { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 6px; font-size: 13px; }
+        .row details summary { cursor: pointer; font-size: 13px; color: var(--accent); margin-top: 4px; font-weight: 700; }
+        .row figure { margin: 10px 0 0; max-width: 340px; }
+        .row figure img { border-radius: 8px; border: 2px solid var(--navy); }
+        .row figcaption { font-size: 12px; color: var(--muted); }
+        .achievement strong::before { content: "★ "; color: var(--orange); }
+
+        /* 作品一覧 */
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+        .card { position: relative; display: block; color: inherit; text-decoration: none; overflow: hidden; transition: transform .12s ease, box-shadow .12s ease; }
+        .card:hover, .card:focus-visible { transform: translateY(-4px); box-shadow: 0 9px 0 rgba(28, 34, 56, .16); outline: none; }
+        .card .thumb { position: relative; aspect-ratio: 16 / 9; background: #000; border-bottom: 3px solid var(--navy); }
+        .card .thumb img, .card .thumb video { width: 100%; height: 100%; object-fit: cover; display: block; }
+        /* 上の2本は大きく */
+        .featured { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+        .featured .card h3 { font-size: 20px; }
+        .featured .card p { font-size: 14px; }
+        .featured .card .no { font-size: 13px; }
+        .card .no { position: absolute; top: 8px; left: 8px; padding: 2px 8px; background: var(--navy); color: #fff; border-left: 6px solid var(--k); }
+        .card .body { padding: 12px 14px 14px; }
+        .card h3 { margin: 0; font-size: 16px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+        .card h3 small { font-size: 12px; color: var(--muted); font-weight: 500; }
+        .card p { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+
+        /* ---- 作品・研究のページ：本文と、右のデータ欄 ---- */
+        /* 作品ページの動画プレイヤー（自前。YouTube の表示は出さない） */
+        .vplayer { position: relative; aspect-ratio: 16 / 9; border: 3px solid var(--navy); border-radius: var(--radius); overflow: hidden; background: #000; margin-bottom: 20px; }
+        .vplayer video { width: 100%; height: 100%; display: block; object-fit: contain; background: #000; }
+        .vplayer:fullscreen { border: 0; border-radius: 0; }
+        .vcontrols {
+            position: absolute;
+            inset: auto 0 0 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 28px 12px 10px;
+            background: linear-gradient(transparent, rgba(10, 14, 28, .85));
+            color: #fff;
+            opacity: 0;
+            transition: opacity .2s ease;
+        }
+        .vplayer:hover .vcontrols, .vplayer:focus-within .vcontrols, .vplayer.paused .vcontrols { opacity: 1; }
+        @media (hover: none) { .vcontrols { opacity: 1; } }
+        .vcontrols button {
+            flex-shrink: 0;
+            border: 2px solid #fff;
+            border-radius: 8px;
+            background: rgba(28, 34, 56, .6);
+            color: #fff;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 4px 10px;
+            cursor: pointer;
+            line-height: 1.4;
+        }
+        .vcontrols button:hover { background: #fff; color: var(--navy); }
+        .vcontrols input[type=range] { flex: 1; min-width: 60px; accent-color: var(--cursor); cursor: pointer; }
+        .vcontrols .time { font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+        /* 最初は音なしなので、音を出すボタンを目立たせる */
+        .vsound {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            border: 2px solid #fff;
+            border-radius: 999px;
+            background: rgba(28, 34, 56, .75);
+            color: #fff;
+            font: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 6px 14px;
+            cursor: pointer;
+        }
+        .vsound:hover { background: #fff; color: var(--navy); }
+        .vplayer.unmuted .vsound { display: none; }
+        @media (max-width: 600px) { .vcontrols .time { display: none; } }
+        .detail { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
+        .prose p { margin: 0; font-size: 15px; line-height: 1.95; }
+        .prose p + p { margin-top: 1em; }
+        .data dl { margin: 0; display: grid; gap: 12px; font-size: 14px; }
+        .data dt { color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .06em; }
+        .data dd { margin: 2px 0 0; }
+        .data .tags { margin: 0 0 16px; }
+        .link-list { display: grid; gap: 8px; }
+        .link-list a {
+            display: block;
+            padding: 9px 12px;
+            border: 2px solid var(--navy);
+            border-radius: 8px;
+            color: var(--fg);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        .link-list a:hover { background: var(--navy); color: #fff; }
+        .tag { border-color: var(--line); font-weight: 700; }
+
+        .pager { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 36px; }
+        .pager a { padding: 12px 16px; color: var(--fg); text-decoration: none; font-weight: 700; }
+        .pager a:hover { background: var(--navy); color: #fff; }
+        .pager .label { display: block; color: var(--muted); font-size: 11px; }
+        .pager a:hover .label { color: #aeb7d6; }
+        .pager .next { text-align: right; grid-column: 2; }
+
+        .topbar { display: none; }
+
+        /* ---- 画面が狭いとき ---- */
+        @media (max-width: 1180px) {
+            .detail { grid-template-columns: 1fr; }
+            .detail .data { order: -1; }
+        }
+        @media (max-width: 960px) {
+            .sidebar { inset: 64px 10px 10px 10px; width: auto; z-index: 30; transform: translateY(-120%); transition: transform .25s ease; }
+            .menu-open .sidebar { transform: none; }
+            .topbar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                position: sticky;
+                top: 0;
+                z-index: 31;
+                padding: 10px 14px;
+                background: var(--navy);
+                color: #fff;
+            }
+            .topbar strong { display: flex; align-items: center; gap: 10px; font-size: 15px; }
+            .topbar img { width: 32px; height: 32px; border-radius: 6px; image-rendering: pixelated; background: #fff; }
+            .topbar button { border: 2px solid #fff; border-radius: 8px; background: none; color: #fff; font: inherit; font-weight: 700; padding: 4px 12px; }
+            main { margin-left: 0; padding: 22px 16px 64px; }
+            .profile { grid-template-columns: 1fr; }
+            .portrait { width: 160px; }
+            .grid { grid-template-columns: 1fr 1fr; }
+            .featured { grid-template-columns: 1fr; }
+            .skills { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .grid, .pager { grid-template-columns: 1fr; }
+            .pager .next { grid-column: auto; }
+            .window-body { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <strong id="topbar-name"></strong>
+        <button type="button" aria-controls="sidebar" aria-expanded="false">MENU</button>
+    </div>
+
+    <aside class="sidebar" id="sidebar">
+        <a class="player" href="#about" id="player"></a>
+        <nav class="menu" aria-label="メニュー">
+            <div class="menu-group" style="--k: var(--green)">
+                <p class="menu-label label">About</p>
+                <ul class="menu-list" id="about-list"></ul>
+            </div>
+            <div class="menu-group" style="--k: var(--orange)">
+                <p class="menu-label label">Works</p>
+                <ul class="menu-list" id="works-list"></ul>
+            </div>
+            <div class="menu-group" style="--k: var(--sky)">
+                <p class="menu-label label">Research</p>
+                <ul class="menu-list" id="research-list"></ul>
+            </div>
+        </nav>
+    </aside>
+
+    <main id="main"><p>読み込み中…</p></main>
+
+    <script src="shared/content.js"></script>
+    <script src="shared/ui.js"></script>
+    <script>
+        const { esc, tagsHTML, thumbUrl, linkHTML } = PortfolioUI;
+
+        // 開発期間に年が書かれていない作品の制作年（GitHub・コミット日・大会名から確認）
+        const YEAR_FALLBACK = { 'sausage-smash': 2026, 'jiya-robot-tea': 2026, 'project-siro': 2026, 'zelly-swipe': 2026, 'frying-pan': 2026 };
+        const yearOf = p => (/(\d{4})年/.exec(p.period) || [])[1] || YEAR_FALLBACK[p.id] || '';
+        const no = i => String(i + 1).padStart(2, '0');
+        const COLORS = ['var(--red)', 'var(--orange)', 'var(--sky)', 'var(--green)'];
+
+        // About の中の項目（研究は Research として独立）
+        const ABOUT_SECTIONS = [
+            { id: '', label: 'プロフィール' },
+            { id: 'awards', label: '受賞歴' },
+            { id: 'internships', label: 'インターン・バイト経験' },
+            { id: 'media', label: 'メディア掲載' },
+        ];
+
+        loadPortfolio().then(data => {
+            const projects = data.projects;
+            // 研究は「【研究会名】テーマ」の形なので、研究会名とテーマに分ける。
+            const research = data.research.map((r, i) => {
+                const m = /^【(.+?)】(.+)$/.exec(r.org);
+                return { ...r, id: String(i + 1), lab: m ? m[1] : '', theme: m ? m[2] : r.org };
+            });
+            const main = document.getElementById('main');
+
+            // ---- サイドバー ----
+            const avatar = data.profile.pixel || data.profile.photo;
+            document.getElementById('player').innerHTML = `
+                <img src="${esc(avatar)}" alt="">
+                <div><strong>${esc(data.profile.name)}</strong><span class="label">Job : Unity Engineer</span></div>`;
+            document.getElementById('topbar-name').innerHTML = `<img src="${esc(avatar)}" alt="">${esc(data.profile.name)}`;
+            document.getElementById('about-list').innerHTML = ABOUT_SECTIONS.map(sec =>
+                `<li><a href="${sec.id ? `#about/${sec.id}` : '#about'}" data-key="about/${sec.id}">${esc(sec.label)}</a></li>`).join('');
+            document.getElementById('works-list').innerHTML =
+                `<li><a href="#works" data-key="works/">作品一覧</a></li>` +
+                projects.map((p, i) => `<li><a href="#works/${esc(p.id)}" data-key="works/${esc(p.id)}"><span class="no">${no(i)}</span>${esc(p.title)}<span class="year">${yearOf(p)}</span></a></li>`).join('');
+            document.getElementById('research-list').innerHTML = research.map((r, i) =>
+                `<li><a href="#research/${r.id}" data-key="research/${r.id}"><span class="no">${no(i)}</span>${esc(r.theme)}</a></li>`).join('');
+
+            // 本文中の「制作作品：〇〇」（#project-〇〇）は、そのゲームのページへ。
+            const fixProjectLinks = html => html.replace(/href="#project-/g, 'href="#works/');
+
+            const windowHTML = (title, color, body, count) => `
+                <div class="window" style="--k: ${color}">
+                    <div class="window-title label">${esc(title)}${count !== undefined ? `<span class="count">${count}</span>` : ''}</div>
+                    <div class="window-body">${body}</div>
+                </div>`;
+
+            const rowHTML = i => `
+                <div class="row">
+                    <div class="row-head">
+                        <strong>${i.role ? `${esc(i.role)}<small>${esc(i.org)}</small>` : esc(i.org)}</strong>
+                        <span>${esc(i.period)}</span>
+                    </div>
+                    <details><summary>詳しく見る</summary>
+                        <p>${fixProjectLinks(i.html)}</p>
+                        ${i.image ? `<figure><img src="${esc(i.image.src)}" alt="${esc(i.image.alt)}" loading="lazy"><figcaption>${esc(i.image.caption)}</figcaption></figure>` : ''}
+                    </details>
+                    ${i.links.length ? `<div class="links">${i.links.map(l => fixProjectLinks(linkHTML(l))).join('')}</div>` : ''}
+                </div>`;
+            const listRowHTML = (a, extraClass = '') => `
+                <div class="row ${extraClass}"><div class="row-head"><strong>${esc(a.text)}</strong></div>
+                ${a.link ? `<div class="links">${fixProjectLinks(linkHTML(a.link))}</div>` : ''}</div>`;
+
+            const gaugeHTML = rating => `<span class="gauge" aria-label="5段階中${rating}">${[1, 2, 3, 4, 5].map(n => `<i class="${n <= rating ? 'on' : ''}"></i>`).join('')}</span>`;
+
+            // 段落ごとに <p> に分けて読みやすくする（元の文章は <br><br> で段落を区切っている）。
+            const paragraphs = html => html.split(/(?:<br\s*\/?>\s*){2,}/).map(part => `<p>${part.trim()}</p>`).join('');
+
+            // 作品の動画（全編）。動画専用リポジトリの GitHub Pages に置いたものを読み込む。
+            // 音なしで最初から流し、ブラウザは再生しながら少しずつ読み込む。
+            const MEDIA_BASE = 'https://youkin06.github.io/portfolio-media/videos/';
+            const playerHTML = (id, title) => id ? `
+                <div class="vplayer" data-player>
+                    <video src="${MEDIA_BASE}${esc(id)}.mp4" poster="${CLIP_BASE}${esc(id)}.jpg"
+                        autoplay muted loop playsinline preload="metadata" aria-label="${esc(title)} のプレイ動画"></video>
+                    <button class="vsound" type="button" data-act="unmute">🔊 音を出す</button>
+                    <div class="vcontrols">
+                        <button type="button" data-act="toggle" aria-label="再生・一時停止">❚❚</button>
+                        <input type="range" min="0" max="1000" value="0" aria-label="再生位置" data-act="seek">
+                        <span class="time">0:00 / 0:00</span>
+                        <button type="button" data-act="mute" aria-label="音のオン・オフ">音なし</button>
+                        <button type="button" data-act="full" aria-label="全画面">全画面</button>
+                    </div>
+                </div>` : '';
+
+            const pagerHTML = (prev, next, href, label) => `
+                <div class="pager">
+                    ${prev ? `<a class="window prev" href="${href(prev)}"><span class="label">◀ Prev</span>${esc(label(prev))}</a>` : ''}
+                    ${next ? `<a class="window next" href="${href(next)}"><span class="label">Next ▶</span>${esc(label(next))}</a>` : ''}
+                </div>`;
+
+            // ---- 各ページ ----
+            const aboutPage = sub => {
+                const profile = `
+                    <div class="profile">
+                        <div class="portrait">
+                            <img src="${esc(data.profile.photo)}" alt="顔写真">
+                            ${data.profile.pixel ? `<img class="pixel" src="${esc(data.profile.pixel)}" alt="">` : ''}
+                        </div>
+                        <div>
+                            <h2>${esc(data.profile.name)}</h2>
+                            <p>${data.profile.aboutHtml}</p>
+                            <div class="buttons">
+                                ${data.profile.socials.map(s => `<a href="${esc(s.href)}" target="_blank" rel="noopener noreferrer">${s.icon ? `<img src="${esc(s.icon.replace(/\/FFFFFF$/i, '/1c2238'))}" alt="">` : ''}${esc(s.label)}</a>`).join('')}
+                                ${data.profile.emails.map(m => `<a href="mailto:${esc(m)}">✉ ${esc(m)}</a>`).join('')}
+                            </div>
+                        </div>
+                    </div>`;
+                const skills = `<div class="skills">${data.skills.map((cat, i) => `
+                    <div style="--k: ${COLORS[i % 4]}"><p class="label">${esc(cat.category)}</p>
+                    <ul>${cat.items.map(item => `<li><span>${esc(item.name)}</span>${gaugeHTML(item.rating)}</li>`).join('')}</ul></div>`).join('')}</div>`;
+
+                const sections = {
+                    '': () => windowHTML('Status', 'var(--green)', profile) + windowHTML('Skills', 'var(--sky)', skills),
+                    awards: () => windowHTML('受賞歴', 'var(--orange)', data.awards.map(a => listRowHTML(a, 'achievement')).join(''), `${data.awards.length}件`),
+                    internships: () => windowHTML('インターン・バイト経験', 'var(--red)', data.internships.map(rowHTML).join(''), `${data.internships.length}件`),
+                    media: () => windowHTML('メディア掲載', 'var(--green)', data.media.map(m => listRowHTML(m)).join(''), `${data.media.length}件`),
+                };
+                const section = ABOUT_SECTIONS.find(sec => sec.id === sub) || ABOUT_SECTIONS[0];
+                return `
+                    <section class="page" style="--k: var(--green); max-width: 920px">
+                        <div class="page-head"><div class="label">About</div><h1>${esc(section.label)}</h1></div>
+                        <div class="stack">${sections[section.id]()}</div>
+                    </section>`;
+            };
+
+            // 作品一覧の動く見本（6秒のループ動画。YouTubeから切り出して Images/clips に置いている）
+            const CLIP_BASE = new URL('../Images/clips/', location.href).href;
+            const clipHTML = p => p.videoId ? `
+                <video muted loop playsinline preload="none" data-src="${CLIP_BASE}${esc(p.videoId)}.mp4"
+                    poster="${CLIP_BASE}${esc(p.videoId)}.jpg" aria-hidden="true"
+                    onerror="this.outerHTML='<img src=&quot;${thumbUrl(p.videoId, 'mqdefault')}&quot; alt=&quot;&quot;>'"></video>` : '';
+
+            const FEATURED = ['sausage-smash', 'pintch-witch'];
+            const cardHTML = p => {
+                const i = projects.indexOf(p);
+                return `
+                    <a class="card window" href="#works/${esc(p.id)}" style="--k: ${COLORS[i % 4]}">
+                        <div class="thumb">${clipHTML(p)}<span class="no label">No.${no(i)}</span></div>
+                        <div class="body"><h3><span>${esc(p.title)}</span><small>${yearOf(p)}</small></h3><p>${esc(p.summary)}</p>${tagsHTML(p.tags)}</div>
+                    </a>`;
+            };
+            const worksPage = () => `
+                <section class="page" style="--k: var(--orange)">
+                    <div class="page-head"><div class="label">Works</div><h1>作品一覧</h1><p>気になる作品を選ぶと、担当・工夫・動画を見られます。</p></div>
+                    <div class="featured">${projects.filter(p => FEATURED.includes(p.id)).map(cardHTML).join('')}</div>
+                    <div class="grid">${projects.filter(p => !FEATURED.includes(p.id)).map(cardHTML).join('')}</div>
+                </section>`;
+
+            // 見えている動画だけ再生し、画面外に出たら止める。
+            const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const clipObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+                const video = entry.target;
+                if (entry.isIntersecting) {
+                    if (!video.src) video.src = video.dataset.src;
+                    if (!reduceMotion) video.play().catch(() => {});
+                } else {
+                    video.pause();
+                }
+            }), { rootMargin: '100px 0px' });
+
+            // 作品ページ：短い項目（ジャンル・期間・担当など）は右のデータ欄、長い説明は本文に。
+            const FACT_LABELS = ['ジャンル', '開発期間', '開発体制', '担当', '使用技術', '操作説明'];
+            const gamePage = id => {
+                const index = projects.findIndex(p => p.id === id);
+                if (index < 0) return worksPage();
+                const p = projects[index];
+                const isFact = f => FACT_LABELS.includes(f.label) || f.plain.length < 60;
+                const facts = p.fields.filter(isFact);
+                const sections = p.fields.filter(f => !isFact(f));
+                const side = `
+                    ${tagsHTML(p.tags)}
+                    <dl>${facts.map(f => `<div><dt>${esc(f.label)}</dt><dd>${fixProjectLinks(f.html)}</dd></div>`).join('')}</dl>`;
+                const links = p.links.length
+                    ? `<div class="link-list">${p.links.map(l => `<a href="${esc(l.href)}" target="_blank" rel="noopener noreferrer">${esc(l.label)} ↗</a>`).join('')}</div>`
+                    : '';
+                return `
+                    <section class="page" style="--k: ${COLORS[index % 4]}">
+                        <div class="page-head"><div class="label">Works No.${no(index)} ・ ${yearOf(p)}</div><h1>${esc(p.title)}</h1><p>${esc(p.summary)}</p></div>
+                        ${playerHTML(p.videoId, p.title)}
+                        <div class="detail">
+                            <div class="stack">
+                                ${sections.map((f, i) => windowHTML(f.label, COLORS[(index + i) % 4],
+                                    `<div class="prose">${paragraphs(fixProjectLinks(f.html))}</div>`)).join('')}
+                            </div>
+                            <div class="stack data">
+                                ${windowHTML('Data', 'var(--cursor)', side)}
+                                ${links ? windowHTML('Links', 'var(--cursor)', links) : ''}
+                            </div>
+                        </div>
+                        ${pagerHTML(projects[index - 1], projects[index + 1], x => `#works/${esc(x.id)}`, x => x.title)}
+                    </section>`;
+            };
+
+            const researchPage = id => {
+                const index = Math.max(0, research.findIndex(r => r.id === id));
+                const r = research[index];
+                // 「関連リンク:」以降は右のリンク欄に移す。
+                const [body] = r.html.split(/<strong>\s*関連リンク/);
+                const links = [...new DOMParser().parseFromString(r.html, 'text/html').querySelectorAll('a[href]')]
+                    .map(a => ({ href: a.getAttribute('href'), label: a.textContent.replace(/\s+/g, ' ').trim() }));
+                const side = `<dl>${r.lab ? `<div><dt>研究会</dt><dd>${esc(r.lab)}</dd></div>` : ''}<div><dt>期間</dt><dd>${esc(r.period)}</dd></div></dl>`;
+                return `
+                    <section class="page" style="--k: var(--sky)">
+                        <div class="page-head"><div class="label">Research No.${no(index)}</div><h1>${esc(r.theme)}</h1></div>
+                        <div class="detail">
+                            <div class="stack">${windowHTML('研究内容', 'var(--sky)', `<div class="prose">${paragraphs(body.replace(/(<br\s*\/?>\s*)+$/, ''))}</div>`)}</div>
+                            <div class="stack data">
+                                ${windowHTML('Data', 'var(--cursor)', side)}
+                                ${links.length ? windowHTML('Links', 'var(--cursor)', `<div class="link-list">${links.map(l => `<a href="${esc(l.href)}" target="_blank" rel="noopener noreferrer">${esc(l.label)} ↗</a>`).join('')}</div>`) : ''}
+                            </div>
+                        </div>
+                        ${pagerHTML(research[index - 1], research[index + 1], x => `#research/${x.id}`, x => x.theme)}
+                    </section>`;
+            };
+
+            // ---- スマホのメニュー ----
+            const menuButton = document.querySelector('.topbar button');
+            const closeMenu = () => {
+                document.body.classList.remove('menu-open');
+                menuButton.setAttribute('aria-expanded', 'false');
+            };
+            menuButton.addEventListener('click', () => {
+                const open = document.body.classList.toggle('menu-open');
+                menuButton.setAttribute('aria-expanded', String(open));
+            });
+
+            // ---- 表示の切り替え（最初は About のプロフィール） ----
+            const render = () => {
+                const [route, rawSub] = location.hash.slice(1).split('/');
+                const sub = rawSub ? decodeURIComponent(rawSub) : '';
+                const page = ['about', 'works', 'research'].includes(route) ? route : 'about';
+
+                main.innerHTML =
+                    page === 'about' ? aboutPage(sub) :
+                    page === 'research' ? researchPage(sub) :
+                    sub ? gamePage(sub) : worksPage();
+
+                const key = `${page}/${page === 'research' && !sub ? research[0].id : sub}`;
+                document.querySelectorAll('[data-key]').forEach(a => {
+                    const active = a.dataset.key === key;
+                    a.classList.toggle('active', active);
+                    active ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current');
+                });
+                clipObserver.disconnect();
+                main.querySelectorAll('video[data-src]').forEach(v => clipObserver.observe(v));
+                document.querySelector('.menu .active')?.scrollIntoView({ block: 'nearest' });
+                window.scrollTo(0, 0);
+                closeMenu();
+            };
+            // ---- 動画プレイヤーの操作 ----
+            const fmt = t => (Number.isFinite(t) ? `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}` : '0:00');
+            const syncPlayer = player => {
+                const video = player.querySelector('video');
+                player.classList.toggle('paused', video.paused);
+                player.classList.toggle('unmuted', !video.muted);
+                player.querySelector('[data-act=toggle]').textContent = video.paused ? '▶' : '❚❚';
+                player.querySelector('[data-act=mute]').textContent = video.muted ? '音なし' : '音あり';
+                player.querySelector('.time').textContent = `${fmt(video.currentTime)} / ${fmt(video.duration)}`;
+                if (video.duration) player.querySelector('[data-act=seek]').value = Math.round(video.currentTime / video.duration * 1000);
+            };
+            main.addEventListener('click', event => {
+                const button = event.target.closest('[data-player] [data-act]');
+                const player = event.target.closest('[data-player]');
+                if (!player) return;
+                const video = player.querySelector('video');
+                const act = button?.dataset.act;
+                if (act === 'unmute' || act === 'mute') video.muted = act === 'unmute' ? false : !video.muted;
+                else if (act === 'full') document.fullscreenElement ? document.exitFullscreen() : player.requestFullscreen?.();
+                else if (act === 'toggle' || event.target === video) video.paused ? video.play() : video.pause();
+                syncPlayer(player);
+            });
+            main.addEventListener('input', event => {
+                if (event.target.dataset.act !== 'seek') return;
+                const video = event.target.closest('[data-player]').querySelector('video');
+                if (video.duration) video.currentTime = event.target.value / 1000 * video.duration;
+            });
+            ['timeupdate', 'play', 'pause', 'volumechange', 'loadedmetadata'].forEach(type =>
+                main.addEventListener(type, event => {
+                    const player = event.target.closest?.('[data-player]');
+                    if (player) syncPlayer(player);
+                }, true));
+
+            window.addEventListener('hashchange', render);
+            render();
+            document.addEventListener('open-project', event => { location.hash = `works/${event.detail}`; });
+        });
+    </script>
+</body>
+</html>
