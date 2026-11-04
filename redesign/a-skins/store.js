@@ -1,6 +1,7 @@
 // ゲーム投稿サイト案の設定
 window.SKIN = {
     iconColor: '222222',
+    detailsMotion: true,
     text: {
         about: 'About me',
         data: '作品情報',
