@@ -1,13 +1,14 @@
 // DEPTH DIARY の Player を草原の空で飛ばす。
 // 遠めの目的地を選び、曲がるときは減速しながらゆるやかに旋回し、まっすぐ進めるときは加速する。
 // 着いたら、ときどきその場でふわっと浮いて休んでから次へ向かう。機首はいつも進む方向へ向ける（元画像は機首が上向き）。
+// 受賞歴などほかのページへ移ると、右上の画面の外へ飛び去る。プロフィールに戻ると、外から飛んで戻ってくる。
 // 触れて止まっている間（data-paused）と、動きを減らす設定のときは動かさない。
 (function () {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
     const MAX_SPEED = 130;   // px/秒
     const MAX_TURN = 1.3;    // 旋回の速さの上限（rad/秒）
     let pos = null, heading = -Math.PI / 4, turn = 0, speed = 60;
-    let target = null, targetAge = 0, rest = 0, clock = 0, last = 0;
+    let target = null, targetAge = 0, rest = 0, clock = 0, last = 0, leaving = false;
 
     const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
     const wrap = a => Math.atan2(Math.sin(a), Math.cos(a));
@@ -27,12 +28,25 @@
         const player = document.querySelector('.profile-depth-player');
         const box = player && player.parentElement;
         const w = box ? box.clientWidth : 0, h = box ? box.clientHeight : 0;
-        if (player && w && h && !reduce.matches && !player.hasAttribute('data-paused')) {
+        const home = document.body.dataset.page === 'about/';
+        const exit = { x: w + 220, y: -160 };
+        if (w && h && !pos) pos = home ? { x: w * 0.3, y: h * 0.4 } : { ...exit };
+        // ほかのページで、もう画面の外にいるなら止めておく。
+        const gone = !home && pos && (pos.x > w + 120 || pos.y < -120);
+        if (player && w && h && !gone && !reduce.matches && !(home && player.hasAttribute('data-paused'))) {
             clock += dt;
-            if (!pos) pos = { x: w * 0.3, y: h * 0.4 };
-            pos.x = clamp(pos.x, 0, w);
-            pos.y = clamp(pos.y, 0, h);
-            if (!target) target = pickTarget(w, h);
+            if (!home) {
+                // ほかのページ：右上の画面の外へ飛び去る。
+                leaving = true;
+                target = exit;
+                rest = 0;
+                targetAge = 0;
+            } else if (leaving || !target) {
+                // プロフィールに戻った：外から、飛ぶ帯の中の目的地へ向かって入ってくる。
+                leaving = false;
+                target = pickTarget(w, h);
+                targetAge = 0;
+            }
 
             const dist = Math.hypot(target.x - pos.x, target.y - pos.y);
             const diff = wrap(Math.atan2(target.y - pos.y, target.x - pos.x) - heading);

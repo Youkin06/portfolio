@@ -46,4 +46,5 @@ build font-klee 'フォント比較・教科書体の見出し' 'family=Klee+One
 build night '夜空案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
 build midnight '真夜中案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
 build paper '生成り案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
+build white '白案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
 build mist '薄曇り案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'

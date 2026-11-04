@@ -1,0 +1,20 @@
+@import url("store.css");
+
+/*
+ * 白案：黄みも青みもない、ふつうの白。
+ * - 地はほとんど白、サイドバーは薄い灰色、カードは白に細い灰色の線
+ * - About me は空を出さず、白地の上に草原とキャラクターだけを置く
+ */
+:root {
+    --bg: #fdfdfd;
+    --fg: #1f1f22;
+    --muted: #1f1f22;
+    --surface: #ffffff;
+    --surface-2: #f2f2f3;
+    --sidebar-bg: #f3f3f4;
+    --line: #e4e4e7;
+    --card-line: #dcdce0;
+}
+.sidebar { border-right: 0; }
+.card, .card:hover, .card:focus-within { border-color: var(--card-line); }
+.card .thumb { border-bottom-color: var(--card-line); }

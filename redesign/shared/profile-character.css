@@ -105,7 +105,8 @@ html:has(body[data-page="about/"])::-webkit-scrollbar { display: none; }
     position: absolute;
     /* 元画像の足の下にある余白ぶん下げて、草の上に立たせる。 */
     bottom: -9px;
-    left: 0;
+    /* 最初は画面の外。profile-walk.js が位置を書く（プロフィールなら中へ、ほかのページなら外のまま）。 */
+    left: -200px;
     width: var(--character-size);
     height: var(--character-size);
 }
@@ -146,12 +147,12 @@ html:has(body[data-page="about/"])::-webkit-scrollbar { display: none; }
     bottom: 0;
     width: var(--kamo-size);
     height: var(--kamo-size);
-    animation: profile-kamo-run 14s linear -4s infinite;
+    left: -200px;
 }
+/* 位置と向きは profile-walk.js が書く。元画像は右向き。 */
 .profile-kamo-facing {
     width: 100%;
     height: 100%;
-    animation: profile-kamo-facing 14s steps(1, end) -4s infinite;
 }
 .profile-kamo-frame {
     position: absolute;
@@ -176,14 +177,6 @@ html:has(body[data-page="about/"])::-webkit-scrollbar { display: none; }
     background: #000;
 }
 .profile-kamo-frame + .profile-kamo-frame::after { top: 31.25%; }
-@keyframes profile-kamo-run {
-    0%, 100% { left: 0; }
-    50% { left: calc(100% - var(--kamo-size)); }
-}
-@keyframes profile-kamo-facing {
-    0%, 100% { transform: scaleX(1); }
-    50% { transform: scaleX(-1); }
-}
 /* DepthDiaryのPlayer。操作を遮らず飛行し、進行方向に機首を向ける。 */
 .profile-flight {
     /* 空の高いところ（見出しの右、文字と重ならない帯）を飛ぶ。
@@ -201,8 +194,9 @@ main .profile-depth-player a.profile-guest-link { top: calc(100% + 6px); bottom:
 .profile-depth-player .profile-guest-link::after { top: auto; bottom: 100%; }
 .profile-depth-player {
     position: absolute;
+    /* 最初は画面の外。profile-flight.js が位置を書く。 */
     left: 30%;
-    top: 40%;
+    top: -200px;
     width: calc(16 * var(--profile-pixel-size));
     height: calc(16 * var(--profile-pixel-size));
     transform: translate(-50%, -50%);
@@ -236,7 +230,10 @@ main .profile-depth-player a.profile-guest-link { top: calc(100% + 6px); bottom:
     .profile-character, .profile-character-facing,
     .profile-character-pose, .profile-character-pose img { animation: none; }
     .profile-character-walk, .profile-character-idle img + img { opacity: 0; }
+    .profile-character { left: 5%; }
     .profile-kamo { left: calc(100% - var(--kamo-size)); }
+    /* 動きを減らす設定では、プロフィール以外のページにキャラクターを出さない（歩いて出ていく代わり）。 */
+    body:not([data-page="about/"]) :is(.profile-walkway, .profile-flight) { display: none; }
     .profile-kamo, .profile-kamo-facing, .profile-kamo-frame { animation: none; }
     .profile-kamo-frame + .profile-kamo-frame { opacity: 0; }
     .profile-flight { display: none; }
@@ -253,8 +250,8 @@ main .profile-depth-player a.profile-guest-link { top: calc(100% + 6px); bottom:
 .profile-character[data-paused] .profile-character-idle { animation: none; opacity: 1; }
 .profile-character[data-paused] .profile-character-walk { animation: none; opacity: 0; }
 /* Kamoには専用idle素材がないため、通常姿勢の1枚目で待機する。 */
-.profile-kamo[data-paused] .profile-kamo-frame { animation: none; opacity: 1; }
-.profile-kamo[data-paused] .profile-kamo-frame + .profile-kamo-frame { opacity: 0; }
+.profile-kamo:is([data-paused], [data-state="idle"]) .profile-kamo-frame { animation: none; opacity: 1; }
+.profile-kamo:is([data-paused], [data-state="idle"]) .profile-kamo-frame + .profile-kamo-frame { opacity: 0; }
 /* DEPTH DIARYの画像は元からidleなので、停止中も4枚のループを保つ。 */
 .profile-guest-trigger {
     position: absolute;
