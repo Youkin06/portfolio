@@ -298,6 +298,17 @@
         .pager a:hover .label { color: #aeb7d6; }
         .pager .next { text-align: right; grid-column: 2; }
 
+        /* ページの一番下の「次へ」。さらに下へスクロールすると、ゲージがたまって次のページへ移る */
+        .next-page { margin-top: 72px; padding: 28px 0 8px; border-top: 1px solid var(--line); text-align: center; }
+        .next-link { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; color: var(--fg); text-decoration: none; }
+        .next-link .label { color: var(--muted); }
+        .next-link strong { font-size: clamp(20px, 2.4vw, 26px); }
+        .next-link strong::after { content: " ↓"; color: var(--accent); }
+        .next-link:hover strong { color: var(--accent); }
+        .next-gauge { width: min(240px, 60%); height: 4px; margin: 16px auto 0; border-radius: 4px; background: var(--line); overflow: hidden; }
+        .next-gauge i { display: block; width: 100%; height: 100%; background: var(--accent); transform: scaleX(var(--p, 0)); transform-origin: left; transition: transform .12s linear; }
+        .next-hint { margin: 10px 0 0; font-size: 12px; color: var(--muted); }
+
         .topbar { display: none; }
 
         /* ---- 画面が狭いとき ---- */
@@ -385,6 +396,9 @@
             prev: '◀ Prev',
             next: 'Next ▶',
             more: '詳しく見る',
+            // ページの一番下の「次へ」
+            nextLabel: '次へ',
+            nextHint: 'このまま下にスクロールすると移動します',
             count: n => `${n}件`,
             // スキルの段階（1〜5）の言葉
             skillLevels: ['', '学習中', '基礎', '応用', '習熟', '得意分野'],
@@ -637,7 +651,6 @@
                     <article class="page research">
                         ${pageHead(`${TEXT.researchNo}${no(index)}`, r.theme)}
                         ${researchItemHTML(r, index, 'none')}
-                        ${pagerHTML(research[index - 1], research[index + 1], x => `#research/${x.id}`, x => x.theme)}
                     </article>`;
             };
 
@@ -663,6 +676,63 @@
                 const open = document.body.classList.toggle('menu-open');
                 menuButton.setAttribute('aria-expanded', String(open));
             });
+
+            // ---- ページの順番（サイドバーと同じ並び）と、一番下の「次へ」 ----
+            const PAGE_ORDER = LAYOUT === 'flat'
+                ? [
+                    { key: 'about/', href: '#about', label: TEXT.about },
+                    { key: 'works/', href: '#works', label: TEXT.worksList },
+                    ...projects.map(p => ({ key: `works/${p.id}`, href: `#works/${p.id}`, label: p.title })),
+                    { key: 'research/', href: '#research', label: TEXT.research },
+                ]
+                : [
+                    ...ABOUT_SECTIONS.map(id => ({ key: `about/${id}`, href: id ? `#about/${id}` : '#about', label: aboutLabel(id) })),
+                    { key: 'works/', href: '#works', label: TEXT.worksList },
+                    ...projects.map(p => ({ key: `works/${p.id}`, href: `#works/${p.id}`, label: p.title })),
+                    ...research.map(r => ({ key: `research/${r.id}`, href: `#research/${r.id}`, label: r.theme })),
+                ];
+            const nextOf = key => PAGE_ORDER[PAGE_ORDER.findIndex(item => item.key === key) + 1] || null;
+            const nextHTML = next => `
+                <nav class="next-page" aria-label="${esc(TEXT.nextLabel)}" data-next="${esc(next.href)}">
+                    <a class="next-link" href="${esc(next.href)}"><span class="label">${esc(TEXT.nextLabel)}</span><strong>${esc(next.label)}</strong></a>
+                    <div class="next-gauge" aria-hidden="true"><i></i></div>
+                    <p class="next-hint">${esc(TEXT.nextHint)}</p>
+                </nav>`;
+
+            // 一番下でさらに下へスクロールしたら、ゲージをためて次のページへ。
+            // ページを開いた直後は慣性のスクロールで続けて進まないように、少し待ってから受け付ける。
+            const PULL_NEEDED = 320;
+            let pull = 0;
+            let pullReadyAt = 0;
+            let pullResetTimer = 0;
+            const atBottom = () => window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+            const setPull = value => {
+                pull = Math.max(0, value);
+                const gauge = main.querySelector('.next-gauge i');
+                if (gauge) gauge.style.setProperty('--p', Math.min(1, pull / PULL_NEEDED));
+                clearTimeout(pullResetTimer);
+                if (pull > 0) pullResetTimer = setTimeout(() => setPull(0), 700);
+            };
+            const addPull = amount => {
+                const next = main.querySelector('.next-page');
+                if (!next || Date.now() < pullReadyAt || !atBottom()) return setPull(0);
+                setPull(pull + amount);
+                if (pull >= PULL_NEEDED) {
+                    setPull(0);
+                    location.hash = next.dataset.next.slice(1);
+                }
+            };
+            window.addEventListener('wheel', event => (event.deltaY > 0 ? addPull(event.deltaY) : setPull(0)), { passive: true });
+            let touchY = null;
+            window.addEventListener('touchstart', event => { touchY = event.touches[0].clientY; }, { passive: true });
+            window.addEventListener('touchmove', event => {
+                if (touchY === null) return;
+                const y = event.touches[0].clientY;
+                const delta = touchY - y;
+                touchY = y;
+                delta > 0 ? addPull(delta * 1.6) : setPull(0);
+            }, { passive: true });
+            window.addEventListener('touchend', () => { touchY = null; }, { passive: true });
 
             // ---- 表示の切り替え（最初は About） ----
             const render = () => {
@@ -690,6 +760,13 @@
                     a.classList.toggle('active', active);
                     active ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current');
                 });
+
+                // 一番下に「次へ」を付ける（最後のページには付けない）
+                // 1ページにまとめた形では、About と研究は1ページなので中の項目を見ない
+                const next = nextOf(LAYOUT === 'flat' && section !== 'works' ? `${section}/` : `${section}/${subKey}`);
+                if (next) main.querySelector('.page')?.insertAdjacentHTML('beforeend', nextHTML(next));
+                setPull(0);
+                pullReadyAt = Date.now() + 900;
 
                 clipObserver.disconnect();
                 main.querySelectorAll('video[data-src]').forEach(v => clipObserver.observe(v));
