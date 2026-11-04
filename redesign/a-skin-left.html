@@ -364,6 +364,8 @@
     <script src="shared/details-motion.js"></script>
     <script src="shared/menu-keyboard.js"></script>
     <script src="shared/profile-guests.js"></script>
+    <script src="shared/profile-sky.js"></script>
+    <script src="shared/profile-flight.js"></script>
     <script>
         const { esc, tagsHTML, thumbUrl, linkHTML } = PortfolioUI;
 
@@ -528,6 +530,14 @@
             // ---- About ----
             const profileCharacter = `
                             <div class="profile-meadow">
+                              <div class="profile-sky" aria-hidden="true">
+                                <span class="profile-stars"></span>
+                                <span class="profile-sun"></span>
+                                <span class="profile-moon"></span>
+                                <span class="profile-cloud" style="--cloud-y: 14%; --cloud-time: 140s; --cloud-delay: -40s; --cloud-rest: 12%"></span>
+                                <span class="profile-cloud" style="--cloud-y: 34%; --cloud-scale: .7; --cloud-time: 190s; --cloud-delay: -130s; --cloud-rest: 58%"></span>
+                                <span class="profile-cloud" style="--cloud-y: 6%; --cloud-scale: .85; --cloud-time: 165s; --cloud-delay: -95s; --cloud-rest: 80%"></span>
+                              </div>
                               <div class="profile-walkway">
                                 <div class="profile-character" data-profile-guest>
                                   <button class="profile-guest-trigger" type="button" aria-label="ぼくのにっきのキャラクター：作品リンクを表示" aria-expanded="false"></button>

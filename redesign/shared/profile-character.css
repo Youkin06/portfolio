@@ -1,11 +1,74 @@
 /* カモとDepthDiaryは16×16ドット。1ドットの表示幅を共通にする。 */
 .profile-meadow { --profile-pixel-size: 6px; --ground-h: calc(8 * var(--profile-pixel-size)); }
-/* 技術スタックの下のドットの草原。キャラクターはこの中で暮らす。 */
+/* 技術スタックの下のドットの草原。キャラクターはこの中で暮らす。
+   プロフィールは1画面に収め、草原が残りの高さを埋めて画面の下端にそろう。
+   横はサイドバーの端から画面の右端まで（main の左右の余白40pxをはみ出す）。 */
+html:has(body[data-page="about/"]) { scrollbar-width: none; }
+html:has(body[data-page="about/"])::-webkit-scrollbar { display: none; }
+body[data-page="about/"] main {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding-bottom: 0;
+}
+main > .page.about:has(.profile-meadow) { flex: 1; display: flex; flex-direction: column; }
 .profile-meadow {
     position: relative;
-    height: 300px;
-    margin-top: 40px;
+    flex: 1;
+    min-height: 240px;
+    width: calc(100vw - var(--sidebar-w));
+    margin: 40px 0 0 -40px;
+    overflow: hidden;
 }
+/* 空。時間帯（profile-sky.js が html[data-sky] に書く）で色を段々に変える。 */
+.profile-sky {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(var(--sky-bands));
+    --sky-bands: #6fb6ee 0 20%, #82c0f1 0 40%, #96caf4 0 60%, #abd5f6 0 80%, #c2e1f8 0;
+}
+[data-sky="dawn"] .profile-sky { --sky-bands: #8a9fd4 0 20%, #b3b3de 0 40%, #dcbcd8 0 60%, #f2cdbc 0 80%, #fae0b4 0; }
+[data-sky="evening"] .profile-sky { --sky-bands: #4f5c9c 0 20%, #85699f 0 40%, #c8737f 0 60%, #ec8f66 0 80%, #f6b45e 0; }
+[data-sky="night"] .profile-sky { --sky-bands: #161b38 0 20%, #1c2346 0 40%, #232b54 0 60%, #2b3462 0 80%, #343e70 0; }
+.profile-sky > * { position: absolute; image-rendering: pixelated; background: no-repeat center / 100% 100%; }
+.profile-stars {
+    inset: 0;
+    background: url("../../Images/profile-character/stars.png") repeat 0 0 / calc(170 * var(--profile-pixel-size)) auto;
+    opacity: 0;
+}
+[data-sky="night"] .profile-stars { opacity: 1; }
+[data-sky="dawn"] .profile-stars { opacity: .35; }
+/* 太陽と月は時刻に合わせて左から右へ弧を描く（位置は profile-sky.js が書く）。 */
+.profile-sun, .profile-moon {
+    width: calc(10 * var(--profile-pixel-size));
+    height: calc(10 * var(--profile-pixel-size));
+    transform: translate(-50%, -50%);
+    display: none;
+}
+.profile-sun { background-image: url("../../Images/profile-character/sun.png"); left: var(--sun-x, 70%); top: var(--sun-y, 30%); }
+.profile-moon { background-image: url("../../Images/profile-character/moon.png"); left: var(--moon-x, 70%); top: var(--moon-y, 30%); }
+[data-sky="dawn"] .profile-sun, [data-sky="day"] .profile-sun, [data-sky="evening"] .profile-sun,
+[data-sky="night"] .profile-moon { display: block; }
+.profile-cloud {
+    left: 0;
+    top: var(--cloud-y);
+    width: calc(20 * var(--profile-pixel-size) * var(--cloud-scale, 1));
+    height: calc(7 * var(--profile-pixel-size) * var(--cloud-scale, 1));
+    background-image: url("../../Images/profile-character/cloud.png");
+    animation: profile-cloud var(--cloud-time) linear var(--cloud-delay) infinite;
+}
+[data-sky="evening"] .profile-cloud { filter: sepia(.5) saturate(1.6) hue-rotate(-20deg) brightness(.95); }
+[data-sky="night"] .profile-cloud { opacity: .18; }
+@keyframes profile-cloud {
+    from { transform: translateX(-160px); }
+    to { transform: translateX(calc(100vw - var(--sidebar-w))); }
+}
+/* 夜は地面とキャラクターを少し暗くする。吹き出しはそのまま読めるように。 */
+[data-sky="night"] .profile-ground,
+[data-sky="night"] .profile-character-facing,
+[data-sky="night"] .profile-kamo-facing { filter: brightness(.62) saturate(.8); }
+[data-sky="evening"] .profile-ground { filter: brightness(.88) sepia(.15); }
 /* 草原の地面。8ドットの高さで、上2ドットは草の先、下2ドットは土。 */
 .profile-ground {
     position: absolute;
@@ -14,6 +77,7 @@
     bottom: 0;
     height: var(--ground-h);
     background: url("../../Images/profile-character/grass.png") repeat-x left bottom / auto 100%;
+    z-index: 1;
     image-rendering: pixelated;
 }
 /* 草の上を散歩。待機 → 右へ歩く → 待機 → 左へ歩く。足元は草の先に少し埋める。 */
@@ -129,21 +193,23 @@
 /* DepthDiaryのPlayer。操作を遮らず飛行し、進行方向に機首を向ける。 */
 .profile-flight {
     position: absolute;
-    inset: 40px 0 calc(var(--ground-h) + 70px);
+    inset: 70px 60px calc(var(--ground-h) + 60px);
     z-index: 3;
     pointer-events: none;
 }
 .profile-depth-player {
     position: absolute;
+    left: 30%;
+    top: 40%;
     width: calc(16 * var(--profile-pixel-size));
     height: calc(16 * var(--profile-pixel-size));
     transform: translate(-50%, -50%);
-    animation: profile-depth-player-flight 30s linear -7s infinite;
 }
+/* 位置と機首の向きは profile-flight.js が書く。元画像は機首が上向き。 */
 .profile-depth-player-facing {
     width: 100%;
     height: 100%;
-    animation: profile-depth-player-heading 30s steps(1, end) -7s infinite;
+    transform: rotate(45deg);
 }
 /* Unityのidle_playerと同じ順番で、1枚250ms・全体1秒のループ。 */
 .profile-depth-player img {
@@ -161,20 +227,6 @@
     0% { opacity: 1; }
     25%, 100% { opacity: 0; }
 }
-@keyframes profile-depth-player-flight {
-    0%, 100% { left: 12%; top: 80%; }
-    20% { left: 62%; top: 18%; }
-    38% { left: 87%; top: 38%; }
-    58% { left: 42%; top: 65%; }
-    76% { left: 18%; top: 24%; }
-}
-@keyframes profile-depth-player-heading {
-    0%, 100% { transform: rotate(45deg); }
-    20% { transform: rotate(125deg); }
-    38% { transform: rotate(240deg); }
-    58% { transform: rotate(320deg); }
-    76% { transform: rotate(185deg); }
-}
 @media (max-width: 960px) {
     .profile-meadow { display: none; }
 }
@@ -186,6 +238,7 @@
     .profile-kamo, .profile-kamo-facing, .profile-kamo-frame { animation: none; }
     .profile-kamo-frame + .profile-kamo-frame { opacity: 0; }
     .profile-flight { display: none; }
+    .profile-cloud { left: var(--cloud-rest); animation: none; }
 }
 
 /* キャラクターに触れると、その場で待って作品へ案内する。 */
