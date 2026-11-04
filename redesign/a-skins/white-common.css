@@ -30,7 +30,11 @@ body[data-section="research"], .menu-group[data-section="research"] { --section-
 }
 .menu-list a:active, .contacts a:active, .back:active, .exp-more summary:active { transform: translateY(1px) scale(.98); }
 .menu-list a:active { background: var(--section-bg); }
-main a:not(.card-link, .contacts a):active { background: var(--section-bg); color: var(--section-fg); }
+/* 文中のリンク（作品ページの「Link」、インターンの「会社の公式サイト」など）は、ふだんから色付きなので、
+   乗せると各色の薄い地と太い下線、押すと地が濃くなる。地を付けても文字の位置がずれないよう、余白の分だけ外へ広げる。 */
+main a:not(.card-link, .contacts a) { padding: 1px 4px; margin: -1px -4px; transition: color .16s ease, background-color .16s ease; }
+main a:not(.card-link, .contacts a):hover { background: var(--section-bg); text-decoration-thickness: 2px; }
+main a:not(.card-link, .contacts a):active { background: color-mix(in srgb, var(--section-fg) 22%, #ffffff); color: var(--section-fg); }
 .card:has(.card-link:active) { transform: scale(.985); }
 @media (prefers-reduced-motion: reduce) {
     .menu-list a:active, .contacts a:active, .back:active, .exp-more summary:active, .card:has(.card-link:active) { transform: none; }
