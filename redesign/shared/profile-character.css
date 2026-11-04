@@ -10,15 +10,11 @@ html:has(body[data-page="about/"])::-webkit-scrollbar { display: none; }
     overflow: hidden;
 }
 .page.about > :not(.profile-meadow) { position: relative; z-index: 1; }
-/* 夕方と夜は空が暗いので、プロフィールの文字を白にする。黒いアイコンは白い台に載せる。
+/* 夕方と夜は空が暗いので、プロフィールの文字を白にする。黒一色のアイコン（Unity・GitHub）は白く反転する。
    スマホでは空を出さないので、白地のまま。 */
 @media (min-width: 961px) {
     :is([data-sky="evening"], [data-sky="night"]) body[data-page="about/"] main :is(.page-head, .page-head .label, .profile, .window-title) { color: #fff; }
-    :is([data-sky="evening"], [data-sky="night"]) body[data-page="about/"] .tech-stack-list .tech {
-        padding: 6px;
-        border-radius: 8px;
-        background: #ffffffe6;
-    }
+    :is([data-sky="evening"], [data-sky="night"]) body[data-page="about/"] :is([data-tech="unity"], [data-tech="github"]) img { filter: invert(1); }
 }
 /* 空。時間帯（profile-sky.js が html[data-sky] に書く）で色を段々に変える。 */
 .profile-sky {
@@ -31,8 +27,9 @@ html:has(body[data-page="about/"])::-webkit-scrollbar { display: none; }
 [data-sky="evening"] .profile-sky { --sky-bands: #4f5c9c 0 20%, #85699f 0 40%, #c8737f 0 60%, #ec8f66 0 80%, #f6b45e 0; }
 [data-sky="night"] .profile-sky { --sky-bands: #161b38 0 20%, #1c2346 0 40%, #232b54 0 60%, #2b3462 0 80%, #343e70 0; }
 .profile-sky > * { position: absolute; image-rendering: pixelated; background: no-repeat center / 100% 100%; }
+/* 星は空の下の方だけ。上の方はプロフィールの文字と重なって読みにくいため出さない。 */
 .profile-stars {
-    inset: 0;
+    inset: 55% 0 0;
     background: url("../../Images/profile-character/stars.png") repeat 0 0 / calc(170 * var(--profile-pixel-size)) auto;
     opacity: 0;
 }
@@ -174,8 +171,11 @@ html:has(body[data-page="about/"])::-webkit-scrollbar { display: none; }
 /* DepthDiaryのPlayer。操作を遮らず飛行し、進行方向に機首を向ける。 */
 .profile-flight {
     position: absolute;
-    /* プロフィールの内容より下の空だけを飛ぶ。 */
-    inset: 58% 60px calc(var(--ground-h) + 60px);
+    /* 空の高いところ（見出しの右、文字と重ならない帯）を飛ぶ。上に吹き出しが出る余白を残す。 */
+    top: 60px;
+    left: 45%;
+    right: 40px;
+    height: 110px;
     z-index: 3;
     pointer-events: none;
 }
