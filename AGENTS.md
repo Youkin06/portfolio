@@ -8,7 +8,7 @@
 - `style.css` … スタイル
 - `script.js` ほか `*.js` … アコーディオン、モーダル、背景描画、動画の遅延読み込みなど
 - `Images/` … 画像素材
-- `tests/` … Node標準のテスト（`node --test tests/`）
+- `tests/` … Node標準のテスト（`node --test tests/*.cjs`）
 
 ## 作業ルール
 
