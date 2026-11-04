@@ -186,7 +186,9 @@
         }
         .contacts a:hover { background: var(--navy); color: #fff; }
         .contacts img { width: 16px; height: 16px; }
-        .contacts .mail { padding: 6px 4px; font-size: 13px; user-select: all; }
+        .contacts .mail { display: inline-flex; align-items: center; gap: 8px; padding: 6px 4px; font-size: 13px; }
+        .contacts .mail > span { user-select: all; overflow-wrap: anywhere; min-width: 0; }
+        .contacts .mail-icon { flex-shrink: 0; }
 
         /* Skills：既定はブロックのゲージ。言葉（.skill-word）はスキンで出す */
         .skills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 24px; }
@@ -382,10 +384,9 @@
             data: 'Data',
             links: 'Links',
             researchBody: '研究内容',
-            // ページ上部のラベル（No. のあとに番号が付く）
+            // ページ上部のラベル
             worksList: '作品一覧',
-            worksLead: '気になる作品を選ぶと、担当・工夫・動画を見られます。',
-            worksNo: 'Works No.',
+            worksLead: '',
             researchNo: 'Research No.',
             researchLab: '研究会',
             researchPeriod: '期間',
@@ -395,7 +396,7 @@
             more: '詳しく見る',
             count: n => `${n}件`,
             // スキルの段階（1〜5）の言葉
-            skillLevels: ['', '勉強中', '少しできる', 'できる', 'かなりできる', '得意'],
+            skillLevels: ['', '学習中', '基礎', '応用', '習熟', '得意分野'],
             unmute: '🔊 音を出す',
             muted: '音なし',
             sound: '音あり',
@@ -455,7 +456,7 @@
                     `<li><a href="${id ? `#about/${id}` : '#about'}" data-key="about/${id}">${esc(aboutLabel(id))}</a></li>`).join('')) +
                 groupHTML('works', '#works',
                     `<li><a href="#works" data-key="works/">${esc(TEXT.worksList)}</a></li>` +
-                    projects.map((p, i) => `<li><a href="#works/${esc(p.id)}" data-key="works/${esc(p.id)}"><span class="no">${no(i)}</span>${esc(p.title)}<span class="year">${yearOf(p)}</span></a></li>`).join('')) +
+                    projects.map(p => `<li><a href="#works/${esc(p.id)}" data-key="works/${esc(p.id)}">${esc(p.title)}<span class="year">${yearOf(p)}</span></a></li>`).join('')) +
                 groupHTML('research', LAYOUT === 'flat' ? '#research' : `#research/${research[0]?.id || ''}`, research.map((r, i) =>
                     `<li><a href="#research/${r.id}" data-key="research/${r.id}"><span class="no">${no(i)}</span>${esc(r.theme)}</a></li>`).join(''));
 
@@ -489,6 +490,7 @@
 
             const gaugeHTML = rating => `<span class="gauge" aria-hidden="true">${[1, 2, 3, 4, 5].map(n => `<i class="${n <= rating ? 'on' : ''}"></i>`).join('')}</span>`;
             const iconUrl = src => src.replace(/(cdn\.simpleicons\.org\/[^/]+)\/[0-9a-f]{6}$/i, `$1/${ICON_COLOR}`);
+            const mailIcon = '<svg class="mail-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg>';
 
             // 段落ごとに <p> に分けて読みやすくする（元の文章は <br><br> で段落を区切っている）。
             const paragraphs = html => html.split(/(?:<br\s*\/?>\s*){2,}/).map(part => `<p>${part.trim()}</p>`).join('');
@@ -515,7 +517,7 @@
                                 <p class="profile-text">${data.profile.aboutHtml}</p>
                                 <div class="contacts">
                                     ${data.profile.socials.map(s => `<a class="social" href="${esc(s.href)}" target="_blank" rel="noopener noreferrer">${s.icon ? `<img src="${esc(iconUrl(s.icon))}" alt="">` : ''}${esc(s.label)}</a>`).join('')}
-                                    ${data.profile.emails.map(m => MAIL_AS_TEXT ? `<span class="mail">${esc(m)}</span>` : `<a class="mail-button" href="mailto:${esc(m)}">✉ ${esc(m)}</a>`).join('')}
+                                    ${data.profile.emails.map(m => MAIL_AS_TEXT ? `<span class="mail">${mailIcon}<span>${esc(m)}</span></span>` : `<a class="mail-button" href="mailto:${esc(m)}">${mailIcon}<span>${esc(m)}</span></a>`).join('')}
                                 </div>
                             </div>
                         </div>`) +
@@ -554,7 +556,7 @@
                 const i = projects.indexOf(p);
                 return `
                     <article class="card window work" ${tone(i)}${FEATURED.includes(p.id) ? ' data-featured' : ''}>
-                        <div class="thumb">${clipHTML(p)}<span class="no label">No.${no(i)}</span></div>
+                        <div class="thumb">${clipHTML(p)}</div>
                         <div class="body">
                             <h3><a class="card-link" href="#works/${esc(p.id)}">${esc(p.title)}</a><small>${yearOf(p)}</small></h3>
                             <p>${esc(p.summary)}</p>${tagsHTML(p.tags)}
@@ -596,7 +598,7 @@
                 return `
                     <article class="page game" ${tone(index)}>
                         <a class="back" href="#works">${esc(TEXT.back)}</a>
-                        ${pageHead(`${TEXT.worksNo}${no(index)} ・ ${yearOf(p)}`, p.title, p.summary)}
+                        ${pageHead(TEXT.works, p.title, p.summary)}
                         ${playerHTML(p.videoId, p.title)}
                         <div class="detail">
                             <div class="stack detail-main">
@@ -612,7 +614,6 @@
                                 ${p.links.length ? block('links', TEXT.links, `<ul class="link-list">${p.links.map(l => `<li>${link(l)}</li>`).join('')}</ul>`) : ''}
                             </aside>
                         </div>
-                        ${pagerHTML(projects[index - 1], projects[index + 1], x => `#works/${esc(x.id)}`, x => x.title)}
                     </article>`;
             };
 

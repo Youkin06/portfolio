@@ -1,0 +1,71 @@
+@import url("left-digital.css");
+
+/*
+ * デジタル庁デザインシステム案：中の項目なし（layout: 'flat'）。
+ * 左端の細い列に About me／Works／研究 のタブ。選んだタブはChromeのタブのように本文とつながる。
+ * 狭い画面では、タブを上に横並びにする（MENU ボタンは使わない）。
+ */
+:root {
+    --sidebar-w: 184px;
+    --flare: 12px;
+}
+
+.sidebar { background: var(--gray-100); }
+@media (min-width: 961px) { .sidebar { border-right: 0; } }
+.player { display: grid; gap: 8px; padding: 20px 16px 24px; border-bottom: 0; }
+.player img { width: 40px; height: 40px; border: 0; border-radius: 4px; }
+.player strong { font-size: 14px; line-height: 1.4; }
+.player .label { font-size: 14px; }
+
+.menu { padding: 0 0 0 8px; overflow: visible; }
+.menu-group { margin: 0 0 4px; }
+.menu-label {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    margin: 0;
+    padding: 0 16px;
+    border-radius: 8px 0 0 8px;
+    color: var(--gray-800);
+    font-size: 16px;
+    font-weight: 700;
+}
+.menu-label::after { content: none; }
+@media (hover: hover) { .menu-label:hover { background: var(--gray-50); color: var(--blue-1000); } }
+.menu-group[data-active] .menu-label,
+.menu-group[data-active] .menu-label:hover { background: var(--bg); color: var(--blue-1000); text-decoration: none; }
+/* つなぎ目の丸い裾（Chromeのタブ） */
+.menu-group[data-active] .menu-label::before,
+.menu-group[data-active] .menu-label::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    width: var(--flare);
+    height: var(--flare);
+    opacity: 1;
+    pointer-events: none;
+}
+.menu-group[data-active] .menu-label::before { top: calc(var(--flare) * -1); background: radial-gradient(circle at 0 0, transparent calc(var(--flare) - .5px), var(--bg) var(--flare)); }
+.menu-group[data-active] .menu-label::after { top: auto; bottom: calc(var(--flare) * -1); background: radial-gradient(circle at 0 100%, transparent calc(var(--flare) - .5px), var(--bg) var(--flare)); flex: none; }
+
+main { padding: 56px 64px 120px; }
+.page { max-width: 920px; }
+
+/* About me と研究は1ページなので、ページ上の小さいラベルは出さない */
+body:not([data-section="works"]) .page-head .label { display: none; }
+.stack { gap: 72px; }
+
+/* ---- 狭い画面：タブを上に横並び ---- */
+@media (max-width: 960px) {
+    .topbar { display: none; }
+    .sidebar { position: sticky; top: 0; inset: auto; width: auto; transform: none; border: 0; outline: 0; border-radius: 0; z-index: 30; }
+    .player { grid-template-columns: auto 1fr; align-items: center; gap: 10px; padding: 12px 16px 8px; }
+    .player img { width: 32px; height: 32px; }
+    .menu { display: flex; gap: 2px; padding: 0 8px; }
+    .menu-group { margin: 0; }
+    .menu-label { min-height: 44px; border-radius: 8px 8px 0 0; }
+    .menu-group[data-active] .menu-label::before { top: auto; bottom: 0; right: auto; left: calc(var(--flare) * -1); background: radial-gradient(circle at 0 0, transparent calc(var(--flare) - .5px), var(--bg) var(--flare)); }
+    .menu-group[data-active] .menu-label::after { bottom: 0; right: calc(var(--flare) * -1); background: radial-gradient(circle at 100% 0, transparent calc(var(--flare) - .5px), var(--bg) var(--flare)); }
+    main { padding: 32px 16px 80px; }
+}

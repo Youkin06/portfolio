@@ -10,7 +10,7 @@
 - `Images/` … 画像素材
 - `tests/` … Node標準のテスト（`node --test tests/*.cjs`）
 - `redesign/` … 全体改修の試作4案（A〜D）。`redesign/shared/content.js` が本番の `index.html` から内容を読み取って表示するため、内容の修正は `index.html` だけでよい。
-  - 本命は A 案（`redesign/a-sidebar.html`）。見た目違いの「スキン」は `redesign/a-skins/*.css` と `build.sh` で作る。
+  - 今後のベースは **A-左端デジタル庁案（left-digital）**。A 案（`redesign/a-sidebar.html`）にスキンを重ねたものを使う。見た目違いの「スキン」は `redesign/a-skins/*.css` と `build.sh` で作る。
 - `Images/clips/` … 作品一覧で動かす6秒のループ動画と静止画（ファイル名は YouTube の動画 ID）。
 - 作品ページの全編動画は別リポジトリ `Youkin06/portfolio-media`（GitHub Pages）に置き、`https://youkin06.github.io/portfolio-media/videos/<動画ID>.mp4` で読み込む。
 
@@ -22,7 +22,7 @@
 
 ## 改修の方針
 
-- 土台は A 案（`redesign/a-sidebar.html`）に、スキン **left-digital**（左端のサイドバー＋デジタル庁デザインシステムの見た目）を重ねたもの。ここからオリジナルにしていく。
+- **今後のデザイン・改修のベースは「A-左端デジタル庁案（left-digital）」とする。** A 案（`redesign/a-sidebar.html`）に、スキン **left-digital**（左端のサイドバー＋デジタル庁デザインシステムの見た目）を重ねたものを指す。見た目の確認・改善提案はこの案を基準にし、ここからオリジナルにしていく。
 - スキンは `redesign/a-skins/<名前>.css` と `<名前>.js`（`window.SKIN` の設定）で作り、`sh redesign/a-skins/build.sh` で `redesign/a-skin-<名前>.html` を書き出す。
   - `window.SKIN` で変えられるもの（形 `layout`・画面の言葉 `text`・アイコン色・メールの出し方）と、CSS から使える目印は、`redesign/a-sidebar.html` の先頭のコメントにまとめてある。
   - `build.sh` は行頭の `</head>` を目印に差し込むので、`a-sidebar.html` の閉じタグ `</head>` は1行に単独で書く。
