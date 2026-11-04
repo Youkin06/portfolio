@@ -10,7 +10,7 @@
 - `Images/` … 画像素材
 - `tests/` … Node標準のテスト（`node --test tests/*.cjs`）
 - `redesign/` … 全体改修の試作4案（A〜D）。`redesign/shared/content.js` が本番の `index.html` から内容を読み取って表示するため、内容の修正は `index.html` だけでよい。
-  - 今後のベースは **A-ゲーム投稿サイト案（store、`redesign/a-skin-store.html`）**。A 案（`redesign/a-sidebar.html`）にスキンを重ねたものを使う。見た目違いの「スキン」は `redesign/a-skins/*.css` と `build.sh` で作る。
+  - 今後のベースは **A-白・色の札案（white-fill、`redesign/a-skin-white-fill.html`）**。A 案（`redesign/a-sidebar.html`）にスキンを重ねたものを使う。見た目違いの「スキン」は `redesign/a-skins/*.css` と `build.sh` で作る。
   - フォント比較は `redesign/font-compare.html`。現行（Zen Maru Gothic）と `font-original`・`font-zen`・`font-ud`・`font-mincho` の4案を同じページで比較できる。各案は store の文言・レイアウトを共用し、`build.sh` で生成する。
 - `Images/clips/` … 作品一覧で動かす6秒のループ動画と静止画（ファイル名は YouTube の動画 ID）。
 - 作品ページの全編動画は別リポジトリ `Youkin06/portfolio-media`（GitHub Pages）に置き、`https://youkin06.github.io/portfolio-media/videos/<動画ID>.mp4` で読み込む。
@@ -23,7 +23,7 @@
 
 ## 改修の方針
 
-- **今後のデザイン・改修のベースは「A-ゲーム投稿サイト案（store）」とする。** 最新版は `redesign/a-skin-store.html`（自己紹介は `#about`）。A 案（`redesign/a-sidebar.html`）に、スキン **store**（`redesign/a-skins/store.css`・`store.js`）を重ねたものを指す。標準フォントは **Zen Maru Gothic** とし、作品一覧のカードは枠線で囲む。見た目の確認・改善提案・フォント比較はこの案を基準にする。left-digital は以前の比較案として残す。
+- **今後のデザイン・改修のベースは「A-白・色の札案（white-fill）」とする。** 最新版は `redesign/a-skin-white-fill.html`（自己紹介は `#about`）。A 案（`redesign/a-sidebar.html`）に、スキン **white-fill**（`redesign/a-skins/white-fill.css`・`white-fill.js`。共通部分は `white-common.css`、その土台は `store.css`）を重ねたものを指す。白地で、About は赤・Works は青・Research は緑、選んでいる項目は各色で塗って白い文字。About me は白地に草原とキャラクター（空は出さない）。標準フォントは **Zen Maru Gothic** とし、作品一覧のカードは枠線で囲む。見た目の確認・改善提案・フォント比較はこの案を基準にする。left-digital は以前の比較案として残す。
 - スキンは `redesign/a-skins/<名前>.css` と `<名前>.js`（`window.SKIN` の設定）で作り、`sh redesign/a-skins/build.sh` で `redesign/a-skin-<名前>.html` を書き出す。
   - store のセクション色は main の配色を参考に、About me＝赤・Works＝水色・Research＝黄緑。白地の文字には濃い同系色、選択背景には淡い同系色を使う。
   - `window.SKIN` で変えられるもの（形 `layout`・画面の言葉 `text`・アイコン色・メールの出し方）と、CSS から使える目印は、`redesign/a-sidebar.html` の先頭のコメントにまとめてある。
@@ -43,7 +43,7 @@
     `python3 -m http.server 8000 --bind 127.0.0.1`
   - `curl` で応答を確認してから、返答の最後に確認用リンクを貼る。
     - 公開中のサイト：http://127.0.0.1:8000/index.html
-    - 最新版のベース：http://127.0.0.1:8000/redesign/a-skin-store.html#about
+    - 最新版のベース：http://127.0.0.1:8000/redesign/a-skin-white-fill.html#about
     - A 案の共通構造：http://127.0.0.1:8000/redesign/a-sidebar.html（スキンは `redesign/a-skin-<名前>.html`）
     - デザイン側の worktree は別のポートで起動する（例：`../portfolio-skins` で 8001）。
   - 変更箇所がどこにあるか（どのアコーディオン・どの作品カードか）も一言添える。
