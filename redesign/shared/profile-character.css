@@ -164,8 +164,8 @@ main:has(.profile-walkway) { padding-bottom: 144px; }
     76% { transform: rotate(185deg); }
 }
 @media (max-width: 960px) {
-    .profile-walkway { --character-size: 112px; }
-    .profile-flight { left: 32px; right: 32px; }
+    .profile-walkway, .profile-flight { display: none; }
+    main:has(.profile-walkway) { padding-bottom: 64px; }
 }
 @media (prefers-reduced-motion: reduce) {
     .profile-character, .profile-character-facing,
@@ -180,7 +180,16 @@ main:has(.profile-walkway) { padding-bottom: 144px; }
 /* キャラクターに触れると、その場で待って作品へ案内する。 */
 [data-profile-guest] { pointer-events: auto; }
 [data-profile-guest][data-paused],
-[data-profile-guest][data-paused] * { animation-play-state: paused !important; }
+[data-profile-guest][data-paused] > .profile-character-facing,
+[data-profile-guest][data-paused] > .profile-kamo-facing,
+[data-profile-guest][data-paused] > .profile-depth-player-facing { animation-play-state: paused; }
+/* 移動と向きだけ止め、ぼくのにっきは待機の2枚を動かし続ける。 */
+.profile-character[data-paused] .profile-character-idle { animation: none; opacity: 1; }
+.profile-character[data-paused] .profile-character-walk { animation: none; opacity: 0; }
+/* Kamoには専用idle素材がないため、通常姿勢の1枚目で待機する。 */
+.profile-kamo[data-paused] .profile-kamo-frame { animation: none; opacity: 1; }
+.profile-kamo[data-paused] .profile-kamo-frame + .profile-kamo-frame { opacity: 0; }
+/* DEPTH DIARYの画像は元からidleなので、停止中も4枚のループを保つ。 */
 .profile-guest-trigger {
     position: absolute;
     inset: 0;
