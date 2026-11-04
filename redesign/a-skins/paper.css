@@ -1,0 +1,24 @@
+@import url("store.css");
+
+/*
+ * 生成り案：真っ白ではなく、少し黄みのある紙の白。長く見ても目が疲れにくい。
+ * - About me は空を出さず、紙の上に草原とキャラクターだけを置く
+ * - カードは地より一段明るく、サイドバーは一段暗い
+ */
+:root {
+    --bg: #f6f3ec;
+    --fg: #2b2925;
+    --muted: #2b2925;
+    --surface: #fcfaf5;
+    --surface-2: #eeeae0;
+    --sidebar-bg: #ece7dc;
+    --line: #ddd6c8;
+    --card-line: #d5cdbc;
+}
+body[data-section="about"], .menu-group[data-section="about"] { --section-bg: #f8e4e2; }
+body[data-section="works"], .menu-group[data-section="works"] { --section-bg: #e2eef2; }
+body[data-section="research"], .menu-group[data-section="research"] { --section-bg: #e9f0da; }
+
+.sidebar { border-right: 0; }
+.card, .card:hover, .card:focus-within { border-color: var(--card-line); }
+.card .thumb { border-bottom-color: var(--card-line); }

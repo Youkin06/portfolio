@@ -15,10 +15,10 @@ html:has(body[data-page="about/"])::-webkit-scrollbar { display: none; }
     body[data-section="about"]:not([data-page="about/"]) main { padding-bottom: 220px; }
 }
 /* 空の上で読めるように、About me の本文の色を時間帯で変える。スマホでは空を出さないので、白地のまま。
-   明け方と昼：リンクを濃い赤に。夕方と夜：文字と線を白に、リンクを薄い赤に。白いボタンの中は黒いまま。
+   明け方と昼：リンクを濃い赤に。夕方と夜：文字と線を白に、リンクを薄い赤に、ボタンは半透明の白に。空を出さないスキン（none）はスキンの色のまま。
    黒一色のアイコン（Unity・GitHub）は夕方と夜に白く反転する。 */
 @media (min-width: 961px) {
-    body[data-section="about"] main { --section-fg: #8e1a23; --accent: #8e1a23; }
+    :is([data-sky="dawn"], [data-sky="day"]) body[data-section="about"] main { --section-fg: #8e1a23; --accent: #8e1a23; }
     :is([data-sky="evening"], [data-sky="night"]) body[data-section="about"] main {
         --fg: #fff;
         --muted: #fff;
@@ -26,12 +26,13 @@ html:has(body[data-page="about/"])::-webkit-scrollbar { display: none; }
         --accent: #ffc2c7;
         --section-bg: #ffffff24;
         --line: #ffffff59;
+        --surface: #ffffff1f;
         color: #fff;
     }
-    :is([data-sky="evening"], [data-sky="night"]) body[data-section="about"] main .contacts :is(a, .mail) { color: #222; }
     :is([data-sky="evening"], [data-sky="night"]) body[data-page="about/"] :is([data-tech="unity"], [data-tech="github"]) img { filter: invert(1); }
 }
 /* 空。時間帯（profile-sky.js が html[data-sky] に書く）で色を変える。上から下へなめらかに明るくなる。 */
+[data-sky="none"] .profile-sky { display: none; }
 .profile-sky {
     position: absolute;
     inset: 0;

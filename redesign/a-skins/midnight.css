@@ -1,0 +1,29 @@
+@import url("store.css");
+
+/*
+ * 真夜中案：夜空案より暗い、黒に近い炭色。ドットの空も炭色寄りの紺にする。
+ * - 色は About・Works・Research の3色と、作品の画像だけ。ほかは灰色の濃淡
+ */
+:root {
+    --bg: #131419;
+    --fg: #ececec;
+    --muted: #ececec;
+    --surface: #1c1e25;
+    --surface-2: #24272f;
+    --sidebar-bg: #0d0e12;
+    --line: #2e313b;
+    --card-line: #2e313b;
+}
+body[data-section="about"], .menu-group[data-section="about"] { --section-fg: #ff8c8c; --section-bg: #ff8c8c1f; }
+body[data-section="works"], .menu-group[data-section="works"] { --section-fg: #6fc8ff; --section-bg: #6fc8ff1f; }
+body[data-section="research"], .menu-group[data-section="research"] { --section-fg: #a8e05f; --section-bg: #a8e05f1f; }
+
+.sidebar { border-right: 0; }
+.card, .card:hover, .card:focus-within { border-color: var(--card-line); }
+.card .thumb { border-bottom-color: var(--card-line); }
+.vplayer { box-shadow: 0 2px 12px #00000080; }
+.tag { filter: saturate(.8) brightness(.92); }
+
+/* About me の夜空も炭色寄りに。 */
+html[data-sky="night"] .profile-sky { --sky-colors: #0f1016, #13151d, #181b26, #1e2232, #262b3f; }
+html[data-sky="night"] .profile-ground { filter: brightness(.5) saturate(.7); }

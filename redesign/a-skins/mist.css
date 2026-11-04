@@ -1,0 +1,28 @@
+@import url("store.css");
+
+/*
+ * 薄曇り案：少し青みのある明るい灰色。About me には、ほとんど白に近い淡い昼の空を出す。
+ * - 白に近いが真っ白ではない。サイドバーは一段濃い青灰色
+ */
+:root {
+    --bg: #eef2f6;
+    --fg: #1f2733;
+    --muted: #1f2733;
+    --surface: #f9fbfd;
+    --surface-2: #e3e9f0;
+    --sidebar-bg: #e2e8ef;
+    --line: #d2dae4;
+    --card-line: #cbd4df;
+}
+body[data-section="about"], .menu-group[data-section="about"] { --section-bg: #f6e3e5; }
+body[data-section="works"], .menu-group[data-section="works"] { --section-bg: #dfedf5; }
+body[data-section="research"], .menu-group[data-section="research"] { --section-bg: #e7f0da; }
+
+.sidebar { border-right: 0; }
+.card, .card:hover, .card:focus-within { border-color: var(--card-line); }
+.card .thumb { border-bottom-color: var(--card-line); }
+
+/* About me の昼の空を、地の色から淡い水色へ。 */
+html[data-sky="day"] .profile-sky { --sky-colors: #eef2f6, #e6eef6, #dce9f5, #d1e3f3, #c6ddf1; }
+/* 空が淡いので、昼でもリンクは各セクションの色のまま。 */
+html[data-sky="day"] body[data-section="about"] main { --section-fg: #bc2934; --accent: #bc2934; }

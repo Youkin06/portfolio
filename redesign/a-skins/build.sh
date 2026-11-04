@@ -42,3 +42,8 @@ build font-rounded 'フォント比較・M PLUS Rounded' 'family=M+PLUS+Rounded+
 build font-kiwi 'フォント比較・Kiwi丸' 'family=Kiwi+Maru:wght@400;500' store
 build font-dot 'フォント比較・ドットの見出し' 'family=DotGothic16' store
 build font-klee 'フォント比較・教科書体の見出し' 'family=Klee+One:wght@400;600' store
+# 配色違い（構成・文言・キャラクターは store と共通）
+build night '夜空案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
+build midnight '真夜中案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
+build paper '生成り案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
+build mist '薄曇り案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'

@@ -1,0 +1,28 @@
+@import url("store.css");
+
+/*
+ * 夜空案：About me の夜の空（ドットの草原と星）を、サイト全体の色にする。
+ * - 地は空のいちばん上の紺。サイドバーはそれより一段暗く、カードは一段明るい紺
+ * - 文字は白に近い色。About は薄い赤、Works は水色、Research は黄緑（暗い地で読める明るさ）
+ * - 作品ページは、あとで作品ごとの背景（itch.io のように）を敷くので、地は落ち着いた紺のまま
+ */
+:root {
+    --bg: #1a2044;
+    --fg: #eef0fa;
+    --muted: #eef0fa;
+    --surface: #232b54;
+    --surface-2: #2b3462;
+    --sidebar-bg: #141a37;
+    --line: #3a4475;
+    --card-line: #3a4475;
+}
+body[data-section="about"], .menu-group[data-section="about"] { --section-fg: #ffa3ad; --section-bg: #ffa3ad24; }
+body[data-section="works"], .menu-group[data-section="works"] { --section-fg: #8fd6ff; --section-bg: #8fd6ff24; }
+body[data-section="research"], .menu-group[data-section="research"] { --section-fg: #bfe98f; --section-bg: #bfe98f24; }
+
+.sidebar { border-right: 0; }
+.card, .card:hover, .card:focus-within { border-color: var(--card-line); }
+.card .thumb { border-bottom-color: var(--card-line); }
+.vplayer { box-shadow: 0 2px 12px #00000059; }
+/* タグは明るい色の札のまま。暗い地の上で少しだけ落ち着かせる。 */
+.tag { filter: saturate(.85) brightness(.95); }
