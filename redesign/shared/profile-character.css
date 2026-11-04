@@ -18,7 +18,7 @@ main > .page.about:has(.profile-meadow) { flex: 1; display: flex; flex-direction
     flex: 1;
     min-height: 240px;
     width: calc(100vw - var(--sidebar-w));
-    margin: 40px 0 0 -40px;
+    margin: 24px 0 0 -40px;
     overflow: hidden;
 }
 /* 空。時間帯（profile-sky.js が html[data-sky] に書く）で色を段々に変える。 */
@@ -31,6 +31,14 @@ main > .page.about:has(.profile-meadow) { flex: 1; display: flex; flex-direction
 [data-sky="dawn"] .profile-sky { --sky-bands: #8a9fd4 0 20%, #b3b3de 0 40%, #dcbcd8 0 60%, #f2cdbc 0 80%, #fae0b4 0; }
 [data-sky="evening"] .profile-sky { --sky-bands: #4f5c9c 0 20%, #85699f 0 40%, #c8737f 0 60%, #ec8f66 0 80%, #f6b45e 0; }
 [data-sky="night"] .profile-sky { --sky-bands: #161b38 0 20%, #1c2346 0 40%, #232b54 0 60%, #2b3462 0 80%, #343e70 0; }
+/* 技術スタックの白地から、空へなめらかにつなぐ。雲や星もこの下に溶け込む。 */
+.profile-sky::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: min(180px, 50%);
+    background: linear-gradient(var(--bg, #fff), transparent);
+}
 .profile-sky > * { position: absolute; image-rendering: pixelated; background: no-repeat center / 100% 100%; }
 .profile-stars {
     inset: 0;
@@ -64,10 +72,8 @@ main > .page.about:has(.profile-meadow) { flex: 1; display: flex; flex-direction
     from { transform: translateX(-160px); }
     to { transform: translateX(calc(100vw - var(--sidebar-w))); }
 }
-/* 夜は地面とキャラクターを少し暗くする。吹き出しはそのまま読めるように。 */
-[data-sky="night"] .profile-ground,
-[data-sky="night"] .profile-character-facing,
-[data-sky="night"] .profile-kamo-facing { filter: brightness(.62) saturate(.8); }
+/* 夜は地面だけ少し暗くする。キャラクターは元の色のまま見せる。 */
+[data-sky="night"] .profile-ground { filter: brightness(.62) saturate(.8); }
 [data-sky="evening"] .profile-ground { filter: brightness(.88) sepia(.15); }
 /* 草原の地面。8ドットの高さで、上2ドットは草の先、下2ドットは土。 */
 .profile-ground {
