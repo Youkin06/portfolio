@@ -225,8 +225,8 @@ main a:any-link:focus-visible { background-color: var(--yellow-300); }
 .tag-illust, .tag-dot-e, .tag-modeling, .tag-two-d, .tag-three-d { background: #f6eefb; border-color: #7839a7; color: #64308a; }
 .tag-winner, .tag-gc-koshien, .tag-google-play { background: var(--green-50); border-color: var(--green-800); color: var(--green-800); font-weight: 700; }
 .tech-stack { margin-top: 24px; }
-.tech-stack h3 { margin: 0 0 8px; color: var(--muted); font-size: 14px; font-weight: 500; }
-.tag-technology { max-width: 100%; white-space: normal; overflow-wrap: anywhere; background: var(--blue-50); border-color: var(--blue-1000); color: var(--blue-1000); }
+.tech-stack h3 { margin: 0 0 8px; color: var(--fg); font-size: 14px; font-weight: 500; }
+.tech-list, .prose .tech-list { margin: 0; font-size: 14px; line-height: 1.9; color: var(--fg); overflow-wrap: anywhere; }
 .repository-note { margin: 16px 0 0; font-size: 14px; color: var(--muted); }
 
 @media (min-width: 601px) and (max-width: 1200px) {
@@ -235,8 +235,7 @@ main a:any-link:focus-visible { background-color: var(--yellow-300); }
 
 /* ---- 作品・研究のページ ---- */
 .vplayer { border: 0; border-radius: 8px; }
-.vcontrols button, .vsound { border: 1px solid #fff; border-radius: 6px; background: #000; font-size: 14px; }
-.vcontrols input[type=range] { accent-color: var(--yellow-300); }
+.vsound { border: 1px solid #fff; background: rgba(0, 0, 0, .75); }
 .prose p { font-size: 16px; line-height: 1.7; }
 .data .window { padding: 24px; background: #ffffff; border-radius: 8px; }
 .data .window-title { font-size: 20px; border-bottom: 0; padding: 0; }

@@ -241,39 +241,30 @@
         /* 作品・研究のページ：本文と、右のデータ欄 */
         .vplayer { position: relative; aspect-ratio: 16 / 9; border: 3px solid var(--navy); border-radius: var(--radius); overflow: hidden; background: #000; margin-bottom: 20px; }
         .vplayer video { width: 100%; height: 100%; display: block; object-fit: contain; background: #000; }
-        .vplayer:fullscreen { border: 0; border-radius: 0; }
-        .vcontrols {
+        .vsound {
             position: absolute;
-            inset: auto 0 0 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 28px 12px 10px;
-            background: linear-gradient(transparent, rgba(10, 14, 28, .85));
-            color: #fff;
-            opacity: 0;
-            transition: opacity .2s ease;
-        }
-        .vplayer:hover .vcontrols, .vplayer:focus-within .vcontrols, .vplayer.paused .vcontrols { opacity: 1; }
-        @media (hover: none) { .vcontrols { opacity: 1; } }
-        .vcontrols button, .vsound {
-            flex-shrink: 0;
+            top: 12px;
+            right: 12px;
+            display: grid;
+            place-items: center;
+            width: 44px;
+            height: 44px;
             border: 2px solid #fff;
-            border-radius: 8px;
+            border-radius: 50%;
             background: rgba(28, 34, 56, .6);
             color: #fff;
-            font: inherit;
-            font-size: 13px;
-            font-weight: 700;
-            padding: 4px 10px;
+            padding: 0;
             cursor: pointer;
-            line-height: 1.4;
         }
-        .vcontrols button:hover, .vsound:hover { background: #fff; color: var(--navy); }
-        .vcontrols input[type=range] { flex: 1; min-width: 60px; accent-color: var(--cursor); cursor: pointer; }
-        .vcontrols .time { font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-        .vsound { position: absolute; top: 12px; right: 12px; border-radius: 999px; padding: 6px 14px; }
-        .vplayer.unmuted .vsound { display: none; }
+        .vsound:hover { background: #fff; color: var(--navy); }
+        .vsound svg { display: block; width: 24px; height: 24px; pointer-events: none; }
+        @media (hover: hover) and (pointer: fine) {
+            .vsound { opacity: 0; pointer-events: none; transition: opacity .15s ease; }
+            .vplayer:hover .vsound, .vsound:focus-visible { opacity: 1; pointer-events: auto; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .vsound { transition: none; }
+        }
 
         .detail { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
         .game .detail { grid-template-columns: 300px minmax(0, 1fr); }
@@ -342,7 +333,6 @@
             .grid, .pager { grid-template-columns: 1fr; }
             .pager .next { grid-column: auto; }
             .window-body { padding: 16px; }
-            .vcontrols .time { display: none; }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -401,10 +391,9 @@
             count: n => `${n}件`,
             // スキルの段階（1〜5）の言葉
             skillLevels: ['', '学習中', '基礎', '応用', '習熟', '得意分野'],
-            unmute: '🔊 音を出す',
-            muted: '音なし',
-            sound: '音あり',
-            full: '全画面',
+            unmute: '音を出す',
+            mute: '音を消す',
+            soundLabel: '動画の音声',
             ...(SKIN.text || {}),
         };
         const ICON_COLOR = /^[0-9a-f]{6}$/i.test(SKIN.iconColor || '') ? SKIN.iconColor : '1c2238';
@@ -580,21 +569,15 @@
                     </div>
                 </article>`;
 
+            const soundIcon = muted => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4 6 8H3v8h3l5 4V4Z"/>${muted ? '<path d="m16 9 6 6m0-6-6 6"/>' : '<path d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/>'}</svg>`;
             const playerHTML = (id, title) => id ? `
                 <div class="vplayer" data-player>
                     <video src="${MEDIA_BASE}${esc(id)}.mp4" poster="${CLIP_BASE}${esc(id)}.jpg"
                         autoplay muted loop playsinline preload="metadata" aria-label="${esc(title)} のプレイ動画"></video>
-                    <button class="vsound" type="button" data-act="unmute">${esc(TEXT.unmute)}</button>
-                    <div class="vcontrols">
-                        <button type="button" data-act="toggle" aria-label="再生・一時停止">❚❚</button>
-                        <input type="range" min="0" max="1000" value="0" aria-label="再生位置" data-act="seek">
-                        <span class="time">0:00 / 0:00</span>
-                        <button type="button" data-act="mute" aria-label="音のオン・オフ">${esc(TEXT.muted)}</button>
-                        <button type="button" data-act="full" aria-label="全画面">${esc(TEXT.full)}</button>
-                    </div>
+                    <button class="vsound" type="button" data-act="mute" aria-label="${esc(TEXT.soundLabel)}" aria-pressed="false" title="${esc(TEXT.unmute)}">${soundIcon(true)}</button>
                 </div>` : '';
 
-            // 作品情報は4項目に固定。使用技術は技術説明の末尾にタグで表示する。
+            // 作品情報は4項目に固定。使用技術は技術説明の末尾にテキストで表示する。
             const FACT_LABELS = ['ジャンル', '開発期間', '開発体制', '担当'];
             const gamePage = id => {
                 const index = projects.findIndex(p => p.id === id);
@@ -603,7 +586,8 @@
                 const facts = FACT_LABELS.map(label => p.fields.find(f => f.label === label) || { label, html: '—' });
                 const sections = p.fields.filter(f => !FACT_LABELS.includes(f.label) && !['使用技術', 'GitHubリポジトリ'].includes(f.label));
                 const technologies = [...new Set(p.tech.split('、').map(name => name.trim()).filter(Boolean))];
-                const techHTML = technologies.length ? `<div class="tech-stack"><h3 class="label">使用技術</h3>${tagsHTML(technologies.map(label => ({ key: 'technology', label })))}</div>` : '';
+                const techListHTML = technologies.length ? `<p class="tech-list">${esc(technologies.join('、'))}</p>` : '';
+                const techHTML = techListHTML ? `<div class="tech-stack"><h3 class="label">使用技術</h3>${techListHTML}</div>` : '';
                 const repositoryNote = p.fields.find(f => f.label === 'GitHubリポジトリ');
                 return `
                     <article class="page game" ${tone(index)}>
@@ -621,7 +605,7 @@
                                         <h2 class="window-title label">${esc(f.label)}</h2>
                                         <div class="window-body prose">${paragraphs(fixProjectLinks(f.html))}${f.label === '技術説明' ? techHTML : ''}</div>
                                     </section>`).join('')}
-                                ${!sections.some(f => f.label === '技術説明') && techHTML ? block('technology', '使用技術', tagsHTML(technologies.map(label => ({ key: 'technology', label })))) : ''}
+                                ${!sections.some(f => f.label === '技術説明') && techListHTML ? block('technology', '使用技術', techListHTML) : ''}
                             </div>
                         </div>
                     </article>`;
@@ -721,38 +705,27 @@
                 closeMenu();
             };
 
-            // ---- 動画プレイヤーの操作 ----
-            const fmt = t => (Number.isFinite(t) ? `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}` : '0:00');
+            // ---- 動画は自動ループ。操作は右上の音声切り替えだけ ----
             const syncPlayer = player => {
                 const video = player.querySelector('video');
-                player.classList.toggle('paused', video.paused);
-                player.classList.toggle('unmuted', !video.muted);
-                player.querySelector('[data-act=toggle]').textContent = video.paused ? '▶' : '❚❚';
-                player.querySelector('[data-act=mute]').textContent = video.muted ? TEXT.muted : TEXT.sound;
-                player.querySelector('.time').textContent = `${fmt(video.currentTime)} / ${fmt(video.duration)}`;
-                if (video.duration) player.querySelector('[data-act=seek]').value = Math.round(video.currentTime / video.duration * 1000);
+                const button = player.querySelector('[data-act=mute]');
+                button.innerHTML = soundIcon(video.muted);
+                button.setAttribute('aria-pressed', String(!video.muted));
+                button.title = video.muted ? TEXT.unmute : TEXT.mute;
             };
             main.addEventListener('click', event => {
-                const button = event.target.closest('[data-player] [data-act]');
-                const player = event.target.closest('[data-player]');
-                if (!player) return;
+                const button = event.target.closest('[data-player] [data-act=mute]');
+                if (!button) return;
+                const player = button.closest('[data-player]');
                 const video = player.querySelector('video');
-                const act = button?.dataset.act;
-                if (act === 'unmute' || act === 'mute') video.muted = act === 'unmute' ? false : !video.muted;
-                else if (act === 'full') document.fullscreenElement ? document.exitFullscreen() : player.requestFullscreen?.();
-                else if (act === 'toggle' || event.target === video) video.paused ? video.play() : video.pause();
+                video.muted = !video.muted;
+                if (video.paused) video.play().catch(() => {});
                 syncPlayer(player);
             });
-            main.addEventListener('input', event => {
-                if (event.target.dataset.act !== 'seek') return;
-                const video = event.target.closest('[data-player]').querySelector('video');
-                if (video.duration) video.currentTime = event.target.value / 1000 * video.duration;
-            });
-            ['timeupdate', 'play', 'pause', 'volumechange', 'loadedmetadata'].forEach(type =>
-                main.addEventListener(type, event => {
-                    const player = event.target.closest?.('[data-player]');
-                    if (player) syncPlayer(player);
-                }, true));
+            main.addEventListener('volumechange', event => {
+                const player = event.target.closest?.('[data-player]');
+                if (player) syncPlayer(player);
+            }, true);
 
             window.addEventListener('hashchange', render);
             render();
