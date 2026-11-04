@@ -8,9 +8,27 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="shared/base.css">
+    <!--
+        スキン（見た目違い）の作り方
+        ・</head> の直前に、スキンの CSS と設定の JS（window.SKIN を決める）を足す。HTML の書き換えはしない。
+        ・window.SKIN で変えられるもの（書かなかった項目は既定のまま）
+            layout   : 'sections'（既定。サイドバーに中の項目も出す）
+                       'tabs'    （選んだ大項目の中の項目だけ出す）
+                       'flat'    （中の項目は出さない。About と研究は1ページにまとめる）
+            text     : 画面の言葉。下の TEXT の項目名で上書きする
+            iconColor: SNS アイコンの色（16進数6桁、# なし）
+            mail     : 'button'（既定。メールを開くボタン）か 'text'（選んでコピーできる文字）
+        ・CSS から使える目印
+            body[data-layout][data-section="about|works|research"][data-page="works/zelly-swipe" など]
+            .menu-group[data-section][data-active]、.menu-label（大項目へのリンク）、.menu-list a.active
+            色分け用の [data-index]（0 始まり）と [data-tone]（0〜3）。既定の色は下の CSS で決めている
+            スキル li[data-level="1〜5"]（.skill-name / .gauge / .skill-word）
+            経歴 .exp（.exp-period / .exp-role / .exp-org / .exp-more / .exp-links）
+            リンク .link--work（作品へ）/ .link--external（外のサイト。印は .ext-mark）
+    -->
     <style>
         /*
-         * テーマ：ゲームのメニュー画面。
+         * 既定の見た目：ゲームのメニュー画面。
          * サイドバーはRPGのコマンドウィンドウ、中身はタイトルバー付きのウィンドウで統一する。
          * 色は今のサイトの4色（赤・オレンジ・水色・黄緑）。
          */
@@ -36,6 +54,15 @@
             --sidebar-w: 312px;
             --radius: 12px;
         }
+
+        /* 色分け：data-tone（0〜3）を今のサイトの4色に。スキンはここを上書きする */
+        [data-tone="0"] { --k: var(--red); }
+        [data-tone="1"] { --k: var(--orange); }
+        [data-tone="2"] { --k: var(--sky); }
+        [data-tone="3"] { --k: var(--green); }
+        [data-section="about"] { --k: var(--green); }
+        [data-section="works"] { --k: var(--orange); }
+        [data-section="research"] { --k: var(--sky); }
 
         /* 方眼紙のようなドットの背景 */
         body {
@@ -76,7 +103,7 @@
 
         .menu { flex: 1; overflow-y: auto; padding: 8px 10px 16px; }
         .menu-group { margin-top: 12px; }
-        .menu-label { display: flex; align-items: center; gap: 10px; margin: 0 0 4px; padding: 2px 10px; color: var(--k); }
+        .menu-label { display: flex; align-items: center; gap: 10px; margin: 0 0 4px; padding: 2px 10px; color: var(--k); text-decoration: none; }
         .menu-label::after { content: ""; flex: 1; height: 2px; background: currentColor; opacity: .35; }
         .menu-list { list-style: none; margin: 0; padding: 0; }
         .menu-list a {
@@ -100,21 +127,30 @@
         .menu-list a.active { background: var(--navy-2); color: #fff; font-weight: 700; }
         .menu-list a.active::before { opacity: 1; }
 
+        /* layout: 'tabs' は選んだ大項目の中だけ、'flat' は中の項目を出さない */
+        [data-layout="tabs"] .menu-group:not([data-active]) .menu-list { display: none; }
+        [data-layout="flat"] .menu-list { display: none; }
+        [data-layout="flat"] .menu-label { padding: 8px 10px; }
+
         /* ---- 右側 ---- */
         main { margin-left: calc(var(--sidebar-w) + 32px); padding: 28px 40px 96px; }
         .page { max-width: 1100px; animation: pop .2s ease; }
+        .page--narrow { max-width: 920px; }
         @keyframes pop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
         .page-head { margin: 4px 0 22px; }
         .page-head .label { color: var(--k, var(--accent)); }
         .page-head h1 { margin: 4px 0 0; font-size: clamp(26px, 3.2vw, 36px); font-weight: 900; line-height: 1.3; }
         .page-head p { margin: 6px 0 0; color: var(--muted); }
+        .back { display: inline-block; margin-bottom: 8px; font-size: 14px; font-weight: 700; color: var(--accent); text-decoration: none; }
+        .back:hover { text-decoration: underline; }
 
-        /* すべての中身はこのウィンドウに入れる */
-        .window { background: var(--surface); border: 3px solid var(--navy); border-radius: var(--radius); box-shadow: 0 5px 0 rgba(28, 34, 56, .16); }
+        /* すべての中身はこのウィンドウ（.block）に入れる */
+        .window { background: var(--surface); border: 3px solid var(--navy); border-radius: var(--radius); box-shadow: 0 5px 0 rgba(28, 34, 56, .16); scroll-margin-top: 20px; }
         .window-title {
             display: flex;
             align-items: center;
             gap: 10px;
+            margin: 0;
             padding: 8px 16px;
             background: var(--navy);
             color: #fff;
@@ -131,10 +167,10 @@
         .portrait img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity .2s ease; }
         .portrait .pixel { opacity: 0; image-rendering: pixelated; }
         .portrait:hover .pixel { opacity: 1; }
-        .profile h2 { margin: 0 0 8px; font-size: 22px; }
-        .profile p { margin: 0; }
-        .buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-        .buttons a {
+        .profile-name { margin: 0 0 8px; font-size: 22px; }
+        .profile-text { margin: 0; }
+        .contacts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+        .contacts a {
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -146,53 +182,59 @@
             font-size: 13px;
             font-weight: 700;
         }
-        .buttons a:hover { background: var(--navy); color: #fff; }
-        .buttons img { width: 16px; height: 16px; }
+        .contacts a:hover { background: var(--navy); color: #fff; }
+        .contacts img { width: 16px; height: 16px; }
+        .contacts .mail { padding: 6px 4px; font-size: 13px; user-select: all; }
 
-        /* Skills：ブロックのゲージ */
+        /* Skills：既定はブロックのゲージ。言葉（.skill-word）はスキンで出す */
         .skills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 24px; }
-        .skills .label { margin: 0 0 8px; color: var(--muted); }
-        .skills ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 14px; }
-        .skills li { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; }
+        .skill-group h3 { margin: 0 0 8px; color: var(--muted); }
+        .skill-group ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 14px; }
+        .skill-group li { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; }
+        .skill-word { display: none; }
         .gauge { display: flex; gap: 3px; }
         .gauge i { width: 12px; height: 12px; background: var(--line); }
         .gauge i.on { background: var(--k, var(--sky)); box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .18); }
 
-        /* 一覧の行（受賞歴・インターン・メディア） */
-        .row { padding: 14px 0; border-bottom: 2px dotted var(--line); }
-        .row:first-child { padding-top: 0; }
-        .row:last-child { border-bottom: 0; padding-bottom: 0; }
-        .row-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 14px; }
-        .row-head strong { font-size: 15px; }
-        .row-head strong small { font-weight: 400; color: var(--muted); font-size: 13px; margin-left: 6px; }
-        .row-head span { color: var(--muted); font-size: 13px; }
-        .row p { margin: 6px 0 0; font-size: 14px; line-height: 1.85; }
-        .row .links { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 6px; font-size: 13px; }
-        .row details summary { cursor: pointer; font-size: 13px; color: var(--accent); margin-top: 4px; font-weight: 700; }
-        .row figure { margin: 10px 0 0; max-width: 340px; }
-        .row figure img { border-radius: 8px; border: 2px solid var(--navy); }
-        .row figcaption { font-size: 12px; color: var(--muted); }
-        .achievement strong::before { content: "★ "; color: var(--orange); }
+        /* 経歴（インターン・バイト） */
+        .exp-list, .item-list { list-style: none; margin: 0; padding: 0; }
+        .exp, .item { padding: 14px 0; border-bottom: 2px dotted var(--line); }
+        .exp:first-child, .item:first-child { padding-top: 0; }
+        .exp:last-child, .item:last-child { border-bottom: 0; padding-bottom: 0; }
+        .exp-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; }
+        .exp-role { margin: 0; font-size: 15px; }
+        .exp-org { color: var(--muted); font-size: 13px; }
+        .exp-period { margin-left: auto; color: var(--muted); font-size: 13px; }
+        .exp-more summary { cursor: pointer; font-size: 13px; color: var(--accent); margin-top: 4px; font-weight: 700; }
+        .exp-more p { margin: 6px 0 0; font-size: 14px; line-height: 1.85; }
+        .exp-more figure { margin: 10px 0 0; max-width: 340px; }
+        .exp-more figure img { border-radius: 8px; border: 2px solid var(--navy); }
+        .exp-more figcaption { font-size: 12px; color: var(--muted); }
+        .exp-links, .item-links { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 6px; font-size: 13px; }
+        .item-text { font-weight: 700; font-size: 15px; }
+        .awards .item-text::before { content: "★ "; color: var(--orange); }
 
-        /* 作品一覧 */
+        /* 作品一覧：上の2本は大きく、残りは3列 */
+        .featured { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
         .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-        .card { position: relative; display: block; color: inherit; text-decoration: none; overflow: hidden; transition: transform .12s ease, box-shadow .12s ease; }
-        .card:hover, .card:focus-visible { transform: translateY(-4px); box-shadow: 0 9px 0 rgba(28, 34, 56, .16); outline: none; }
+        .card { position: relative; overflow: hidden; transition: transform .12s ease, box-shadow .12s ease; }
+        .card:hover, .card:focus-within { transform: translateY(-4px); box-shadow: 0 9px 0 rgba(28, 34, 56, .16); }
         .card .thumb { position: relative; aspect-ratio: 16 / 9; background: #000; border-bottom: 3px solid var(--navy); }
         .card .thumb img, .card .thumb video { width: 100%; height: 100%; object-fit: cover; display: block; }
-        /* 上の2本は大きく */
-        .featured { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
-        .featured .card h3 { font-size: 20px; }
-        .featured .card p { font-size: 14px; }
-        .featured .card .no { font-size: 13px; }
         .card .no { position: absolute; top: 8px; left: 8px; padding: 2px 8px; background: var(--navy); color: #fff; border-left: 6px solid var(--k); }
         .card .body { padding: 12px 14px 14px; }
         .card h3 { margin: 0; font-size: 16px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
         .card h3 small { font-size: 12px; color: var(--muted); font-weight: 500; }
+        /* タイトルのリンクをカード全体に広げる */
+        .card-link { color: inherit; text-decoration: none; }
+        .card-link::after { content: ""; position: absolute; inset: 0; }
+        .card-link:focus-visible { outline: none; }
+        .card:has(.card-link:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; }
         .card p { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+        .featured .card h3 { font-size: 20px; }
+        .featured .card p { font-size: 14px; }
 
-        /* ---- 作品・研究のページ：本文と、右のデータ欄 ---- */
-        /* 作品ページの動画プレイヤー（自前。YouTube の表示は出さない） */
+        /* 作品・研究のページ：本文と、右のデータ欄 */
         .vplayer { position: relative; aspect-ratio: 16 / 9; border: 3px solid var(--navy); border-radius: var(--radius); overflow: hidden; background: #000; margin-bottom: 20px; }
         .vplayer video { width: 100%; height: 100%; display: block; object-fit: contain; background: #000; }
         .vplayer:fullscreen { border: 0; border-radius: 0; }
@@ -210,7 +252,7 @@
         }
         .vplayer:hover .vcontrols, .vplayer:focus-within .vcontrols, .vplayer.paused .vcontrols { opacity: 1; }
         @media (hover: none) { .vcontrols { opacity: 1; } }
-        .vcontrols button {
+        .vcontrols button, .vsound {
             flex-shrink: 0;
             border: 2px solid #fff;
             border-radius: 8px;
@@ -223,27 +265,12 @@
             cursor: pointer;
             line-height: 1.4;
         }
-        .vcontrols button:hover { background: #fff; color: var(--navy); }
+        .vcontrols button:hover, .vsound:hover { background: #fff; color: var(--navy); }
         .vcontrols input[type=range] { flex: 1; min-width: 60px; accent-color: var(--cursor); cursor: pointer; }
         .vcontrols .time { font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-        /* 最初は音なしなので、音を出すボタンを目立たせる */
-        .vsound {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            border: 2px solid #fff;
-            border-radius: 999px;
-            background: rgba(28, 34, 56, .75);
-            color: #fff;
-            font: inherit;
-            font-size: 13px;
-            font-weight: 700;
-            padding: 6px 14px;
-            cursor: pointer;
-        }
-        .vsound:hover { background: #fff; color: var(--navy); }
+        .vsound { position: absolute; top: 12px; right: 12px; border-radius: 999px; padding: 6px 14px; }
         .vplayer.unmuted .vsound { display: none; }
-        @media (max-width: 600px) { .vcontrols .time { display: none; } }
+
         .detail { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
         .prose p { margin: 0; font-size: 15px; line-height: 1.95; }
         .prose p + p { margin-top: 1em; }
@@ -251,7 +278,7 @@
         .data dt { color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .06em; }
         .data dd { margin: 2px 0 0; }
         .data .tags { margin: 0 0 16px; }
-        .link-list { display: grid; gap: 8px; }
+        .link-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
         .link-list a {
             display: block;
             padding: 9px 12px;
@@ -264,6 +291,9 @@
         }
         .link-list a:hover { background: var(--navy); color: #fff; }
         .tag { border-color: var(--line); font-weight: 700; }
+
+        .research-item + .research-item { margin-top: 40px; }
+        .research-title { margin: 0 0 14px; font-size: 22px; }
 
         .pager { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 36px; }
         .pager a { padding: 12px 16px; color: var(--fg); text-decoration: none; font-weight: 700; }
@@ -307,31 +337,19 @@
             .grid, .pager { grid-template-columns: 1fr; }
             .pager .next { grid-column: auto; }
             .window-body { padding: 16px; }
+            .vcontrols .time { display: none; }
         }
     </style>
 </head>
 <body>
     <div class="topbar">
         <strong id="topbar-name"></strong>
-        <button type="button" aria-controls="sidebar" aria-expanded="false">MENU</button>
+        <button type="button" aria-controls="sidebar" aria-expanded="false" id="menu-button"></button>
     </div>
 
     <aside class="sidebar" id="sidebar">
         <a class="player" href="#about" id="player"></a>
-        <nav class="menu" aria-label="メニュー">
-            <div class="menu-group" style="--k: var(--green)">
-                <p class="menu-label label">About</p>
-                <ul class="menu-list" id="about-list"></ul>
-            </div>
-            <div class="menu-group" style="--k: var(--orange)">
-                <p class="menu-label label">Works</p>
-                <ul class="menu-list" id="works-list"></ul>
-            </div>
-            <div class="menu-group" style="--k: var(--sky)">
-                <p class="menu-label label">Research</p>
-                <ul class="menu-list" id="research-list"></ul>
-            </div>
-        </nav>
+        <nav class="menu" aria-label="メニュー" id="menu"></nav>
     </aside>
 
     <main id="main"><p>読み込み中…</p></main>
@@ -341,26 +359,79 @@
     <script>
         const { esc, tagsHTML, thumbUrl, linkHTML } = PortfolioUI;
 
+        // ---- スキンの設定（書かなかった項目は既定のまま） ----
+        const SKIN = window.SKIN || {};
+        const LAYOUT = ['sections', 'tabs', 'flat'].includes(SKIN.layout) ? SKIN.layout : 'sections';
+        const TEXT = {
+            job: 'Job : Unity Engineer',
+            menu: 'MENU',
+            // サイドバーの大項目
+            about: 'About',
+            works: 'Works',
+            research: 'Research',
+            // About の中の項目
+            profile: 'プロフィール',
+            awards: '受賞歴',
+            internships: 'インターン・バイト経験',
+            media: 'メディア掲載',
+            // ウィンドウの見出し
+            status: 'Status',
+            skills: 'Skills',
+            data: 'Data',
+            links: 'Links',
+            researchBody: '研究内容',
+            // ページ上部のラベル（No. のあとに番号が付く）
+            worksList: '作品一覧',
+            worksLead: '気になる作品を選ぶと、担当・工夫・動画を見られます。',
+            worksNo: 'Works No.',
+            researchNo: 'Research No.',
+            researchLab: '研究会',
+            researchPeriod: '期間',
+            back: '← 作品一覧へ戻る',
+            prev: '◀ Prev',
+            next: 'Next ▶',
+            more: '詳しく見る',
+            count: n => `${n}件`,
+            // スキルの段階（1〜5）の言葉
+            skillLevels: ['', '勉強中', '少しできる', 'できる', 'かなりできる', '得意'],
+            unmute: '🔊 音を出す',
+            muted: '音なし',
+            sound: '音あり',
+            full: '全画面',
+            ...(SKIN.text || {}),
+        };
+        const ICON_COLOR = /^[0-9a-f]{6}$/i.test(SKIN.iconColor || '') ? SKIN.iconColor : '1c2238';
+        const MAIL_AS_TEXT = SKIN.mail === 'text';
+
         // 開発期間に年が書かれていない作品の制作年（GitHub・コミット日・大会名から確認）
         const YEAR_FALLBACK = { 'sausage-smash': 2026, 'jiya-robot-tea': 2026, 'project-siro': 2026, 'zelly-swipe': 2026, 'frying-pan': 2026 };
         const yearOf = p => (/(\d{4})年/.exec(p.period) || [])[1] || YEAR_FALLBACK[p.id] || '';
         const no = i => String(i + 1).padStart(2, '0');
-        const COLORS = ['var(--red)', 'var(--orange)', 'var(--sky)', 'var(--green)'];
+        // 色分けの目印（色そのものは CSS で決める）
+        const tone = i => `data-index="${i}" data-tone="${i % 4}"`;
 
-        // About の中の項目（研究は Research として独立）
-        const ABOUT_SECTIONS = [
-            { id: '', label: 'プロフィール' },
-            { id: 'awards', label: '受賞歴' },
-            { id: 'internships', label: 'インターン・バイト経験' },
-            { id: 'media', label: 'メディア掲載' },
-        ];
+        // About の中の項目（今のサイトの PROFILE と同じ並び。研究は Research として独立）
+        const ABOUT_SECTIONS = ['', 'awards', 'internships', 'media'];
+        const aboutLabel = id => TEXT[id || 'profile'];
+
+        // 作品一覧で大きく出す2本
+        const FEATURED = ['sausage-smash', 'pintch-witch'];
+
+        // 動く見本（6秒のループ）と、作品ページの全編動画の置き場所
+        const CLIP_BASE = new URL('../Images/clips/', location.href).href;
+        const MEDIA_BASE = 'https://youkin06.github.io/portfolio-media/videos/';
+
+        document.body.dataset.layout = LAYOUT;
 
         loadPortfolio().then(data => {
             const projects = data.projects;
             // 研究は「【研究会名】テーマ」の形なので、研究会名とテーマに分ける。
             const research = data.research.map((r, i) => {
                 const m = /^【(.+?)】(.+)$/.exec(r.org);
-                return { ...r, id: String(i + 1), lab: m ? m[1] : '', theme: m ? m[2] : r.org };
+                const [body] = r.html.split(/<strong>\s*関連リンク/);
+                const links = [...new DOMParser().parseFromString(r.html, 'text/html').querySelectorAll('a[href]')]
+                    .map(a => ({ href: a.getAttribute('href'), label: a.textContent.replace(/\s+/g, ' ').trim() }));
+                return { ...r, id: String(i + 1), lab: m ? m[1] : '', theme: m ? m[2] : r.org, body: body.replace(/(<br\s*\/?>\s*)+$/, ''), links };
             });
             const main = document.getElementById('main');
 
@@ -368,128 +439,214 @@
             const avatar = data.profile.pixel || data.profile.photo;
             document.getElementById('player').innerHTML = `
                 <img src="${esc(avatar)}" alt="">
-                <div><strong>${esc(data.profile.name)}</strong><span class="label">Job : Unity Engineer</span></div>`;
+                <div><strong>${esc(data.profile.name)}</strong><span class="label">${esc(TEXT.job)}</span></div>`;
             document.getElementById('topbar-name').innerHTML = `<img src="${esc(avatar)}" alt="">${esc(data.profile.name)}`;
-            document.getElementById('about-list').innerHTML = ABOUT_SECTIONS.map(sec =>
-                `<li><a href="${sec.id ? `#about/${sec.id}` : '#about'}" data-key="about/${sec.id}">${esc(sec.label)}</a></li>`).join('');
-            document.getElementById('works-list').innerHTML =
-                `<li><a href="#works" data-key="works/">作品一覧</a></li>` +
-                projects.map((p, i) => `<li><a href="#works/${esc(p.id)}" data-key="works/${esc(p.id)}"><span class="no">${no(i)}</span>${esc(p.title)}<span class="year">${yearOf(p)}</span></a></li>`).join('');
-            document.getElementById('research-list').innerHTML = research.map((r, i) =>
-                `<li><a href="#research/${r.id}" data-key="research/${r.id}"><span class="no">${no(i)}</span>${esc(r.theme)}</a></li>`).join('');
+            document.getElementById('menu-button').textContent = TEXT.menu;
 
+            const groupHTML = (section, href, items) => `
+                <div class="menu-group" data-section="${section}">
+                    <a class="menu-label label" href="${href}">${esc(TEXT[section])}</a>
+                    ${LAYOUT === 'flat' ? '' : `<ul class="menu-list">${items}</ul>`}
+                </div>`;
+            document.getElementById('menu').innerHTML =
+                groupHTML('about', '#about', ABOUT_SECTIONS.map(id =>
+                    `<li><a href="${id ? `#about/${id}` : '#about'}" data-key="about/${id}">${esc(aboutLabel(id))}</a></li>`).join('')) +
+                groupHTML('works', '#works',
+                    `<li><a href="#works" data-key="works/">${esc(TEXT.worksList)}</a></li>` +
+                    projects.map((p, i) => `<li><a href="#works/${esc(p.id)}" data-key="works/${esc(p.id)}"><span class="no">${no(i)}</span>${esc(p.title)}<span class="year">${yearOf(p)}</span></a></li>`).join('')) +
+                groupHTML('research', LAYOUT === 'flat' ? '#research' : `#research/${research[0]?.id || ''}`, research.map((r, i) =>
+                    `<li><a href="#research/${r.id}" data-key="research/${r.id}"><span class="no">${no(i)}</span>${esc(r.theme)}</a></li>`).join(''));
+
+            // ---- 部品 ----
             // 本文中の「制作作品：〇〇」（#project-〇〇）は、そのゲームのページへ。
             const fixProjectLinks = html => html.replace(/href="#project-/g, 'href="#works/');
+            const link = l => fixProjectLinks(linkHTML(l)).replace('class="link--internal" href="#works/', 'class="link--work" href="#works/');
 
-            const windowHTML = (title, color, body, count) => `
-                <div class="window" style="--k: ${color}">
-                    <div class="window-title label">${esc(title)}${count !== undefined ? `<span class="count">${count}</span>` : ''}</div>
+            const block = (key, title, body, count) => `
+                <section class="window block" data-block="${key}" id="block-${key}">
+                    <h2 class="window-title label">${esc(title)}${count !== undefined ? `<span class="count">${esc(TEXT.count(count))}</span>` : ''}</h2>
                     <div class="window-body">${body}</div>
-                </div>`;
+                </section>`;
 
-            const rowHTML = i => `
-                <div class="row">
-                    <div class="row-head">
-                        <strong>${i.role ? `${esc(i.role)}<small>${esc(i.org)}</small>` : esc(i.org)}</strong>
-                        <span>${esc(i.period)}</span>
+            const expHTML = i => `
+                <li class="exp">
+                    <div class="exp-head">
+                        <h3 class="exp-role">${esc(i.role || i.org)}</h3>
+                        ${i.role ? `<span class="exp-org">${esc(i.org)}</span>` : ''}
+                        <time class="exp-period">${esc(i.period)}</time>
                     </div>
-                    <details><summary>詳しく見る</summary>
+                    <details class="exp-more"><summary>${esc(TEXT.more)}</summary>
                         <p>${fixProjectLinks(i.html)}</p>
                         ${i.image ? `<figure><img src="${esc(i.image.src)}" alt="${esc(i.image.alt)}" loading="lazy"><figcaption>${esc(i.image.caption)}</figcaption></figure>` : ''}
                     </details>
-                    ${i.links.length ? `<div class="links">${i.links.map(l => fixProjectLinks(linkHTML(l))).join('')}</div>` : ''}
-                </div>`;
-            const listRowHTML = (a, extraClass = '') => `
-                <div class="row ${extraClass}"><div class="row-head"><strong>${esc(a.text)}</strong></div>
-                ${a.link ? `<div class="links">${fixProjectLinks(linkHTML(a.link))}</div>` : ''}</div>`;
+                    ${i.links.length ? `<div class="exp-links">${i.links.map(link).join('')}</div>` : ''}
+                </li>`;
+            const itemHTML = a => `
+                <li class="item"><span class="item-text">${esc(a.text)}</span>
+                ${a.link ? `<div class="item-links">${link(a.link)}</div>` : ''}</li>`;
 
-            const gaugeHTML = rating => `<span class="gauge" aria-label="5段階中${rating}">${[1, 2, 3, 4, 5].map(n => `<i class="${n <= rating ? 'on' : ''}"></i>`).join('')}</span>`;
+            const gaugeHTML = rating => `<span class="gauge" aria-hidden="true">${[1, 2, 3, 4, 5].map(n => `<i class="${n <= rating ? 'on' : ''}"></i>`).join('')}</span>`;
+            const iconUrl = src => src.replace(/(cdn\.simpleicons\.org\/[^/]+)\/[0-9a-f]{6}$/i, `$1/${ICON_COLOR}`);
 
             // 段落ごとに <p> に分けて読みやすくする（元の文章は <br><br> で段落を区切っている）。
             const paragraphs = html => html.split(/(?:<br\s*\/?>\s*){2,}/).map(part => `<p>${part.trim()}</p>`).join('');
 
-            // 作品の動画（全編）。動画専用リポジトリの GitHub Pages に置いたものを読み込む。
-            // 音なしで最初から流し、ブラウザは再生しながら少しずつ読み込む。
-            const MEDIA_BASE = 'https://youkin06.github.io/portfolio-media/videos/';
-            const playerHTML = (id, title) => id ? `
-                <div class="vplayer" data-player>
-                    <video src="${MEDIA_BASE}${esc(id)}.mp4" poster="${CLIP_BASE}${esc(id)}.jpg"
-                        autoplay muted loop playsinline preload="metadata" aria-label="${esc(title)} のプレイ動画"></video>
-                    <button class="vsound" type="button" data-act="unmute">🔊 音を出す</button>
-                    <div class="vcontrols">
-                        <button type="button" data-act="toggle" aria-label="再生・一時停止">❚❚</button>
-                        <input type="range" min="0" max="1000" value="0" aria-label="再生位置" data-act="seek">
-                        <span class="time">0:00 / 0:00</span>
-                        <button type="button" data-act="mute" aria-label="音のオン・オフ">音なし</button>
-                        <button type="button" data-act="full" aria-label="全画面">全画面</button>
-                    </div>
-                </div>` : '';
+            const pageHead = (label, title, lead) => `
+                <header class="page-head"><div class="label">${esc(label)}</div><h1>${esc(title)}</h1>${lead ? `<p>${esc(lead)}</p>` : ''}</header>`;
 
             const pagerHTML = (prev, next, href, label) => `
-                <div class="pager">
-                    ${prev ? `<a class="window prev" href="${href(prev)}"><span class="label">◀ Prev</span>${esc(label(prev))}</a>` : ''}
-                    ${next ? `<a class="window next" href="${href(next)}"><span class="label">Next ▶</span>${esc(label(next))}</a>` : ''}
-                </div>`;
+                <nav class="pager" aria-label="前後">
+                    ${prev ? `<a class="window prev" href="${href(prev)}"><span class="label">${esc(TEXT.prev)}</span>${esc(label(prev))}</a>` : ''}
+                    ${next ? `<a class="window next" href="${href(next)}"><span class="label">${esc(TEXT.next)}</span>${esc(label(next))}</a>` : ''}
+                </nav>`;
 
-            // ---- 各ページ ----
-            const aboutPage = sub => {
-                const profile = `
-                    <div class="profile">
-                        <div class="portrait">
-                            <img src="${esc(data.profile.photo)}" alt="顔写真">
-                            ${data.profile.pixel ? `<img class="pixel" src="${esc(data.profile.pixel)}" alt="">` : ''}
-                        </div>
-                        <div>
-                            <h2>${esc(data.profile.name)}</h2>
-                            <p>${data.profile.aboutHtml}</p>
-                            <div class="buttons">
-                                ${data.profile.socials.map(s => `<a href="${esc(s.href)}" target="_blank" rel="noopener noreferrer">${s.icon ? `<img src="${esc(s.icon.replace(/\/FFFFFF$/i, '/1c2238'))}" alt="">` : ''}${esc(s.label)}</a>`).join('')}
-                                ${data.profile.emails.map(m => `<a href="mailto:${esc(m)}">✉ ${esc(m)}</a>`).join('')}
+            // ---- About ----
+            const aboutBlocks = {
+                '': () => block('profile', TEXT.status, `
+                        <div class="profile">
+                            <div class="portrait">
+                                <img src="${esc(data.profile.photo)}" alt="顔写真">
+                                ${data.profile.pixel ? `<img class="pixel" src="${esc(data.profile.pixel)}" alt="">` : ''}
                             </div>
-                        </div>
-                    </div>`;
-                const skills = `<div class="skills">${data.skills.map((cat, i) => `
-                    <div style="--k: ${COLORS[i % 4]}"><p class="label">${esc(cat.category)}</p>
-                    <ul>${cat.items.map(item => `<li><span>${esc(item.name)}</span>${gaugeHTML(item.rating)}</li>`).join('')}</ul></div>`).join('')}</div>`;
-
-                const sections = {
-                    '': () => windowHTML('Status', 'var(--green)', profile) + windowHTML('Skills', 'var(--sky)', skills),
-                    awards: () => windowHTML('受賞歴', 'var(--orange)', data.awards.map(a => listRowHTML(a, 'achievement')).join(''), `${data.awards.length}件`),
-                    internships: () => windowHTML('インターン・バイト経験', 'var(--red)', data.internships.map(rowHTML).join(''), `${data.internships.length}件`),
-                    media: () => windowHTML('メディア掲載', 'var(--green)', data.media.map(m => listRowHTML(m)).join(''), `${data.media.length}件`),
-                };
-                const section = ABOUT_SECTIONS.find(sec => sec.id === sub) || ABOUT_SECTIONS[0];
+                            <div>
+                                <p class="profile-name">${esc(data.profile.name)}</p>
+                                <p class="profile-text">${data.profile.aboutHtml}</p>
+                                <div class="contacts">
+                                    ${data.profile.socials.map(s => `<a class="social" href="${esc(s.href)}" target="_blank" rel="noopener noreferrer">${s.icon ? `<img src="${esc(iconUrl(s.icon))}" alt="">` : ''}${esc(s.label)}</a>`).join('')}
+                                    ${data.profile.emails.map(m => MAIL_AS_TEXT ? `<span class="mail">${esc(m)}</span>` : `<a class="mail-button" href="mailto:${esc(m)}">✉ ${esc(m)}</a>`).join('')}
+                                </div>
+                            </div>
+                        </div>`) +
+                    block('skills', TEXT.skills, `<div class="skills">${data.skills.map((cat, i) => `
+                        <div class="skill-group" ${tone(i)}><h3 class="label">${esc(cat.category)}</h3>
+                        <ul>${cat.items.map(item => `
+                            <li data-level="${item.rating}"><span class="skill-name">${esc(item.name)}</span>${gaugeHTML(item.rating)}<span class="skill-word">${esc(TEXT.skillLevels[item.rating] || '')}</span></li>`).join('')}
+                        </ul></div>`).join('')}</div>`),
+                internships: () => block('internships', TEXT.internships, `<ol class="exp-list timeline">${data.internships.map(expHTML).join('')}</ol>`, data.internships.length),
+                awards: () => block('awards', TEXT.awards, `<ul class="item-list awards">${data.awards.map(itemHTML).join('')}</ul>`, data.awards.length),
+                media: () => block('media', TEXT.media, `<ul class="item-list media">${data.media.map(itemHTML).join('')}</ul>`, data.media.length),
+            };
+            const aboutPage = sub => {
+                if (LAYOUT === 'flat') {
+                    // 1ページに、プロフィール → スキル → 経歴 → 受賞歴 → メディア掲載
+                    return `
+                        <article class="page page--narrow">
+                            ${pageHead(TEXT.about, TEXT.about)}
+                            <div class="stack">${['', 'internships', 'awards', 'media'].map(id => aboutBlocks[id]()).join('')}</div>
+                        </article>`;
+                }
+                const id = ABOUT_SECTIONS.includes(sub) ? sub : '';
                 return `
-                    <section class="page" style="--k: var(--green); max-width: 920px">
-                        <div class="page-head"><div class="label">About</div><h1>${esc(section.label)}</h1></div>
-                        <div class="stack">${sections[section.id]()}</div>
-                    </section>`;
+                    <article class="page page--narrow">
+                        ${pageHead(TEXT.about, aboutLabel(id))}
+                        <div class="stack">${aboutBlocks[id]()}</div>
+                    </article>`;
             };
 
-            // 作品一覧の動く見本（6秒のループ動画。YouTubeから切り出して Images/clips に置いている）
-            const CLIP_BASE = new URL('../Images/clips/', location.href).href;
+            // ---- Works ----
             const clipHTML = p => p.videoId ? `
                 <video muted loop playsinline preload="none" data-src="${CLIP_BASE}${esc(p.videoId)}.mp4"
                     poster="${CLIP_BASE}${esc(p.videoId)}.jpg" aria-hidden="true"
                     onerror="this.outerHTML='<img src=&quot;${thumbUrl(p.videoId, 'mqdefault')}&quot; alt=&quot;&quot;>'"></video>` : '';
-
-            const FEATURED = ['sausage-smash', 'pintch-witch'];
             const cardHTML = p => {
                 const i = projects.indexOf(p);
                 return `
-                    <a class="card window" href="#works/${esc(p.id)}" style="--k: ${COLORS[i % 4]}">
+                    <article class="card window work" ${tone(i)}${FEATURED.includes(p.id) ? ' data-featured' : ''}>
                         <div class="thumb">${clipHTML(p)}<span class="no label">No.${no(i)}</span></div>
-                        <div class="body"><h3><span>${esc(p.title)}</span><small>${yearOf(p)}</small></h3><p>${esc(p.summary)}</p>${tagsHTML(p.tags)}</div>
-                    </a>`;
+                        <div class="body">
+                            <h3><a class="card-link" href="#works/${esc(p.id)}">${esc(p.title)}</a><small>${yearOf(p)}</small></h3>
+                            <p>${esc(p.summary)}</p>${tagsHTML(p.tags)}
+                        </div>
+                    </article>`;
             };
             const worksPage = () => `
-                <section class="page" style="--k: var(--orange)">
-                    <div class="page-head"><div class="label">Works</div><h1>作品一覧</h1><p>気になる作品を選ぶと、担当・工夫・動画を見られます。</p></div>
-                    <div class="featured">${projects.filter(p => FEATURED.includes(p.id)).map(cardHTML).join('')}</div>
-                    <div class="grid">${projects.filter(p => !FEATURED.includes(p.id)).map(cardHTML).join('')}</div>
-                </section>`;
+                <article class="page">
+                    ${pageHead(TEXT.works, TEXT.worksList, TEXT.worksLead)}
+                    <div class="works">
+                        <div class="featured big">${projects.filter(p => FEATURED.includes(p.id)).map(cardHTML).join('')}</div>
+                        <div class="grid">${projects.filter(p => !FEATURED.includes(p.id)).map(cardHTML).join('')}</div>
+                    </div>
+                </article>`;
 
-            // 見えている動画だけ再生し、画面外に出たら止める。
+            const playerHTML = (id, title) => id ? `
+                <div class="vplayer" data-player>
+                    <video src="${MEDIA_BASE}${esc(id)}.mp4" poster="${CLIP_BASE}${esc(id)}.jpg"
+                        autoplay muted loop playsinline preload="metadata" aria-label="${esc(title)} のプレイ動画"></video>
+                    <button class="vsound" type="button" data-act="unmute">${esc(TEXT.unmute)}</button>
+                    <div class="vcontrols">
+                        <button type="button" data-act="toggle" aria-label="再生・一時停止">❚❚</button>
+                        <input type="range" min="0" max="1000" value="0" aria-label="再生位置" data-act="seek">
+                        <span class="time">0:00 / 0:00</span>
+                        <button type="button" data-act="mute" aria-label="音のオン・オフ">${esc(TEXT.muted)}</button>
+                        <button type="button" data-act="full" aria-label="全画面">${esc(TEXT.full)}</button>
+                    </div>
+                </div>` : '';
+
+            // 作品ページ：短い項目（ジャンル・期間・担当など）は右のデータ欄、長い説明は本文に。
+            const FACT_LABELS = ['ジャンル', '開発期間', '開発体制', '担当', '使用技術', '操作説明'];
+            const gamePage = id => {
+                const index = projects.findIndex(p => p.id === id);
+                if (index < 0) return worksPage();
+                const p = projects[index];
+                const isFact = f => FACT_LABELS.includes(f.label) || f.plain.length < 60;
+                const facts = p.fields.filter(isFact);
+                const sections = p.fields.filter(f => !isFact(f));
+                return `
+                    <article class="page game" ${tone(index)}>
+                        <a class="back" href="#works">${esc(TEXT.back)}</a>
+                        ${pageHead(`${TEXT.worksNo}${no(index)} ・ ${yearOf(p)}`, p.title, p.summary)}
+                        ${playerHTML(p.videoId, p.title)}
+                        <div class="detail">
+                            <div class="stack detail-main">
+                                ${sections.map((f, i) => `
+                                    <section class="window block" data-block="${esc(f.label)}" ${tone(index + i)}>
+                                        <h2 class="window-title label">${esc(f.label)}</h2>
+                                        <div class="window-body prose">${paragraphs(fixProjectLinks(f.html))}</div>
+                                    </section>`).join('')}
+                            </div>
+                            <aside class="stack data workdata">
+                                ${block('data', TEXT.data, `${tagsHTML(p.tags)}
+                                    <dl>${facts.map(f => `<div><dt>${esc(f.label)}</dt><dd>${fixProjectLinks(f.html)}</dd></div>`).join('')}</dl>`)}
+                                ${p.links.length ? block('links', TEXT.links, `<ul class="link-list">${p.links.map(l => `<li>${link(l)}</li>`).join('')}</ul>`) : ''}
+                            </aside>
+                        </div>
+                        ${pagerHTML(projects[index - 1], projects[index + 1], x => `#works/${esc(x.id)}`, x => x.title)}
+                    </article>`;
+            };
+
+            // ---- 研究 ----
+            const researchItemHTML = (r, i, headingTag) => `
+                <article class="research-item" id="research-${r.id}" ${tone(i)}>
+                    ${headingTag === 'h2' ? `<h2 class="research-title">${esc(r.theme)}</h2>` : ''}
+                    <div class="detail">
+                        <div class="stack detail-main">
+                            ${block(`research-body-${r.id}`, TEXT.researchBody, `<div class="prose">${paragraphs(r.body)}</div>`)}
+                        </div>
+                        <aside class="stack data">
+                            ${block(`research-data-${r.id}`, TEXT.data, `<dl>${r.lab ? `<div><dt>${esc(TEXT.researchLab)}</dt><dd>${esc(r.lab)}</dd></div>` : ''}<div><dt>${esc(TEXT.researchPeriod)}</dt><dd>${esc(r.period)}</dd></div></dl>`)}
+                            ${r.links.length ? block(`research-links-${r.id}`, TEXT.links, `<ul class="link-list">${r.links.map(l => `<li>${link(l)}</li>`).join('')}</ul>`) : ''}
+                        </aside>
+                    </div>
+                </article>`;
+            const researchPage = id => {
+                if (LAYOUT === 'flat') {
+                    return `
+                        <article class="page research">
+                            ${pageHead(TEXT.research, TEXT.research)}
+                            ${research.map((r, i) => researchItemHTML(r, i, 'h2')).join('')}
+                        </article>`;
+                }
+                const index = Math.max(0, research.findIndex(r => r.id === id));
+                const r = research[index];
+                return `
+                    <article class="page research">
+                        ${pageHead(`${TEXT.researchNo}${no(index)}`, r.theme)}
+                        ${researchItemHTML(r, index, 'none')}
+                        ${pagerHTML(research[index - 1], research[index + 1], x => `#research/${x.id}`, x => x.theme)}
+                    </article>`;
+            };
+
+            // 見えている動く見本だけ再生し、画面外に出たら止める。
             const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
             const clipObserver = new IntersectionObserver(entries => entries.forEach(entry => {
                 const video = entry.target;
@@ -501,63 +658,8 @@
                 }
             }), { rootMargin: '100px 0px' });
 
-            // 作品ページ：短い項目（ジャンル・期間・担当など）は右のデータ欄、長い説明は本文に。
-            const FACT_LABELS = ['ジャンル', '開発期間', '開発体制', '担当', '使用技術', '操作説明'];
-            const gamePage = id => {
-                const index = projects.findIndex(p => p.id === id);
-                if (index < 0) return worksPage();
-                const p = projects[index];
-                const isFact = f => FACT_LABELS.includes(f.label) || f.plain.length < 60;
-                const facts = p.fields.filter(isFact);
-                const sections = p.fields.filter(f => !isFact(f));
-                const side = `
-                    ${tagsHTML(p.tags)}
-                    <dl>${facts.map(f => `<div><dt>${esc(f.label)}</dt><dd>${fixProjectLinks(f.html)}</dd></div>`).join('')}</dl>`;
-                const links = p.links.length
-                    ? `<div class="link-list">${p.links.map(l => `<a href="${esc(l.href)}" target="_blank" rel="noopener noreferrer">${esc(l.label)} ↗</a>`).join('')}</div>`
-                    : '';
-                return `
-                    <section class="page" style="--k: ${COLORS[index % 4]}">
-                        <div class="page-head"><div class="label">Works No.${no(index)} ・ ${yearOf(p)}</div><h1>${esc(p.title)}</h1><p>${esc(p.summary)}</p></div>
-                        ${playerHTML(p.videoId, p.title)}
-                        <div class="detail">
-                            <div class="stack">
-                                ${sections.map((f, i) => windowHTML(f.label, COLORS[(index + i) % 4],
-                                    `<div class="prose">${paragraphs(fixProjectLinks(f.html))}</div>`)).join('')}
-                            </div>
-                            <div class="stack data">
-                                ${windowHTML('Data', 'var(--cursor)', side)}
-                                ${links ? windowHTML('Links', 'var(--cursor)', links) : ''}
-                            </div>
-                        </div>
-                        ${pagerHTML(projects[index - 1], projects[index + 1], x => `#works/${esc(x.id)}`, x => x.title)}
-                    </section>`;
-            };
-
-            const researchPage = id => {
-                const index = Math.max(0, research.findIndex(r => r.id === id));
-                const r = research[index];
-                // 「関連リンク:」以降は右のリンク欄に移す。
-                const [body] = r.html.split(/<strong>\s*関連リンク/);
-                const links = [...new DOMParser().parseFromString(r.html, 'text/html').querySelectorAll('a[href]')]
-                    .map(a => ({ href: a.getAttribute('href'), label: a.textContent.replace(/\s+/g, ' ').trim() }));
-                const side = `<dl>${r.lab ? `<div><dt>研究会</dt><dd>${esc(r.lab)}</dd></div>` : ''}<div><dt>期間</dt><dd>${esc(r.period)}</dd></div></dl>`;
-                return `
-                    <section class="page" style="--k: var(--sky)">
-                        <div class="page-head"><div class="label">Research No.${no(index)}</div><h1>${esc(r.theme)}</h1></div>
-                        <div class="detail">
-                            <div class="stack">${windowHTML('研究内容', 'var(--sky)', `<div class="prose">${paragraphs(body.replace(/(<br\s*\/?>\s*)+$/, ''))}</div>`)}</div>
-                            <div class="stack data">
-                                ${windowHTML('Data', 'var(--cursor)', side)}
-                                ${links.length ? windowHTML('Links', 'var(--cursor)', `<div class="link-list">${links.map(l => `<a href="${esc(l.href)}" target="_blank" rel="noopener noreferrer">${esc(l.label)} ↗</a>`).join('')}</div>`) : ''}
-                            </div>
-                        </div>
-                        ${pagerHTML(research[index - 1], research[index + 1], x => `#research/${x.id}`, x => x.theme)}
-                    </section>`;
-            };
-
             // ---- スマホのメニュー ----
-            const menuButton = document.querySelector('.topbar button');
+            const menuButton = document.getElementById('menu-button');
             const closeMenu = () => {
                 document.body.classList.remove('menu-open');
                 menuButton.setAttribute('aria-expanded', 'false');
@@ -567,29 +669,45 @@
                 menuButton.setAttribute('aria-expanded', String(open));
             });
 
-            // ---- 表示の切り替え（最初は About のプロフィール） ----
+            // ---- 表示の切り替え（最初は About） ----
             const render = () => {
                 const [route, rawSub] = location.hash.slice(1).split('/');
                 const sub = rawSub ? decodeURIComponent(rawSub) : '';
-                const page = ['about', 'works', 'research'].includes(route) ? route : 'about';
+                const section = ['about', 'works', 'research'].includes(route) ? route : 'about';
 
                 main.innerHTML =
-                    page === 'about' ? aboutPage(sub) :
-                    page === 'research' ? researchPage(sub) :
+                    section === 'about' ? aboutPage(sub) :
+                    section === 'research' ? researchPage(sub) :
                     sub ? gamePage(sub) : worksPage();
 
-                const key = `${page}/${page === 'research' && !sub ? research[0].id : sub}`;
+                // 今いる場所を body と大項目に書いておく（スキンの CSS から使う）
+                const subKey = section === 'research' && !sub && LAYOUT !== 'flat' ? research[0]?.id || '' : sub;
+                document.body.dataset.section = section;
+                document.body.dataset.page = `${section}/${subKey}`;
+                document.querySelectorAll('.menu-group').forEach(group => {
+                    const active = group.dataset.section === section;
+                    active ? group.setAttribute('data-active', '') : group.removeAttribute('data-active');
+                    const label = group.querySelector('.menu-label');
+                    active ? label.setAttribute('aria-current', 'page') : label.removeAttribute('aria-current');
+                });
                 document.querySelectorAll('[data-key]').forEach(a => {
-                    const active = a.dataset.key === key;
+                    const active = a.dataset.key === `${section}/${subKey}`;
                     a.classList.toggle('active', active);
                     active ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current');
                 });
+
                 clipObserver.disconnect();
                 main.querySelectorAll('video[data-src]').forEach(v => clipObserver.observe(v));
                 document.querySelector('.menu .active')?.scrollIntoView({ block: 'nearest' });
-                window.scrollTo(0, 0);
+
+                // 1ページにまとめた形では、中の項目の場所までスクロールする。
+                const target = LAYOUT === 'flat' && sub
+                    ? document.getElementById(section === 'research' ? `research-${sub}` : `block-${sub}`)
+                    : null;
+                target ? target.scrollIntoView({ block: 'start' }) : window.scrollTo(0, 0);
                 closeMenu();
             };
+
             // ---- 動画プレイヤーの操作 ----
             const fmt = t => (Number.isFinite(t) ? `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}` : '0:00');
             const syncPlayer = player => {
@@ -597,7 +715,7 @@
                 player.classList.toggle('paused', video.paused);
                 player.classList.toggle('unmuted', !video.muted);
                 player.querySelector('[data-act=toggle]').textContent = video.paused ? '▶' : '❚❚';
-                player.querySelector('[data-act=mute]').textContent = video.muted ? '音なし' : '音あり';
+                player.querySelector('[data-act=mute]').textContent = video.muted ? TEXT.muted : TEXT.sound;
                 player.querySelector('.time').textContent = `${fmt(video.currentTime)} / ${fmt(video.duration)}`;
                 if (video.duration) player.querySelector('[data-act=seek]').value = Math.round(video.currentTime / video.duration * 1000);
             };

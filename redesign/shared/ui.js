@@ -48,17 +48,22 @@
             ${tagsHTML(project.tags)}
             ${facts.length ? `<dl class="facts">${facts.map(f => `<dt>${esc(f.label)}</dt><dd>${f.html}</dd>`).join('')}</dl>` : ''}
             ${sections.map(f => `<section class="detail-section"><h3>${esc(f.label)}</h3><p>${f.html}</p></section>`).join('')}
-            ${project.links.length ? `<div class="detail-links">${project.links.map(l =>
-                `<a href="${esc(l.href)}" target="_blank" rel="noopener noreferrer">${esc(l.label)} ↗</a>`).join('')}</div>` : ''}`;
+            ${project.links.length ? `<div class="detail-links">${project.links.map(linkHTML).join('')}</div>` : ''}`;
     };
 
     const starsHTML = rating => `<span class="stars" aria-label="5段階中${rating}">${'●'.repeat(rating)}<span class="stars-off">${'●'.repeat(5 - rating)}</span></span>`;
 
+    /**
+     * リンク。外のサイトは .link--external（新しいタブで開く）、作品へのリンクは .link--work。
+     * 外のサイトの印「↗」は .ext-mark に分け、スキンが消したり自分の印に替えたりできるようにする。
+     */
     const linkHTML = l => {
         const external = /^https?:/.test(l.href);
+        const work = /^#(project-|works\/)/.test(l.href);
         // 元の文言に「↗」が付いている場合は二重にしない。
         const label = l.label.replace(/\s*↗\s*$/, '');
-        return `<a href="${esc(l.href)}"${external ? ' target="_blank" rel="noopener noreferrer"' : ''}>${esc(label)}${external ? ' ↗' : ''}</a>`;
+        const cls = external ? 'link--external' : work ? 'link--work' : 'link--internal';
+        return `<a class="${cls}" href="${esc(l.href)}"${external ? ' target="_blank" rel="noopener noreferrer"' : ''}>${esc(label)}${external ? '<span class="ext-mark" aria-hidden="true"> ↗</span>' : ''}</a>`;
     };
 
     // 再生ボタンが押されたら、その場でだけYouTubeを読み込む。
