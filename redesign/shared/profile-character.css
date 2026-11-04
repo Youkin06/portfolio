@@ -1,25 +1,37 @@
 /* カモとDepthDiaryは16×16ドット。1ドットの表示幅を共通にする。 */
-.profile-walkway, .profile-flight { --profile-pixel-size: 6px; }
-/* プロフィール画面の下端を散歩。待機 → 右へ歩く → 待機 → 左へ歩く。 */
+.profile-meadow { --profile-pixel-size: 6px; --ground-h: calc(8 * var(--profile-pixel-size)); }
+/* 技術スタックの下のドットの草原。キャラクターはこの中で暮らす。 */
+.profile-meadow {
+    position: relative;
+    height: 300px;
+    margin-top: 40px;
+}
+/* 草原の地面。8ドットの高さで、上2ドットは草の先、下2ドットは土。 */
+.profile-ground {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: var(--ground-h);
+    background: url("../../Images/profile-character/grass.png") repeat-x left bottom / auto 100%;
+    image-rendering: pixelated;
+}
+/* 草の上を散歩。待機 → 右へ歩く → 待機 → 左へ歩く。足元は草の先に少し埋める。 */
 .profile-walkway {
     --profile-cycle: 32s;
     --character-size: 128px;
-    position: fixed;
-    left: calc(var(--sidebar-w) + 16px);
-    right: 16px;
-    bottom: 0;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--ground-h) - 2 * var(--profile-pixel-size));
     height: var(--character-size);
-    z-index: 5;
-    overflow: visible;
+    z-index: 2;
     pointer-events: none;
-}
-main:has(.profile-walkway) { padding-bottom: 144px; }
-@media (max-width: 960px) {
-    .profile-walkway { left: 16px; }
 }
 .profile-character {
     position: absolute;
-    bottom: 0;
+    /* 元画像の足の下にある余白ぶん下げて、草の上に立たせる。 */
+    bottom: -9px;
     left: 0;
     width: var(--character-size);
     height: var(--character-size);
@@ -116,9 +128,9 @@ main:has(.profile-walkway) { padding-bottom: 144px; }
 }
 /* DepthDiaryのPlayer。操作を遮らず飛行し、進行方向に機首を向ける。 */
 .profile-flight {
-    position: fixed;
-    inset: 80px 24px 24px calc(var(--sidebar-w) + 24px);
-    z-index: 6;
+    position: absolute;
+    inset: 40px 0 calc(var(--ground-h) + 70px);
+    z-index: 3;
     pointer-events: none;
 }
 .profile-depth-player {
@@ -164,8 +176,7 @@ main:has(.profile-walkway) { padding-bottom: 144px; }
     76% { transform: rotate(185deg); }
 }
 @media (max-width: 960px) {
-    .profile-walkway, .profile-flight { display: none; }
-    main:has(.profile-walkway) { padding-bottom: 64px; }
+    .profile-meadow { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
     .profile-character, .profile-character-facing,

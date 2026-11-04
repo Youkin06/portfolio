@@ -529,6 +529,7 @@
 
             // ---- About ----
             const profileCharacter = `
+                            <div class="profile-meadow">
                               <div class="profile-walkway">
                                 <div class="profile-character" data-profile-guest>
                                   <button class="profile-guest-trigger" type="button" aria-label="ぼくのにっきのキャラクター：作品リンクを表示" aria-expanded="false"></button>
@@ -564,7 +565,9 @@
                                     <img src="../Images/profile-character/depth-player4.png" alt="" width="16" height="16" style="--frame-index: 3">
                                   </div>
                                 </div>
-                              </div>`;
+                              </div>
+                              <div class="profile-ground"></div>
+                            </div>`;
             const aboutBlocks = {
                 '': (single = false) => block('profile', single ? null : TEXT.profile, `
                         <div class="profile">
