@@ -1,0 +1,61 @@
+/* 写真の下を散歩。16秒のうち、待機 → 右へ歩く → 待機 → 左へ歩く。 */
+.profile-visual { min-width: 0; }
+.profile-walkway {
+    position: relative;
+    height: 92px;
+    margin-top: 8px;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line, #e2e5eb);
+    pointer-events: none;
+}
+.profile-character {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 76px;
+    height: 76px;
+    animation: profile-stroll 16s linear infinite;
+}
+.profile-character-facing {
+    width: 100%;
+    height: 100%;
+    animation: profile-facing 16s steps(1, end) infinite;
+}
+.profile-character-pose { position: absolute; inset: 0; }
+.profile-character-pose img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+/* フェードせず2枚を交互に切り替え、元の手描きアニメーションを保つ。 */
+.profile-character-idle { animation: profile-idle 16s steps(1, end) infinite; }
+.profile-character-walk { animation: profile-walk 16s steps(1, end) infinite; }
+.profile-character-idle img + img { animation: profile-frame 800ms steps(1, end) infinite; }
+.profile-character-walk img + img { animation: profile-frame 320ms steps(1, end) infinite; }
+@keyframes profile-stroll {
+    0%, 20%, 90%, 100% { left: 0; }
+    45%, 65% { left: calc(100% - 76px); }
+}
+@keyframes profile-facing {
+    0%, 65%, 100% { transform: scaleX(-1); }
+    20% { transform: scaleX(1); }
+}
+@keyframes profile-idle {
+    0%, 45%, 90%, 100% { opacity: 1; }
+    20%, 65% { opacity: 0; }
+}
+@keyframes profile-walk {
+    0%, 45%, 90%, 100% { opacity: 0; }
+    20%, 65% { opacity: 1; }
+}
+@keyframes profile-frame {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .profile-character, .profile-character-facing,
+    .profile-character-pose, .profile-character-pose img + img { animation: none; }
+    .profile-character-walk, .profile-character-idle img + img { opacity: 0; }
+}

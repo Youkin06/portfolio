@@ -343,6 +343,7 @@
             .window-body { padding: 16px; }
         }
     </style>
+    <link rel="stylesheet" href="shared/profile-character.css">
     <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="a-skins/font-zen.css">
     <script src="a-skins/store.js"></script>
@@ -529,9 +530,25 @@
             const aboutBlocks = {
                 '': (single = false) => block('profile', single ? null : TEXT.profile, `
                         <div class="profile">
-                            <div class="portrait">
+                            <div class="profile-visual">
+                              <div class="portrait">
                                 <img src="${esc(data.profile.photo)}" alt="顔写真" width="600" height="600" loading="eager" fetchpriority="high" decoding="async">
                                 ${data.profile.pixel ? `<img class="pixel" src="${esc(data.profile.pixel)}" alt="">` : ''}
+                              </div>
+                              <div class="profile-walkway" aria-hidden="true">
+                                <div class="profile-character">
+                                  <div class="profile-character-facing">
+                                    <div class="profile-character-pose profile-character-idle">
+                                      <img src="../Images/profile-character/idle1.png" alt="" width="1280" height="1280">
+                                      <img src="../Images/profile-character/idle2.png" alt="" width="1280" height="1280">
+                                    </div>
+                                    <div class="profile-character-pose profile-character-walk">
+                                      <img src="../Images/profile-character/walk1.png" alt="" width="1280" height="1280">
+                                      <img src="../Images/profile-character/walk2.png" alt="" width="1280" height="1280">
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                             <div>
                                 <p class="profile-name">${esc(data.profile.name)}</p>
