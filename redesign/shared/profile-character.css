@@ -1,5 +1,5 @@
 /* カモとDepthDiaryは16×16ドット。1ドットの表示幅を共通にする。 */
-.profile-meadow { --profile-pixel-size: 6px; --ground-h: calc(8 * var(--profile-pixel-size)); }
+.profile-meadow, .profile-flight { --profile-pixel-size: 6px; --ground-h: calc(8 * var(--profile-pixel-size)); }
 /* About me の各ページは、サイドバーの右側すべてを空と草原にする。キャラクターはこの中で暮らす。
    空は画面に固定し、草原は画面の下端にそろえる。内容はその上に重ねて流す。
    プロフィールは1画面に収まるのでスクロールバーを出さない。長いページは最後の項目が草原より上まで来るよう下をあける。 */
@@ -10,7 +10,7 @@ html:has(body[data-page="about/"])::-webkit-scrollbar { display: none; }
     inset: 0 0 0 var(--sidebar-w);
     overflow: hidden;
 }
-.page.about > :not(.profile-meadow) { position: relative; z-index: 1; }
+.page.about > :not(.profile-meadow, .profile-flight) { position: relative; z-index: 1; }
 @media (min-width: 961px) {
     body[data-section="about"]:not([data-page="about/"]) main { padding-bottom: 220px; }
 }
@@ -31,16 +31,16 @@ html:has(body[data-page="about/"])::-webkit-scrollbar { display: none; }
     :is([data-sky="evening"], [data-sky="night"]) body[data-section="about"] main .contacts :is(a, .mail) { color: #222; }
     :is([data-sky="evening"], [data-sky="night"]) body[data-page="about/"] :is([data-tech="unity"], [data-tech="github"]) img { filter: invert(1); }
 }
-/* 空。時間帯（profile-sky.js が html[data-sky] に書く）で色を段々に変える。 */
+/* 空。時間帯（profile-sky.js が html[data-sky] に書く）で色を変える。上から下へなめらかに明るくなる。 */
 .profile-sky {
     position: absolute;
     inset: 0;
-    background: linear-gradient(var(--sky-bands));
-    --sky-bands: #6fb6ee 0 20%, #82c0f1 0 40%, #96caf4 0 60%, #abd5f6 0 80%, #c2e1f8 0;
+    background: linear-gradient(var(--sky-colors));
+    --sky-colors: #6fb6ee, #82c0f1, #96caf4, #abd5f6, #c2e1f8;
 }
-[data-sky="dawn"] .profile-sky { --sky-bands: #8a9fd4 0 20%, #b3b3de 0 40%, #dcbcd8 0 60%, #f2cdbc 0 80%, #fae0b4 0; }
-[data-sky="evening"] .profile-sky { --sky-bands: #4f5c9c 0 20%, #85699f 0 40%, #c8737f 0 60%, #ec8f66 0 80%, #f6b45e 0; }
-[data-sky="night"] .profile-sky { --sky-bands: #161b38 0 20%, #1c2346 0 40%, #232b54 0 60%, #2b3462 0 80%, #343e70 0; }
+[data-sky="dawn"] .profile-sky { --sky-colors: #8a9fd4, #b3b3de, #dcbcd8, #f2cdbc, #fae0b4; }
+[data-sky="evening"] .profile-sky { --sky-colors: #4f5c9c, #85699f, #c8737f, #ec8f66, #f6b45e; }
+[data-sky="night"] .profile-sky { --sky-colors: #161b38, #1c2346, #232b54, #2b3462, #343e70; }
 .profile-sky > * { position: absolute; image-rendering: pixelated; background: no-repeat center / 100% 100%; }
 /* 星は空の下の方だけ。上の方はプロフィールの文字と重なって読みにくいため出さない。 */
 .profile-stars {
@@ -185,15 +185,19 @@ html:has(body[data-page="about/"])::-webkit-scrollbar { display: none; }
 }
 /* DepthDiaryのPlayer。操作を遮らず飛行し、進行方向に機首を向ける。 */
 .profile-flight {
-    position: absolute;
-    /* 空の高いところ（見出しの右、文字と重ならない帯）を飛ぶ。上に吹き出しが出る余白を残す。 */
-    top: 60px;
-    left: 45%;
+    /* 空の高いところ（見出しの右、文字と重ならない帯）を飛ぶ。
+       空とは別の層にして内容より手前に置き、触れたときの吹き出しが隠れないようにする。 */
+    position: fixed;
+    top: 56px;
+    left: calc(var(--sidebar-w) + (100vw - var(--sidebar-w)) * .45);
     right: 40px;
-    height: 110px;
-    z-index: 3;
+    height: 54px;
+    z-index: 2;
     pointer-events: none;
 }
+/* 画面の上端に近いので、作品への吹き出しはロケットの下に出す。 */
+main .profile-depth-player a.profile-guest-link { top: calc(100% + 6px); bottom: auto; }
+.profile-depth-player .profile-guest-link::after { top: auto; bottom: 100%; }
 .profile-depth-player {
     position: absolute;
     left: 30%;
@@ -225,7 +229,7 @@ html:has(body[data-page="about/"])::-webkit-scrollbar { display: none; }
     25%, 100% { opacity: 0; }
 }
 @media (max-width: 960px) {
-    .profile-meadow { display: none; }
+    .profile-meadow, .profile-flight { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
     .profile-character, .profile-character-facing,
@@ -265,7 +269,11 @@ html:has(body[data-page="about/"])::-webkit-scrollbar { display: none; }
     touch-action: manipulation;
 }
 .profile-guest-trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* 吹き出しは白地なので、夕方や夜に本文の文字が白くなっても黒いままにする。 */
 main a.profile-guest-link {
+    --fg: #222;
+    --muted: #555;
+    --line: #e2e2de;
     position: absolute;
     bottom: calc(100% + 6px);
     left: 50%;
