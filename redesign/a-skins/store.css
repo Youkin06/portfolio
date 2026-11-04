@@ -10,7 +10,7 @@
 :root {
     --bg: #f6f6f4;
     --fg: #222222;
-    --muted: #707070;
+    --muted: #222222; /* 灰色の文字は使わず、本文と同じ色にする */
     --surface: #ffffff;
     --surface-2: #f1f1ef;
     --line: #e2e2de;
@@ -23,7 +23,7 @@
     --green: #ff7a2f;
     --accent: #e8621c;
     --tag-bg: #f1f1ef;
-    --tag-fg: #444444;
+    --tag-fg: #222222;
     --highlight-bg: #fff1e6;
     --highlight-fg: #b5470d;
     --radius: 6px;
@@ -47,11 +47,11 @@ a { color: var(--accent); }
 .menu-label { color: var(--fg); font-size: 20px; font-weight: 900; letter-spacing: .01em; padding: 0 10px; margin-bottom: 6px; }
 .menu-label:hover { color: var(--accent); }
 .menu-label::after { display: none; }
-.menu-list a { color: #444; padding: 6px 10px; border-radius: 4px; font-size: 14px; }
+.menu-list a { color: var(--fg); padding: 6px 10px; border-radius: 4px; font-size: 14px; }
 .menu-list a::before { display: none; }
 .menu-list a:hover { background: var(--surface-2); color: var(--fg); }
 .menu-list a.active { background: var(--highlight-bg); color: var(--highlight-fg); font-weight: 700; }
-.menu-list .no, .menu-list .year { color: #a0a0a0; font-weight: 400; }
+.menu-list .no, .menu-list .year { color: var(--fg); font-weight: 400; }
 .menu-list a.active .year, .menu-list a.active .no { color: var(--highlight-fg); }
 
 /* ---- 見出し ---- */
