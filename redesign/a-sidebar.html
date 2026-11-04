@@ -137,9 +137,6 @@
         /* ---- 右側 ---- */
         main { position: relative; margin-left: calc(var(--sidebar-w) + 32px); padding: 28px 40px 96px; }
         main > .page { position: relative; }
-        /* 作品ページでは、右側全体にその作品の色合い（--game-bg と --game-pattern）を敷く */
-        main[data-game] { min-height: 100vh; background-color: var(--game-bg); background-image: var(--game-pattern); background-size: var(--game-pattern-size); }
-        .page { max-width: 1100px; animation: pop .2s ease; }
         .page--narrow { max-width: 920px; }
         @keyframes pop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
         .page-head { margin: 4px 0 22px; }
@@ -419,20 +416,6 @@
 
         // 動く見本（6秒のループ）と、作品ページの全編動画の置き場所
         const CLIP_BASE = new URL('../Images/clips/', location.href).href;
-        // 作品ページの色合い：その作品の色をうっすら敷き、気づかないくらいの模様を重ねる
-        const GAME_THEME = {
-            'sausage-smash': { accent: '#c4552a', bg: '#fbf2e6', pattern: 'linear-gradient(rgba(120, 70, 30, .045) 2px, transparent 2px), linear-gradient(90deg, rgba(120, 70, 30, .045) 2px, transparent 2px)', size: '64px 64px' },
-            'pintch-witch': { accent: '#a51f2b', bg: '#f7efef', pattern: 'repeating-linear-gradient(90deg, rgba(150, 30, 40, .035) 0 22px, transparent 22px 44px)', size: 'auto' },
-            'jiya-robot-tea': { accent: '#3a62a8', bg: '#eef4fa', pattern: 'radial-gradient(circle, rgba(200, 120, 150, .09) 0 4px, transparent 5px)', size: '72px 72px' },
-            'boku-no-nikki': { accent: '#7a5a2e', bg: '#f5eedd', pattern: 'repeating-linear-gradient(180deg, transparent 0 39px, rgba(70, 92, 140, .07) 39px 40px)', size: 'auto' },
-            'project-siro': { accent: '#222222', bg: '#f3f3f1', pattern: 'linear-gradient(45deg, rgba(0, 0, 0, .025) 25%, transparent 25% 75%, rgba(0, 0, 0, .025) 75%)', size: '80px 80px' },
-            'zelly-swipe': { accent: '#3b33c4', bg: '#efeffb', pattern: 'radial-gradient(circle, rgba(45, 42, 143, .06) 0 6px, transparent 7px)', size: '56px 56px' },
-            'frying-pan': { accent: '#d0561a', bg: '#fdf1e7', pattern: 'radial-gradient(circle, transparent 0 18px, rgba(208, 86, 26, .05) 19px 21px, transparent 22px)', size: '96px 96px' },
-            'depth-diary': { accent: '#6b2bd9', bg: '#f2edf9', pattern: 'linear-gradient(rgba(107, 43, 217, .05) 2px, transparent 2px), linear-gradient(90deg, rgba(107, 43, 217, .05) 2px, transparent 2px)', size: '40px 40px' },
-            'project-4': { accent: '#2a3ad0', bg: '#eef0fa', pattern: 'repeating-linear-gradient(-30deg, transparent 0 46px, rgba(42, 58, 208, .04) 46px 48px)', size: 'auto' },
-            'project-6': { accent: '#c23b75', bg: '#f2f0f1', pattern: 'linear-gradient(rgba(0, 0, 0, .035) 2px, transparent 2px), linear-gradient(90deg, rgba(0, 0, 0, .035) 2px, transparent 2px)', size: '48px 32px' },
-            'project-3': { accent: '#4a8f23', bg: '#f1f7e4', pattern: 'conic-gradient(rgba(110, 160, 40, .06) 25%, transparent 0 50%, rgba(110, 160, 40, .06) 0 75%, transparent 0)', size: '120px 120px' },
-        };
         const MEDIA_BASE = 'https://youkin06.github.io/portfolio-media/videos/';
 
         document.body.dataset.layout = LAYOUT;
@@ -600,7 +583,7 @@
                 const techHTML = techListHTML ? `<div class="tech-stack"><h3 class="label">使用技術</h3>${techListHTML}</div>` : '';
                 const repositoryNote = p.fields.find(f => f.label === 'GitHubリポジトリ');
                 return `
-                    <article class="page game" ${tone(index)} data-game="${esc(p.id)}"${GAME_THEME[p.id] ? ` style="--accent: ${GAME_THEME[p.id].accent}"` : ''}>
+                    <article class="page game" ${tone(index)} data-game="${esc(p.id)}">
                         <a class="back" href="#works">${esc(TEXT.back)}</a>
                         ${pageHead(TEXT.works, p.title, p.summary)}
                         ${playerHTML(p.videoId, p.title)}
@@ -739,18 +722,6 @@
 
                 const subKey = section === 'research' && !sub ? research[0]?.id || '' : sub;
                 markActive(section, subKey);
-
-                // 作品ページだけ、その作品の色合いを右側に敷く
-                const theme = section === 'works' && sub ? GAME_THEME[sub] : null;
-                if (theme) {
-                    main.dataset.game = sub;
-                    main.style.setProperty('--game-bg', theme.bg);
-                    main.style.setProperty('--game-pattern', theme.pattern);
-                    main.style.setProperty('--game-pattern-size', theme.size);
-                } else {
-                    delete main.dataset.game;
-                    ['--game-bg', '--game-pattern', '--game-pattern-size'].forEach(name => main.style.removeProperty(name));
-                }
 
                 const target = onePage && sub ? anchorsOf(section).find(a => a.key === sub)?.el : null;
                 keepChoice = Boolean(target);

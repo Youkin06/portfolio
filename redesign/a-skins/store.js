@@ -4,6 +4,6 @@ window.SKIN = {
     text: {
         data: '作品情報',
         researchData: '研究情報',
-        links: 'LINK',
+        links: 'Link',
     },
 };
