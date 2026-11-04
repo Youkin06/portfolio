@@ -102,3 +102,37 @@ test('clicking content or links does not toggle the details', () => {
     assert.equal(page.animations.length, 0);
     assert.equal(page.details.open, false);
 });
+
+test('opening one item closes the other open item', () => {
+    let listener;
+    const animations = [];
+    const makeItem = () => {
+        const item = { open: false, dataset: {}, matches: selector => selector === 'details.exp-more' };
+        item.content = {
+            style: { height: '', overflow: '' },
+            getBoundingClientRect: () => ({ height: item.open ? 120 : 0 }),
+            animate: frames => { const a = { frames, cancel() {} }; animations.push(a); return a; },
+        };
+        item.summary = { parentElement: item, click: () => listener(clickOn(item)) };
+        item.querySelector = selector => selector === 'summary' ? item.summary : item.content;
+        return item;
+    };
+    const clickOn = item => ({ button: 0, defaultPrevented: false, preventDefault() { this.defaultPrevented = true; }, target: { closest: () => item.summary } });
+    const first = makeItem(), second = makeItem();
+    vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../redesign/shared/details-motion.js'), 'utf8'), {
+        window: { SKIN: { detailsMotion: true }, matchMedia: () => ({ matches: false }) },
+        document: { getElementById: () => ({
+            addEventListener: (type, callback) => { listener = callback; },
+            querySelectorAll: () => [first, second],
+        }) },
+    });
+    listener(clickOn(first));
+    animations[0].onfinish();
+    assert.equal(first.open, true);
+    listener(clickOn(second));
+    assert.equal(first.dataset.expanded, 'false', 'the first item starts closing');
+    assert.equal(second.dataset.expanded, 'true');
+    animations.forEach(a => a.onfinish && a.onfinish());
+    assert.equal(first.open, false);
+    assert.equal(second.open, true);
+});

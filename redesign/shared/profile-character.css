@@ -267,10 +267,12 @@ main .profile-depth-player a.profile-guest-link { top: calc(100% + 6px); bottom:
     touch-action: manipulation;
 }
 .profile-guest-trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-/* 吹き出しは白地なので、夕方や夜に本文の文字が白くなっても黒いままにする。 */
+/* 吹き出しは、どのスキン・時間帯でも白地に黒い文字（暗いスキンや夜に地や文字の色が変わっても読めるように）。 */
 main a.profile-guest-link {
-    --fg: #222;
-    --muted: #555;
+    --fg: #1f1f22;
+    --muted: #4a4a50;
+    --surface: #ffffff;
+    --accent: #b3262f; /* 触れたときの文字色も、白地で読める濃さに */
     --line: #e2e2de;
     position: absolute;
     bottom: calc(100% + 6px);

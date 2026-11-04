@@ -1,0 +1,33 @@
+@import url("store.css");
+
+/*
+ * 無機質な白案：真っ白に、黒と灰色だけ。角は小さく、線は細く、色は作品の画像とタグの札だけ。
+ * - 書体は丸みのないゴシック
+ * - About・Works・Research の色分けはせず、選んでいる項目は黒地に白文字
+ * - About me は空を出さず、白地の上に草原とキャラクターだけを置く
+ */
+:root {
+    --bg: #ffffff;
+    --fg: #111111;
+    --muted: #111111;
+    --surface: #ffffff;
+    --surface-2: #f4f4f4;
+    --sidebar-bg: #f4f4f4;
+    --line: #e2e2e2;
+    --card-line: #d6d6d6;
+    --radius: 2px;
+    --font: "Zen Kaku Gothic New", "Noto Sans JP", "Hiragino Sans", sans-serif;
+}
+body[data-section], .menu-group[data-section] { --section-fg: #111111; --section-bg: #f0f0f0; }
+body[data-section] { --accent: #111111; }
+
+.sidebar { border-right: 1px solid var(--line); }
+.menu-label { letter-spacing: .04em; }
+.menu-list a { border-radius: var(--radius); }
+.menu-list a.active { background: #111111; color: #ffffff; }
+.card, .card:hover, .card:focus-within { border-color: var(--card-line); }
+.card .thumb { border-bottom-color: var(--card-line); }
+.card-link { transition: none; }
+.tag { border-radius: var(--radius); }
+.contacts a { border-radius: var(--radius); }
+.menu-list a.active:hover { color: #ffffff; }

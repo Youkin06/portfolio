@@ -1,0 +1,29 @@
+@import url("store.css");
+
+/*
+ * 墨紺案：夜空案の紺を、黒に近づけたもの。ほとんど黒だが、わずかに紺が残る。
+ * - サイドバーがいちばん暗く、地、カードの順に少しずつ明るい
+ * - About me の夜空も、黒に近い紺から少し明るい紺へ
+ */
+:root {
+    --bg: #0c0f1a;
+    --fg: #e9ebf3;
+    --muted: #e9ebf3;
+    --surface: #151a2a;
+    --surface-2: #1c2236;
+    --sidebar-bg: #080a12;
+    --line: #262d45;
+    --card-line: #262d45;
+}
+body[data-section="about"], .menu-group[data-section="about"] { --section-fg: #ff9aa5; --section-bg: #ff9aa51f; }
+body[data-section="works"], .menu-group[data-section="works"] { --section-fg: #86d0ff; --section-bg: #86d0ff1f; }
+body[data-section="research"], .menu-group[data-section="research"] { --section-fg: #b6e585; --section-bg: #b6e5851f; }
+
+.sidebar { border-right: 0; }
+.card, .card:hover, .card:focus-within { border-color: var(--card-line); }
+.card .thumb { border-bottom-color: var(--card-line); }
+.vplayer { box-shadow: 0 2px 12px #00000080; }
+.tag { filter: saturate(.85) brightness(.92); }
+
+html[data-sky="night"] .profile-sky { --sky-colors: #0c0f1a, #0f1322, #13182b, #181e36, #1e2642; }
+html[data-sky="night"] .profile-ground { filter: brightness(.55) saturate(.75); }

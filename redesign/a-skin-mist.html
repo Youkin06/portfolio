@@ -493,7 +493,7 @@
                     <div class="window-body">${body}</div>
                 </section>`;
 
-            // インターン・バイト経験は1つずつのページで見せるので、説明は「詳しく見る」で閉じずに最初から出す。
+            // 説明は「詳しく見る」で開く。一度に開くのは1つだけ（details-motion.js が、ほかの開いている項目を閉じる）。
             const expHTML = i => `
                 <li class="exp">
                     <div class="exp-head">
@@ -501,13 +501,15 @@
                         ${i.role ? `<span class="exp-org">${esc(i.org)}</span>` : ''}
                         <time class="exp-period">${esc(i.period)}</time>
                     </div>
-                    <div class="exp-content"><div class="exp-detail"${i.image ? ' data-photo' : ''}>
-                        <div class="exp-copy">
-                            <p>${fixProjectLinks(i.html)}</p>
-                            ${i.links.length ? `<div class="exp-links">${i.links.map(link).join('')}</div>` : ''}
-                        </div>
-                        ${i.image ? `<figure><img src="${esc(i.image.src)}" alt="${esc(i.image.alt)}"${i.image.width && i.image.height ? ` width="${i.image.width}" height="${i.image.height}"` : ''} loading="eager" decoding="async"><figcaption>${esc(i.image.caption)}</figcaption></figure>` : ''}
-                    </div></div>
+                    <details class="exp-more"><summary>${esc(TEXT.more)}</summary>
+                        <div class="exp-content"><div class="exp-detail"${i.image ? ' data-photo' : ''}>
+                            <div class="exp-copy">
+                                <p>${fixProjectLinks(i.html)}</p>
+                                ${i.links.length ? `<div class="exp-links">${i.links.map(link).join('')}</div>` : ''}
+                            </div>
+                            ${i.image ? `<figure><img src="${esc(i.image.src)}" alt="${esc(i.image.alt)}"${i.image.width && i.image.height ? ` width="${i.image.width}" height="${i.image.height}"` : ''} loading="eager" decoding="async"><figcaption>${esc(i.image.caption)}</figcaption></figure>` : ''}
+                        </div></div>
+                    </details>
                 </li>`;
             const itemHTML = a => `
                 <li class="item"><span class="item-text">${esc(a.text)}</span>

@@ -1,4 +1,5 @@
 // summary を固定したまま、本文だけをその下で滑らかに開閉する。
+// 開くのは一度に1つだけ。新しく開くと、ほかに開いている項目は同じ動きで閉じる。
 (function () {
     if (!window.SKIN?.detailsMotion) return;
     const main = document.getElementById('main');
@@ -17,6 +18,12 @@
         const previous = states.get(details);
         const opening = previous ? !previous.opening : !details.open;
         const original = previous?.original || { height: content.style.height, overflow: content.style.overflow };
+        if (opening) {
+            main.querySelectorAll?.('details.exp-more').forEach(other => {
+                const otherOpen = other.dataset.expanded ? other.dataset.expanded === 'true' : other.open;
+                if (other !== details && otherOpen) other.querySelector('summary')?.click();
+            });
+        }
         // 連打時は、その時点で見えている高さから逆向きに動かす。
         const from = details.open ? content.getBoundingClientRect().height : 0;
         // 閉じる間も open は残るため、矢印には操作直後の向きを別に伝える。
