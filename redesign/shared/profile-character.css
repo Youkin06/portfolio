@@ -112,36 +112,49 @@ main:has(.profile-walkway) { padding-bottom: 144px; }
     0%, 100% { transform: scaleX(1); }
     50% { transform: scaleX(-1); }
 }
-/* 文章の前も横切る、操作を遮らないロケット。各区間で進行方向に機首を向ける。 */
+/* DepthDiaryのPlayer。操作を遮らず飛行し、進行方向に機首を向ける。 */
 .profile-flight {
     position: fixed;
     inset: 80px 24px 24px calc(var(--sidebar-w) + 24px);
     z-index: 6;
     pointer-events: none;
 }
-.profile-rocket {
+.profile-depth-player {
     position: absolute;
     width: 164px;
     height: 164px;
     transform: translate(-50%, -50%);
-    animation: profile-rocket-flight 30s linear -7s infinite;
+    animation: profile-depth-player-flight 30s linear -7s infinite;
 }
-.profile-rocket img {
+.profile-depth-player-facing {
+    width: 100%;
+    height: 100%;
+    animation: profile-depth-player-heading 30s steps(1, end) -7s infinite;
+}
+/* Unityのidle_playerと同じ順番で、1枚250ms・全体1秒のループ。 */
+.profile-depth-player img {
+    position: absolute;
+    inset: 0;
     display: block;
     width: 100%;
     height: 100%;
     object-fit: contain;
     image-rendering: pixelated;
-    animation: profile-rocket-heading 30s steps(1, end) -7s infinite;
+    opacity: 0;
+    animation: profile-depth-player-frame 1s steps(1, end) calc(var(--frame-index) * 250ms) infinite;
 }
-@keyframes profile-rocket-flight {
+@keyframes profile-depth-player-frame {
+    0% { opacity: 1; }
+    25%, 100% { opacity: 0; }
+}
+@keyframes profile-depth-player-flight {
     0%, 100% { left: 12%; top: 80%; }
     20% { left: 62%; top: 18%; }
     38% { left: 87%; top: 38%; }
     58% { left: 42%; top: 65%; }
     76% { left: 18%; top: 24%; }
 }
-@keyframes profile-rocket-heading {
+@keyframes profile-depth-player-heading {
     0%, 100% { transform: rotate(45deg); }
     20% { transform: rotate(125deg); }
     38% { transform: rotate(240deg); }
@@ -151,7 +164,7 @@ main:has(.profile-walkway) { padding-bottom: 144px; }
 @media (max-width: 960px) {
     .profile-walkway { --character-size: 112px; }
     .profile-flight { left: 32px; right: 32px; }
-    .profile-rocket { width: 132px; height: 132px; }
+    .profile-depth-player { width: 132px; height: 132px; }
 }
 @media (prefers-reduced-motion: reduce) {
     .profile-character, .profile-character-facing,
