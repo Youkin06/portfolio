@@ -13,6 +13,7 @@
     --muted: #222222; /* 灰色の文字は使わず、本文と同じ色にする */
     --surface: #ffffff;
     --surface-2: #f1f1ef;
+    --sidebar-bg: #f2f2f0;
     --line: #e2e2de;
     --navy: #222222;
     --navy-2: #3a3a3a;
@@ -57,7 +58,8 @@ body { background: var(--bg); background-image: none; font-size: 15px; }
 a { color: var(--accent); }
 
 /* ---- サイドバー：作者ページの左の列 ---- */
-.sidebar { background: var(--surface); color: var(--fg); border-right: 1px solid var(--line); }
+/* サイドバーは薄い灰色にして、白い本文と分ける。選んでいる項目は白く抜く。 */
+.sidebar { background: var(--sidebar-bg); color: var(--fg); border-right: 1px solid var(--line); }
 .player { flex-direction: column; align-items: flex-start; gap: 10px; padding: 26px 22px 20px; border-bottom: 1px solid var(--line); color: var(--fg); }
 .player img { width: 84px; height: 84px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface-2); }
 .player strong { font-size: 18px; }
@@ -71,7 +73,7 @@ a { color: var(--accent); }
 .menu-list a { color: var(--fg); padding: 6px 10px; border-radius: 4px; font-size: 14px; }
 .menu-list a::before { display: none; }
 .menu-list a:hover { background: transparent; color: var(--section-fg); }
-.menu-list a.active { background: var(--section-bg); color: var(--section-fg); font-weight: 700; }
+.menu-list a.active { background: var(--surface); color: var(--section-fg); font-weight: 700; }
 .menu-list .no, .menu-list .year { color: var(--fg); font-weight: 400; }
 .menu-list a.active .year, .menu-list a.active .no { color: var(--section-fg); }
 
@@ -260,7 +262,6 @@ main a:not(.card-link) {
 /* ホバーは文字色だけ。背景は現在選んでいる項目・開いている詳細に付ける。 */
 .menu-list a:hover, .contacts a:hover, .back:hover { transform: none; }
 main a:not(.card-link):hover, .exp-more summary:hover { color: var(--accent); }
-.menu-list a.active,
 .exp-more[data-expanded="true"] summary,
 .exp-more[open]:not([data-expanded]) summary { background: var(--section-bg); }
 

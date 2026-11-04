@@ -31,13 +31,15 @@ main > .page.about:has(.profile-meadow) { flex: 1; display: flex; flex-direction
 [data-sky="dawn"] .profile-sky { --sky-bands: #8a9fd4 0 20%, #b3b3de 0 40%, #dcbcd8 0 60%, #f2cdbc 0 80%, #fae0b4 0; }
 [data-sky="evening"] .profile-sky { --sky-bands: #4f5c9c 0 20%, #85699f 0 40%, #c8737f 0 60%, #ec8f66 0 80%, #f6b45e 0; }
 [data-sky="night"] .profile-sky { --sky-bands: #161b38 0 20%, #1c2346 0 40%, #232b54 0 60%, #2b3462 0 80%, #343e70 0; }
-/* 技術スタックの白地から、空へなめらかにつなぐ。雲や星もこの下に溶け込む。 */
+/* 技術スタックの白地から空へ、ドットを間引いてつなぐ（6pxのドットを4×4の決まった順で減らす）。 */
 .profile-sky::after {
     content: "";
     position: absolute;
     inset: 0 0 auto;
-    height: min(180px, 50%);
-    background: linear-gradient(var(--bg, #fff), transparent);
+    height: 180px;
+    background: var(--bg, #fff);
+    -webkit-mask: url("../../Images/profile-character/sky-fade.png") repeat-x 0 0 / 24px 180px;
+    mask: url("../../Images/profile-character/sky-fade.png") repeat-x 0 0 / 24px 180px;
 }
 .profile-sky > * { position: absolute; image-rendering: pixelated; background: no-repeat center / 100% 100%; }
 .profile-stars {
@@ -86,9 +88,8 @@ main > .page.about:has(.profile-meadow) { flex: 1; display: flex; flex-direction
     z-index: 1;
     image-rendering: pixelated;
 }
-/* 草の上を散歩。待機 → 右へ歩く → 待機 → 左へ歩く。足元は草の先に少し埋める。 */
+/* 草の上を散歩。足元は草の先に少し埋める。 */
 .profile-walkway {
-    --profile-cycle: 32s;
     --character-size: 128px;
     position: absolute;
     left: 0;
@@ -105,12 +106,11 @@ main > .page.about:has(.profile-meadow) { flex: 1; display: flex; flex-direction
     left: 0;
     width: var(--character-size);
     height: var(--character-size);
-    animation: profile-stroll var(--profile-cycle) linear infinite;
 }
+/* 位置・向き・待機か歩きか（data-state）は profile-walk.js が書く。元画像は右向き。 */
 .profile-character-facing {
     width: 100%;
     height: 100%;
-    animation: profile-facing var(--profile-cycle) steps(1, end) infinite;
 }
 .profile-character-pose { position: absolute; inset: 0; }
 .profile-character-pose img {
@@ -121,27 +121,13 @@ main > .page.about:has(.profile-meadow) { flex: 1; display: flex; flex-direction
     object-fit: contain;
 }
 /* 表示するのは常に1枚だけ。透過部分に前のフレームを残さない。 */
-.profile-character-idle { animation: profile-idle var(--profile-cycle) steps(1, end) infinite; }
-.profile-character-walk { animation: profile-walk var(--profile-cycle) steps(1, end) infinite; }
+/* idle1・idle2 は立ち止まり、walk1・walk2 は歩き。 */
+.profile-character-walk,
+.profile-character[data-state="walk"] .profile-character-idle { opacity: 0; }
+.profile-character[data-state="walk"] .profile-character-walk { opacity: 1; }
 .profile-character-idle img { animation: profile-frame-first 800ms steps(1, end) infinite; }
 .profile-character-walk img { animation: profile-frame-first 320ms steps(1, end) infinite; }
 .profile-character-pose img + img { animation-name: profile-frame; }
-@keyframes profile-stroll {
-    0%, 20%, 90%, 100% { left: 0; }
-    45%, 65% { left: calc(100% - var(--character-size)); }
-}
-@keyframes profile-facing {
-    0%, 65%, 100% { transform: scaleX(-1); }
-    20% { transform: scaleX(1); }
-}
-@keyframes profile-idle {
-    0%, 45%, 90%, 100% { opacity: 1; }
-    20%, 65% { opacity: 0; }
-}
-@keyframes profile-walk {
-    0%, 45%, 90%, 100% { opacity: 0; }
-    20%, 65% { opacity: 1; }
-}
 @keyframes profile-frame {
     0%, 100% { opacity: 0; }
     50% { opacity: 1; }

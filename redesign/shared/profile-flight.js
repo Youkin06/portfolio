@@ -1,14 +1,25 @@
-// DEPTH DIARY の Player を草原の空で自由に飛ばす。
-// 次の目的地を選んでは少しずつ旋回し、機首をいつも進む方向へ向ける（元画像は機首が上向き）。
+// DEPTH DIARY の Player を草原の空で飛ばす。
+// 遠めの目的地を選び、曲がるときは減速しながらゆるやかに旋回し、まっすぐ進めるときは加速する。
+// 着いたら、ときどきその場でふわっと浮いて休んでから次へ向かう。機首はいつも進む方向へ向ける（元画像は機首が上向き）。
 // 触れて止まっている間（data-paused）と、動きを減らす設定のときは動かさない。
 (function () {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const SPEED = 110;      // px/秒
-    const TURN = 2.2;       // 旋回の速さ（rad/秒）
-    let pos = null, heading = -Math.PI / 4, target = null, targetAge = 0, last = 0;
+    const MAX_SPEED = 130;   // px/秒
+    const MAX_TURN = 1.3;    // 旋回の速さの上限（rad/秒）
+    let pos = null, heading = -Math.PI / 4, turn = 0, speed = 60;
+    let target = null, targetAge = 0, rest = 0, clock = 0, last = 0;
 
-    const pickTarget = (w, h) => ({ x: w * (0.05 + Math.random() * 0.9), y: h * (0.05 + Math.random() * 0.9) });
+    const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
     const wrap = a => Math.atan2(Math.sin(a), Math.cos(a));
+    // 今いる場所から離れた目的地を選ぶ（近いと小さく回り続けて不自然なため）。
+    const pickTarget = (w, h) => {
+        let next;
+        for (let i = 0; i < 12; i++) {
+            next = { x: w * (0.06 + Math.random() * 0.88), y: h * (0.08 + Math.random() * 0.84) };
+            if (Math.hypot(next.x - pos.x, next.y - pos.y) > Math.min(w, h * 2) * 0.45) break;
+        }
+        return next;
+    };
 
     const tick = time => {
         const dt = Math.min((time - last) / 1000, 0.05);
@@ -17,22 +28,40 @@
         const box = player && player.parentElement;
         const w = box ? box.clientWidth : 0, h = box ? box.clientHeight : 0;
         if (player && w && h && !reduce.matches && !player.hasAttribute('data-paused')) {
+            clock += dt;
             if (!pos) pos = { x: w * 0.3, y: h * 0.4 };
-            pos.x = Math.min(Math.max(pos.x, 0), w);
-            pos.y = Math.min(Math.max(pos.y, 0), h);
-            // 近づいたら次の目的地へ。旋回しきれず回り続けないよう、6秒たっても着かなければ選び直す。
+            pos.x = clamp(pos.x, 0, w);
+            pos.y = clamp(pos.y, 0, h);
+            if (!target) target = pickTarget(w, h);
+
+            const dist = Math.hypot(target.x - pos.x, target.y - pos.y);
+            const diff = wrap(Math.atan2(target.y - pos.y, target.x - pos.x) - heading);
             targetAge += dt;
-            if (!target || targetAge > 6 || Math.hypot(target.x - pos.x, target.y - pos.y) < 60) {
-                target = pickTarget(w, h);
-                targetAge = 0;
+            if (rest > 0) {
+                // 休憩中：ほぼ止まり、向きもそのまま。
+                rest -= dt;
+                if (rest <= 0) { target = pickTarget(w, h); targetAge = 0; }
+            } else if (dist < 50 || targetAge > 12) {
+                if (Math.random() < 0.4) rest = 1 + Math.random() * 1.5;
+                else { target = pickTarget(w, h); targetAge = 0; }
             }
-            const want = Math.atan2(target.y - pos.y, target.x - pos.x);
-            const diff = wrap(want - heading);
-            heading = wrap(heading + Math.sign(diff) * Math.min(Math.abs(diff), TURN * dt));
-            pos.x += Math.cos(heading) * SPEED * dt;
-            pos.y += Math.sin(heading) * SPEED * dt;
+
+            // 旋回は急に切り替えず、目標の旋回速度へ少しずつ寄せる。
+            const wantTurn = rest > 0 ? 0 : clamp(diff * 1.6, -MAX_TURN, MAX_TURN);
+            turn += (wantTurn - turn) * Math.min(1, dt * 2.5);
+            heading = wrap(heading + turn * dt);
+
+            // 正面に目的地があるほど速く、曲がっている途中と到着前は遅く。
+            const ahead = Math.max(0, Math.cos(diff));
+            const wantSpeed = rest > 0 ? 8 : MAX_SPEED * (0.35 + 0.65 * ahead) * Math.min(1, 0.4 + dist / 220);
+            speed += (wantSpeed - speed) * Math.min(1, dt * 1.6);
+
+            pos.x += Math.cos(heading) * speed * dt;
+            pos.y += Math.sin(heading) * speed * dt;
+            // 浮いている感じを出すため、上下にわずかに揺らす。
+            const bob = Math.sin(clock * 2.4) * 3;
             player.style.left = `${pos.x}px`;
-            player.style.top = `${pos.y}px`;
+            player.style.top = `${pos.y + bob}px`;
             player.querySelector('.profile-depth-player-facing').style.transform = `rotate(${heading + Math.PI / 2}rad)`;
         }
         requestAnimationFrame(tick);
