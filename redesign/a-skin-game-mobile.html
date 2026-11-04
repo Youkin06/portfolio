@@ -135,7 +135,20 @@
         [data-layout="flat"] .menu-label { padding: 8px 10px; }
 
         /* ---- 右側 ---- */
-        main { margin-left: calc(var(--sidebar-w) + 32px); padding: 28px 40px 96px; }
+        main { position: relative; margin-left: calc(var(--sidebar-w) + 32px); padding: 28px 40px 96px; }
+        main > .page { position: relative; }
+        /* 作品ページの背景：その作品の画面を大きくぼかして上に敷き、下に向かって地の色に溶かす */
+        .game-backdrop {
+            position: absolute;
+            inset: 0 0 auto 0;
+            height: min(760px, 90vh);
+            background-size: cover;
+            background-position: center;
+            -webkit-mask-image: linear-gradient(to bottom, #000 35%, transparent);
+            mask-image: linear-gradient(to bottom, #000 35%, transparent);
+            pointer-events: none;
+        }
+        .game-backdrop::after { content: ""; position: absolute; inset: 0; background: var(--bg); opacity: .5; }
         .page { max-width: 1100px; animation: pop .2s ease; }
         .page--narrow { max-width: 920px; }
         @keyframes pop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
@@ -419,6 +432,22 @@
 
         // 動く見本（6秒のループ）と、作品ページの全編動画の置き場所
         const CLIP_BASE = new URL('../Images/clips/', location.href).href;
+        // 作品ページの背景（Images/backgrounds/<作品の id>.jpg。プレイ動画の一場面を大きくぼかしたもの）
+        const BG_BASE = new URL('../Images/backgrounds/', location.href).href;
+        // 作品ごとの差し色（プレイ動画の画面から取った色）
+        const GAME_ACCENT = {
+            'sausage-smash': '#bb5e1a',
+            'pintch-witch': '#bb621a',
+            'jiya-robot-tea': '#1a3bbb',
+            'boku-no-nikki': '#7a5a2e',
+            'project-siro': '#333333',
+            'zelly-swipe': '#2a1abb',
+            'frying-pan': '#bb4b1a',
+            'depth-diary': '#691abb',
+            'project-4': '#1a1dbb',
+            'project-6': '#bb1a6c',
+            'project-3': '#3f8a24',
+        };
         const MEDIA_BASE = 'https://youkin06.github.io/portfolio-media/videos/';
 
         document.body.dataset.layout = LAYOUT;
@@ -586,7 +615,8 @@
                 const techHTML = techListHTML ? `<div class="tech-stack"><h3 class="label">使用技術</h3>${techListHTML}</div>` : '';
                 const repositoryNote = p.fields.find(f => f.label === 'GitHubリポジトリ');
                 return `
-                    <article class="page game" ${tone(index)}>
+                    <div class="game-backdrop" aria-hidden="true" style="background-image: url('${BG_BASE}${esc(p.id)}.jpg')"></div>
+                    <article class="page game" ${tone(index)} data-game="${esc(p.id)}"${GAME_ACCENT[p.id] ? ` style="--accent: ${GAME_ACCENT[p.id]}"` : ''}>
                         <a class="back" href="#works">${esc(TEXT.back)}</a>
                         ${pageHead(TEXT.works, p.title, p.summary)}
                         ${playerHTML(p.videoId, p.title)}
