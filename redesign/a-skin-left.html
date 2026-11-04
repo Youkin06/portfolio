@@ -216,6 +216,7 @@
         .exp-org { color: var(--muted); font-size: 13px; }
         .exp-period { margin-left: auto; color: var(--muted); font-size: 13px; }
         .exp-more summary { cursor: pointer; font-size: 13px; color: var(--accent); margin-top: 4px; font-weight: 700; -webkit-user-select: none; user-select: none; }
+        .exp-content { display: flow-root; }
         .exp-more p { margin: 6px 0 0; font-size: 14px; line-height: 1.85; }
         .exp-more figure { margin: 10px 0 0; max-width: 340px; }
         .exp-more figure img { border-radius: 8px; border: 2px solid var(--navy); }
@@ -492,13 +493,13 @@
                         <time class="exp-period">${esc(i.period)}</time>
                     </div>
                     <details class="exp-more"><summary>${esc(TEXT.more)}</summary>
-                        <div class="exp-detail"${i.image ? ' data-photo' : ''}>
+                        <div class="exp-content"><div class="exp-detail"${i.image ? ' data-photo' : ''}>
                             <div class="exp-copy">
                                 <p>${fixProjectLinks(i.html)}</p>
                                 ${i.links.length ? `<div class="exp-links">${i.links.map(link).join('')}</div>` : ''}
                             </div>
                             ${i.image ? `<figure><img src="${esc(i.image.src)}" alt="${esc(i.image.alt)}"${i.image.width && i.image.height ? ` width="${i.image.width}" height="${i.image.height}"` : ''} loading="eager" decoding="async"><figcaption>${esc(i.image.caption)}</figcaption></figure>` : ''}
-                        </div>
+                        </div></div>
                     </details>
                 </li>`;
             const itemHTML = a => `

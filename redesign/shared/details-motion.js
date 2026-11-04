@@ -1,4 +1,4 @@
-// details 本来の見た目・キーボード操作を保ち、高さだけを滑らかに開閉する。
+// summary を固定したまま、本文だけをその下で滑らかに開閉する。
 (function () {
     if (!window.SKIN?.detailsMotion) return;
     const main = document.getElementById('main');
@@ -10,13 +10,15 @@
         const summary = event.target.closest('summary');
         const details = summary?.parentElement;
         if (!details?.matches('details.exp-more') || event.defaultPrevented || event.button !== 0) return;
+        const content = details.querySelector('.exp-content');
+        if (!content) return;
         event.preventDefault();
 
         const previous = states.get(details);
         const opening = previous ? !previous.opening : !details.open;
-        const original = previous?.original || { height: details.style.height, overflow: details.style.overflow };
+        const original = previous?.original || { height: content.style.height, overflow: content.style.overflow };
         // 連打時は、その時点で見えている高さから逆向きに動かす。
-        const from = details.getBoundingClientRect().height;
+        const from = details.open ? content.getBoundingClientRect().height : 0;
         // 閉じる間も open は残るため、矢印には操作直後の向きを別に伝える。
         details.dataset.expanded = String(opening);
         if (previous) {
@@ -27,24 +29,23 @@
 
         const finish = () => {
             details.open = opening;
-            details.style.height = original.height;
-            details.style.overflow = original.overflow;
+            content.style.height = original.height;
+            content.style.overflow = original.overflow;
             delete details.dataset.expanded;
             states.delete(details);
         };
-        if (reducedMotion.matches || typeof details.animate !== 'function') {
+        if (reducedMotion.matches || typeof content.animate !== 'function') {
             finish();
             return;
         }
 
-        details.style.height = original.height;
-        details.open = opening;
-        const to = details.getBoundingClientRect().height;
-        // 閉じる間も本文を描画し、アニメーションが終わってから open を外す。
+        content.style.height = original.height;
         details.open = true;
-        details.style.height = `${from}px`;
-        details.style.overflow = 'hidden';
-        const animation = details.animate(
+        const to = opening ? content.getBoundingClientRect().height : 0;
+        // 本文だけを切り取り、summary の位置と余白は動かさない。
+        content.style.height = `${from}px`;
+        content.style.overflow = 'hidden';
+        const animation = content.animate(
             [{ height: `${from}px` }, { height: `${to}px` }],
             { duration: 240, easing: 'cubic-bezier(.2, .8, .2, 1)' }
         );

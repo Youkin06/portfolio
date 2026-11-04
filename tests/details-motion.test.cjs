@@ -11,10 +11,13 @@ function createDetails({ reduced = false, animationSupported = true } = {}) {
     const details = {
         open: false,
         dataset: {},
-        style: { height: '', overflow: '' },
+        querySelector: () => content,
         matches: selector => selector === 'details.exp-more',
+    };
+    const content = {
+        style: { height: '', overflow: '' },
         getBoundingClientRect: () => {
-            const height = visibleHeight ?? (details.open ? 240 : 28);
+            const height = visibleHeight ?? (details.open ? 212 : 0);
             visibleHeight = undefined;
             return { height };
         },
@@ -30,7 +33,7 @@ function createDetails({ reduced = false, animationSupported = true } = {}) {
         document: { getElementById: () => ({ addEventListener: (type, callback) => { listener = callback; } }) },
     });
     return {
-        details, animations,
+        details, content, animations,
         setVisibleHeight: height => { visibleHeight = height; },
         click(onSummary = true) {
             const event = { button: 0, defaultPrevented: false, preventDefault() { this.defaultPrevented = true; }, target: { closest: () => onSummary ? summary : null } };
@@ -40,22 +43,25 @@ function createDetails({ reduced = false, animationSupported = true } = {}) {
     };
 }
 
-test('details expand and collapse to their measured height, then release the fixed height', () => {
+test('only the content expands and collapses below the stationary summary', () => {
     const page = createDetails();
     page.click();
     assert.equal(page.details.open, true);
     assert.equal(page.details.dataset.expanded, 'true');
-    assert.equal(page.animations[0].frames[1].height, '240px');
+    assert.equal(page.animations[0].frames[0].height, '0px');
+    assert.equal(page.animations[0].frames[1].height, '212px');
+    assert.equal(page.content.style.overflow, 'hidden');
+    assert.equal(page.details.style, undefined, 'the details container is never resized or clipped');
     page.animations[0].onfinish();
-    assert.equal(page.details.style.height, '');
+    assert.equal(page.content.style.height, '');
     assert.equal(page.details.dataset.expanded, undefined);
     page.click();
     assert.equal(page.details.open, true, 'content stays visible during collapse');
     assert.equal(page.details.dataset.expanded, 'false', 'arrow starts closing immediately');
-    assert.equal(page.animations[1].frames[1].height, '28px');
+    assert.equal(page.animations[1].frames[1].height, '0px');
     page.animations[1].onfinish();
     assert.equal(page.details.open, false);
-    assert.equal(page.details.style.overflow, '');
+    assert.equal(page.content.style.overflow, '');
     assert.equal(page.details.dataset.expanded, undefined);
 });
 
@@ -67,15 +73,15 @@ test('rapid clicks reverse from the visible height and keep the last requested s
     assert.equal(page.animations[0].cancelled, true);
     assert.equal(page.animations[0].onfinish, null);
     assert.equal(page.animations[1].frames[0].height, '100px');
-    assert.equal(page.animations[1].frames[1].height, '28px');
+    assert.equal(page.animations[1].frames[1].height, '0px');
     page.setVisibleHeight(60);
     page.click();
     assert.equal(page.animations[1].cancelled, true);
     assert.equal(page.animations[2].frames[0].height, '60px');
-    assert.equal(page.animations[2].frames[1].height, '240px');
+    assert.equal(page.animations[2].frames[1].height, '212px');
     page.animations[2].onfinish();
     assert.equal(page.details.open, true);
-    assert.equal(page.details.style.height, '');
+    assert.equal(page.content.style.height, '');
 });
 
 test('reduced motion and browsers without animation keep instant, working disclosure', () => {
