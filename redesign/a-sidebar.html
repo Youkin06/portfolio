@@ -25,6 +25,8 @@
             スキル li[data-level="1〜5"]（.skill-name / .gauge / .skill-word）
             経歴 .exp（.exp-period / .exp-role / .exp-org / .exp-more / .exp-links）
             リンク .link--work（作品へ）/ .link--external（外のサイト。印は .ext-mark）
+            About の中の項目を1つだけ出すページは .stack[data-single]（見出しが h1 と重なるので、スキンで消してよい）
+        ・build.sh は行頭の </head> を目印に差し込むので、閉じタグ </head> は必ず1行に単独で書く
     -->
     <style>
         /*
@@ -539,7 +541,7 @@
                 return `
                     <article class="page page--narrow">
                         ${pageHead(TEXT.about, aboutLabel(id))}
-                        <div class="stack">${aboutBlocks[id]()}</div>
+                        <div class="stack"${id ? ' data-single' : ''}>${aboutBlocks[id]()}</div>
                     </article>`;
             };
 
