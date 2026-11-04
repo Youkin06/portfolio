@@ -25,6 +25,7 @@
 
 - **今後のデザイン・改修のベースは「A-ゲーム投稿サイト案（store）」とする。** 最新版は `redesign/a-skin-store.html`（自己紹介は `#about`）。A 案（`redesign/a-sidebar.html`）に、スキン **store**（`redesign/a-skins/store.css`・`store.js`）を重ねたものを指す。標準フォントは **Zen Maru Gothic** とし、作品一覧のカードは枠線で囲む。見た目の確認・改善提案・フォント比較はこの案を基準にする。left-digital は以前の比較案として残す。
 - スキンは `redesign/a-skins/<名前>.css` と `<名前>.js`（`window.SKIN` の設定）で作り、`sh redesign/a-skins/build.sh` で `redesign/a-skin-<名前>.html` を書き出す。
+  - store のセクション色は main の配色を参考に、About me＝赤・Works＝黄緑・Research＝水色。白地の文字には濃い同系色、選択背景には淡い同系色を使う。
   - `window.SKIN` で変えられるもの（形 `layout`・画面の言葉 `text`・アイコン色・メールの出し方）と、CSS から使える目印は、`redesign/a-sidebar.html` の先頭のコメントにまとめてある。
   - `build.sh` は行頭の `</head>` を目印に差し込むので、`a-sidebar.html` の閉じタグ `</head>` は1行に単独で書く。
   - 使わなくなったスキンは `redesign/a-skins/archive/` に置く。

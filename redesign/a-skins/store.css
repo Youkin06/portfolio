@@ -3,7 +3,7 @@
 /*
  * ゲーム投稿サイト案：unityroom や itch.io のような「ゲームを並べて見せる場所」の雰囲気。
  * - 飾りは最小限。主役は作品の画像と動く見本
- * - 白い地に、黒に近い文字。差し色は今のサイトの4色からオレンジ1色だけ
+ * - 白い地に、黒に近い文字。About は赤、Works は黄緑、Research は水色
  * - 作品ページは、左に説明、右に「作品の情報」の表と「遊ぶ・見る」ボタン
  * 文言は A 案のまま変えない。
  */
@@ -30,6 +30,28 @@
     --font: "Zen Maru Gothic", "Noto Sans JP", "Hiragino Sans", sans-serif;
 }
 
+/* main の PROFILE＝赤・PROJECTS＝黄緑と、水色を受け継ぐ。文字は白地で読める濃さに。 */
+body[data-section="about"], .menu-group[data-section="about"] {
+    --section-color: #ff0000;
+    --section-fg: #bc2934;
+    --section-bg: #fff0f1;
+}
+body[data-section="works"], .menu-group[data-section="works"] {
+    --section-color: #adff2f;
+    --section-fg: #426d14;
+    --section-bg: #eff9df;
+}
+body[data-section="research"], .menu-group[data-section="research"] {
+    --section-color: #87ceeb;
+    --section-fg: #126d96;
+    --section-bg: #eaf7fd;
+}
+body[data-section] {
+    --accent: var(--section-fg);
+    --highlight-bg: var(--section-bg);
+    --highlight-fg: var(--section-fg);
+}
+
 body { background: var(--bg); background-image: none; font-size: 15px; }
 .label { letter-spacing: .06em; text-transform: none; font-weight: 700; color: var(--muted); }
 a { color: var(--accent); }
@@ -44,20 +66,20 @@ a { color: var(--accent); }
 .menu-group { margin-top: 22px; }
 .menu-group:first-child { margin-top: 6px; }
 /* 大項目（About / Works / Research）は大きく、中の項目と差をつける */
-.menu-label { color: var(--fg); font-size: 20px; font-weight: 900; letter-spacing: .01em; padding: 0 10px; margin-bottom: 6px; }
-.menu-label:hover { color: var(--accent); }
+.menu-label { color: var(--section-fg); font-size: 20px; font-weight: 900; letter-spacing: .01em; padding: 0 10px; margin-bottom: 6px; }
+.menu-label:hover { color: var(--section-fg); }
 .menu-label::after { display: none; }
 .menu-list a { color: var(--fg); padding: 6px 10px; border-radius: 4px; font-size: 14px; }
 .menu-list a::before { display: none; }
-.menu-list a:hover { background: var(--surface-2); color: var(--fg); }
-.menu-list a.active { background: var(--highlight-bg); color: var(--highlight-fg); font-weight: 700; }
+.menu-list a:hover { background: var(--section-bg); color: var(--section-fg); }
+.menu-list a.active { background: var(--section-bg); color: var(--section-fg); font-weight: 700; }
 .menu-list .no, .menu-list .year { color: var(--fg); font-weight: 400; }
-.menu-list a.active .year, .menu-list a.active .no { color: var(--highlight-fg); }
+.menu-list a.active .year, .menu-list a.active .no { color: var(--section-fg); }
 
 /* ---- 見出し ---- */
 .page { max-width: 1120px; }
 .page-head { margin-bottom: 26px; }
-.page-head .label { color: var(--muted); }
+.page-head .label { color: var(--section-fg); }
 .page-head h1 { font-size: clamp(28px, 3.2vw, 38px); font-weight: 800; line-height: 1.25; }
 .page-head p { color: var(--muted); }
 .back { color: var(--muted); font-weight: 700; font-size: 13px; }
