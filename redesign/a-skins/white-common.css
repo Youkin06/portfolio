@@ -1,0 +1,24 @@
+@import url("store.css");
+
+/*
+ * 白案の共通部分。地は白、文字は黒に近い色。
+ * About は赤、Works は青、Research は緑（サイドバーの見出し・選んでいる項目・リンク・ページ上の小見出し）。
+ * About me は空を出さず、白地の上に草原とキャラクターだけを置く（白案はすべて SKIN.sky = 'none'。白・淡い空案だけ 'day'）。
+ */
+:root {
+    --bg: #ffffff;
+    --fg: #1f1f22;
+    --muted: #1f1f22;
+    --surface: #ffffff;
+    --surface-2: #f3f3f4;
+    --sidebar-bg: #f4f4f5;
+    --line: #e4e4e7;
+    --card-line: #dcdce0;
+}
+body[data-section="about"], .menu-group[data-section="about"] { --section-fg: #d23340; --section-bg: #fdebed; }
+body[data-section="works"], .menu-group[data-section="works"] { --section-fg: #1479b8; --section-bg: #e6f3fb; }
+body[data-section="research"], .menu-group[data-section="research"] { --section-fg: #4a8513; --section-bg: #edf6e1; }
+
+.sidebar { border-right: 0; }
+.card, .card:hover, .card:focus-within { border-color: var(--card-line); }
+.card .thumb { border-bottom-color: var(--card-line); }

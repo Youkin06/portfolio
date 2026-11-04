@@ -1,0 +1,6 @@
+@import url("white-common.css");
+
+/* 白・線で区切る：サイドバーも白にして、本文との間を細い線1本で分ける。選んでいる項目は各色の薄い地。 */
+:root { --sidebar-bg: #ffffff; }
+.sidebar { border-right: 1px solid var(--line); }
+.menu-list a.active { background: var(--section-bg); }

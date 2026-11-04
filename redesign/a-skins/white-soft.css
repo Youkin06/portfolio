@@ -1,0 +1,8 @@
+@import url("white-common.css");
+
+/* 白・やわらかい影：カードと枠の線をなくし、うすい影で浮かせる。サイドバーはごく薄い灰色。 */
+:root { --sidebar-bg: #f7f7f8; }
+.card, .card:hover, .card:focus-within { border-color: transparent; box-shadow: 0 1px 3px #0000000f, 0 4px 14px #0000000d; }
+.card .thumb { border-bottom-color: transparent; }
+.window { border-color: transparent; box-shadow: 0 1px 3px #0000000f, 0 4px 14px #0000000a; }
+.contacts a { border-color: transparent; box-shadow: 0 1px 3px #00000014; }

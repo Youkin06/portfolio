@@ -1,0 +1,5 @@
+@import url("white-common.css");
+
+/* 白・色の札：選んでいる項目を各色で塗り、白い文字にする。いちばん色がはっきり出る。 */
+.menu-list a.active, .menu-list a.active:hover { background: var(--section-fg); color: #ffffff; }
+.menu-list a.active .year, .menu-list a.active .no { color: #ffffff; }

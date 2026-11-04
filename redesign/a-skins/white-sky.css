@@ -1,0 +1,6 @@
+@import url("white-common.css");
+
+/* 白・淡い空：About me だけ、白から淡い水色へ変わる昼の空を出す。ほかのページは白。 */
+html[data-sky="day"] .profile-sky { --sky-colors: #ffffff, #f6fafd, #ebf4fb, #dfeef9, #d2e7f7; }
+/* 空が淡いので、昼でもリンクは各セクションの色のまま。 */
+html[data-sky="day"] body[data-section="about"] main { --section-fg: #d23340; --accent: #d23340; }
