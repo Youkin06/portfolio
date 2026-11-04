@@ -58,7 +58,7 @@ a { color: var(--accent); }
 .page { max-width: 1120px; }
 .page-head { margin-bottom: 26px; }
 .page-head .label { color: var(--muted); }
-.page-head h1 { font-size: clamp(26px, 3vw, 34px); font-weight: 800; }
+.page-head h1 { font-size: clamp(28px, 3.2vw, 38px); font-weight: 800; line-height: 1.25; }
 .page-head p { color: var(--muted); }
 .back { color: var(--muted); font-weight: 700; font-size: 13px; }
 .back:hover { color: var(--accent); text-decoration: none; }
