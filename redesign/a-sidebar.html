@@ -14,7 +14,7 @@
         ・window.SKIN で変えられるもの（書かなかった項目は既定のまま）
             layout   : 'sections'（既定。サイドバーに中の項目も出す）
                        'tabs'    （選んだ大項目の中の項目だけ出す）
-                       'flat'    （中の項目は出さない。About と研究は1ページにまとめる）
+                       'flat'    （サイドバーに中の項目を出さない）
             text     : 画面の言葉。下の TEXT の項目名で上書きする
             iconColor: SNS アイコンの色（16進数6桁、# なし）
             mail     : 'button'（既定。メールを開くボタン）か 'text'（選んでコピーできる文字）
@@ -25,7 +25,7 @@
             スキル li[data-level="1〜5"]（.skill-name / .gauge / .skill-word）
             経歴 .exp（.exp-period / .exp-role / .exp-org / .exp-more / .exp-links）
             リンク .link--work（作品へ）/ .link--external（外のサイト。印は .ext-mark）
-            About の中の項目を1つだけ出すページは .stack[data-single]（見出しが h1 と重なるので、スキンで消してよい）
+            About と研究はどの layout でも1ページ。中の項目へは #about/awards などで移り、読んでいる場所に合わせてサイドバーの選択が変わる
         ・build.sh は行頭の </head> を目印に差し込むので、閉じタグ </head> は必ず1行に単独で書く
     -->
     <style>
@@ -288,6 +288,7 @@
         .link-list a:hover { background: var(--navy); color: #fff; }
         .tag { border-color: var(--line); font-weight: 700; }
 
+        .research-item { scroll-margin-top: 20px; }
         .research-item + .research-item { margin-top: 40px; }
         .research-title { margin: 0 0 14px; font-size: 22px; }
 
@@ -297,16 +298,6 @@
         .pager .label { display: block; color: var(--muted); font-size: 11px; }
         .pager a:hover .label { color: #aeb7d6; }
         .pager .next { text-align: right; grid-column: 2; }
-
-        /* ページの一番下の「次へ」。下まで来るとふわっと出て、さらに下へスクロールすると次のページへ移る */
-        .next-page { margin-top: 72px; padding: 32px 0 40px; text-align: center; opacity: 0; transform: translateY(16px); transition: opacity .45s ease, transform .45s ease; }
-        .next-page.is-visible { opacity: 1; transform: none; }
-        .next-link { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; color: var(--fg); text-decoration: none; }
-        .next-link .label { color: var(--muted); }
-        .next-link strong { font-size: clamp(20px, 2.4vw, 26px); }
-        .next-link strong::after { content: " ↓"; color: var(--accent); }
-        .next-link:hover strong { color: var(--accent); }
-        @media (prefers-reduced-motion: reduce) { .next-page { transition: none; } }
 
         .topbar { display: none; }
 
@@ -395,8 +386,6 @@
             prev: '◀ Prev',
             next: 'Next ▶',
             more: '詳しく見る',
-            // ページの一番下の「次へ」
-            nextLabel: '次へ',
             count: n => `${n}件`,
             // スキルの段階（1〜5）の言葉
             skillLevels: ['', '学習中', '基礎', '応用', '習熟', '得意分野'],
@@ -503,7 +492,7 @@
             const paragraphs = html => html.split(/(?:<br\s*\/?>\s*){2,}/).map(part => `<p>${part.trim()}</p>`).join('');
 
             const pageHead = (label, title, lead) => `
-                <header class="page-head"><div class="label">${esc(label)}</div><h1>${esc(title)}</h1>${lead ? `<p>${esc(lead)}</p>` : ''}</header>`;
+                <header class="page-head">${label ? `<div class="label">${esc(label)}</div>` : ''}<h1>${esc(title)}</h1>${lead ? `<p>${esc(lead)}</p>` : ''}</header>`;
 
             const pagerHTML = (prev, next, href, label) => `
                 <nav class="pager" aria-label="前後">
@@ -537,22 +526,13 @@
                 awards: (single = false) => block('awards', single ? null : TEXT.awards, `<ul class="item-list awards">${data.awards.map(itemHTML).join('')}</ul>`, data.awards.length),
                 media: (single = false) => block('media', single ? null : TEXT.media, `<ul class="item-list media">${data.media.map(itemHTML).join('')}</ul>`, data.media.length),
             };
-            const aboutPage = sub => {
-                if (LAYOUT === 'flat') {
-                    // 1ページに、プロフィール → スキル → 経歴 → 受賞歴 → メディア掲載
-                    return `
-                        <article class="page page--narrow">
-                            ${pageHead(TEXT.about, TEXT.about)}
-                            <div class="stack">${['', 'internships', 'awards', 'media'].map(id => aboutBlocks[id]()).join('')}</div>
-                        </article>`;
-                }
-                const id = ABOUT_SECTIONS.includes(sub) ? sub : '';
-                return `
-                    <article class="page page--narrow">
-                        ${pageHead(TEXT.about, aboutLabel(id))}
-                        <div class="stack"${id ? ' data-single' : ''}>${aboutBlocks[id](Boolean(id))}</div>
-                    </article>`;
-            };
+            // About は1ページにまとめる（プロフィール → 受賞歴 → インターン・バイト経験 → メディア掲載）。
+            // サイドバーの中の項目は、このページの中の場所へのリンクになる。
+            const aboutPage = () => `
+                <article class="page page--narrow about">
+                    ${pageHead('', TEXT.about)}
+                    <div class="stack">${ABOUT_SECTIONS.map(id => aboutBlocks[id]()).join('')}</div>
+                </article>`;
 
             // ---- Works ----
             const clipHTML = p => p.videoId ? `
@@ -635,22 +615,12 @@
                         </aside>
                     </div>
                 </article>`;
-            const researchPage = id => {
-                if (LAYOUT === 'flat') {
-                    return `
-                        <article class="page research">
-                            ${pageHead(TEXT.research, TEXT.research)}
-                            ${research.map((r, i) => researchItemHTML(r, i, 'h2')).join('')}
-                        </article>`;
-                }
-                const index = Math.max(0, research.findIndex(r => r.id === id));
-                const r = research[index];
-                return `
-                    <article class="page research">
-                        ${pageHead(`${TEXT.researchNo}${no(index)}`, r.theme)}
-                        ${researchItemHTML(r, index, 'none')}
-                    </article>`;
-            };
+            // 研究も1ページにまとめる。サイドバーの各研究は、このページの中の場所へのリンクになる。
+            const researchPage = () => `
+                <article class="page research">
+                    ${pageHead('', TEXT.research)}
+                    ${research.map((r, i) => researchItemHTML(r, i, 'h2')).join('')}
+                </article>`;
 
             // 見えている動く見本だけ再生し、画面外に出たら止める。
             const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -675,76 +645,15 @@
                 menuButton.setAttribute('aria-expanded', String(open));
             });
 
-            // ---- ページの順番（サイドバーと同じ並び）と、一番下の「次へ」 ----
-            const PAGE_ORDER = LAYOUT === 'flat'
-                ? [
-                    { key: 'about/', href: '#about', label: TEXT.about },
-                    { key: 'works/', href: '#works', label: TEXT.worksList },
-                    ...projects.map(p => ({ key: `works/${p.id}`, href: `#works/${p.id}`, label: p.title })),
-                    { key: 'research/', href: '#research', label: TEXT.research },
-                ]
-                : [
-                    ...ABOUT_SECTIONS.map(id => ({ key: `about/${id}`, href: id ? `#about/${id}` : '#about', label: aboutLabel(id) })),
-                    { key: 'works/', href: '#works', label: TEXT.worksList },
-                    ...projects.map(p => ({ key: `works/${p.id}`, href: `#works/${p.id}`, label: p.title })),
-                    ...research.map(r => ({ key: `research/${r.id}`, href: `#research/${r.id}`, label: r.theme })),
-                ];
-            const nextOf = key => PAGE_ORDER[PAGE_ORDER.findIndex(item => item.key === key) + 1] || null;
-            const nextHTML = next => `
-                <nav class="next-page" aria-label="${esc(TEXT.nextLabel)}" data-next="${esc(next.href)}">
-                    <a class="next-link" href="${esc(next.href)}"><span class="label">${esc(TEXT.nextLabel)}</span><strong>${esc(next.label)}</strong></a>
-                </nav>`;
+            // ---- 1ページにまとめた About と研究：中の項目の場所 ----
+            const anchorsOf = section => section === 'about'
+                ? ABOUT_SECTIONS.map(id => ({ key: id, el: document.getElementById(`block-${id || 'profile'}`) }))
+                : section === 'research'
+                    ? research.map(r => ({ key: r.id, el: document.getElementById(`research-${r.id}`) }))
+                    : [];
 
-            // 「次へ」が見えて一番下にいるとき、さらに下へスクロールしたら次のページへ。
-            // ページを開いた直後は慣性のスクロールで続けて進まないように、少し待ってから受け付ける。
-            const PULL_NEEDED = 160;
-            let pull = 0;
-            let pullReadyAt = 0;
-            let pullResetTimer = 0;
-            const atBottom = () => window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
-            const setPull = value => {
-                pull = Math.max(0, value);
-                clearTimeout(pullResetTimer);
-                if (pull > 0) pullResetTimer = setTimeout(() => setPull(0), 500);
-            };
-            const addPull = amount => {
-                const next = main.querySelector('.next-page.is-visible');
-                if (!next || Date.now() < pullReadyAt || !atBottom()) return setPull(0);
-                setPull(pull + amount);
-                if (pull >= PULL_NEEDED) {
-                    setPull(0);
-                    location.hash = next.dataset.next.slice(1);
-                }
-            };
-            // 下まで来たら「次へ」をふわっと出す
-            const nextObserver = new IntersectionObserver(entries => entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('is-visible');
-            }), { threshold: .4 });
-            window.addEventListener('wheel', event => (event.deltaY > 0 ? addPull(event.deltaY) : setPull(0)), { passive: true });
-            let touchY = null;
-            window.addEventListener('touchstart', event => { touchY = event.touches[0].clientY; }, { passive: true });
-            window.addEventListener('touchmove', event => {
-                if (touchY === null) return;
-                const y = event.touches[0].clientY;
-                const delta = touchY - y;
-                touchY = y;
-                delta > 0 ? addPull(delta * 1.6) : setPull(0);
-            }, { passive: true });
-            window.addEventListener('touchend', () => { touchY = null; }, { passive: true });
-
-            // ---- 表示の切り替え（最初は About） ----
-            const render = () => {
-                const [route, rawSub] = location.hash.slice(1).split('/');
-                const sub = rawSub ? decodeURIComponent(rawSub) : '';
-                const section = ['about', 'works', 'research'].includes(route) ? route : 'about';
-
-                main.innerHTML =
-                    section === 'about' ? aboutPage(sub) :
-                    section === 'research' ? researchPage(sub) :
-                    sub ? gamePage(sub) : worksPage();
-
-                // 今いる場所を body と大項目に書いておく（スキンの CSS から使う）
-                const subKey = section === 'research' && !sub && LAYOUT !== 'flat' ? research[0]?.id || '' : sub;
+            // サイドバーの選択と、body の目印を今いる場所に合わせる
+            const markActive = (section, subKey) => {
                 document.body.dataset.section = section;
                 document.body.dataset.page = `${section}/${subKey}`;
                 document.querySelectorAll('.menu-group').forEach(group => {
@@ -758,24 +667,58 @@
                     a.classList.toggle('active', active);
                     active ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current');
                 });
-
-                // 一番下に「次へ」を付ける（最後のページには付けない）
-                // 1ページにまとめた形では、About と研究は1ページなので中の項目を見ない
-                const next = nextOf(LAYOUT === 'flat' && section !== 'works' ? `${section}/` : `${section}/${subKey}`);
-                if (next) main.querySelector('.page')?.insertAdjacentHTML('beforeend', nextHTML(next));
-                nextObserver.disconnect();
-                main.querySelectorAll('.next-page').forEach(el => nextObserver.observe(el));
-                setPull(0);
-                pullReadyAt = Date.now() + 900;
-
-                clipObserver.disconnect();
-                main.querySelectorAll('video[data-src]').forEach(v => clipObserver.observe(v));
                 document.querySelector('.menu .active')?.scrollIntoView({ block: 'nearest' });
+            };
 
-                // 1ページにまとめた形では、中の項目の場所までスクロールする。
-                const target = LAYOUT === 'flat' && sub
-                    ? document.getElementById(section === 'research' ? `research-${sub}` : `block-${sub}`)
-                    : null;
+            // スクロールして読み進めたら、今読んでいる項目をサイドバーで選ぶ（ページは切り替えない）
+            let renderedSection = null;
+            let scrollTicking = false;
+            // サイドバーで選んで移動した直後は、その選択を保つ（短いページの最後の方の項目でも、選んだものが選ばれたままになる）
+            let keepChoice = false;
+            ['wheel', 'touchmove', 'keydown'].forEach(type => window.addEventListener(type, () => { keepChoice = false; }, { passive: true }));
+            const followScroll = () => {
+                scrollTicking = false;
+                if (keepChoice) return;
+                const anchors = anchorsOf(renderedSection).filter(a => a.el);
+                if (!anchors.length) return;
+                const line = window.innerHeight * .3;
+                const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+                let current = anchors[0];
+                anchors.forEach(a => { if (a.el.getBoundingClientRect().top <= line) current = a; });
+                if (atBottom) current = anchors[anchors.length - 1];
+                if (document.body.dataset.page === `${renderedSection}/${current.key}`) return;
+                markActive(renderedSection, current.key);
+                history.replaceState(null, '', current.key ? `#${renderedSection}/${current.key}` : `#${renderedSection}`);
+            };
+            window.addEventListener('scroll', () => {
+                if (scrollTicking) return;
+                scrollTicking = true;
+                requestAnimationFrame(followScroll);
+            }, { passive: true });
+
+            // ---- 表示の切り替え（最初は About） ----
+            const render = () => {
+                const [route, rawSub] = location.hash.slice(1).split('/');
+                const sub = rawSub ? decodeURIComponent(rawSub) : '';
+                const section = ['about', 'works', 'research'].includes(route) ? route : 'about';
+                const onePage = section === 'about' || section === 'research';
+
+                // 同じ1ページの中の移動なら、作り直さずにその場所までスクロールするだけ
+                if (!(onePage && renderedSection === section)) {
+                    main.innerHTML =
+                        section === 'about' ? aboutPage() :
+                        section === 'research' ? researchPage() :
+                        sub ? gamePage(sub) : worksPage();
+                    renderedSection = section;
+                    clipObserver.disconnect();
+                    main.querySelectorAll('video[data-src]').forEach(v => clipObserver.observe(v));
+                }
+
+                const subKey = section === 'research' && !sub ? research[0]?.id || '' : sub;
+                markActive(section, subKey);
+
+                const target = onePage && sub ? anchorsOf(section).find(a => a.key === sub)?.el : null;
+                keepChoice = Boolean(target);
                 target ? target.scrollIntoView({ block: 'start' }) : window.scrollTo(0, 0);
                 closeMenu();
             };
