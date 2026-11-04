@@ -25,7 +25,7 @@
             スキル li[data-level="1〜5"]（.skill-name / .gauge / .skill-word）
             経歴 .exp（.exp-period / .exp-role / .exp-org / .exp-more / .exp-links）
             リンク .link--work（作品へ）/ .link--external（外のサイト。印は .ext-mark）
-            About はどの layout でも1ページ。中の項目へは #about/awards などで移り、読んでいる場所に合わせてサイドバーの選択が変わる。研究は1件ずつのページ
+            About の中の項目と研究は、1つずつのページ（#about/awards、#research/2 など）
         ・build.sh は行頭の </head> を目印に差し込むので、閉じタグ </head> は必ず1行に単独で書く
     -->
     <style>
@@ -524,7 +524,7 @@
 
             // ---- About ----
             const aboutBlocks = {
-                '': () => block('profile', TEXT.profile, `
+                '': (single = false) => block('profile', single ? null : TEXT.profile, `
                         <div class="profile">
                             <div class="portrait">
                                 <img src="${esc(data.profile.photo)}" alt="顔写真">
@@ -548,11 +548,15 @@
             };
             // About は1ページにまとめる（プロフィール → 受賞歴 → インターン・バイト経験 → メディア掲載）。
             // サイドバーの中の項目は、このページの中の場所へのリンクになる。
-            const aboutPage = () => `
-                <article class="page page--narrow about">
-                    ${pageHead('', TEXT.about)}
-                    <div class="stack">${ABOUT_SECTIONS.map(id => aboutBlocks[id]()).join('')}</div>
-                </article>`;
+            // About の中の項目は1つずつのページ（プロフィール／受賞歴／インターン・バイト経験／メディア掲載）
+            const aboutPage = sub => {
+                const id = ABOUT_SECTIONS.includes(sub) ? sub : '';
+                return `
+                    <article class="page page--narrow about">
+                        ${pageHead(TEXT.about, aboutLabel(id))}
+                        <div class="stack" data-single>${aboutBlocks[id](true)}</div>
+                    </article>`;
+            };
 
             // ---- Works ----
             const clipHTML = p => p.videoId ? `
@@ -724,12 +728,13 @@
                 const sub = rawSub ? decodeURIComponent(rawSub) : '';
                 const section = ['about', 'works', 'research'].includes(route) ? route : 'about';
                 // 1ページにまとめているのは About だけ
-                const onePage = section === 'about';
+                // 1ページにまとめている場所は今はない（About も研究も項目ごとのページ）
+                const onePage = false;
 
                 // 同じ1ページの中の移動なら、作り直さずにその場所までスクロールするだけ
                 if (!(onePage && renderedSection === section)) {
                     main.innerHTML =
-                        section === 'about' ? aboutPage() :
+                        section === 'about' ? aboutPage(sub) :
                         section === 'research' ? researchPage(sub) :
                         sub ? gamePage(sub) : worksPage();
                     renderedSection = section;
