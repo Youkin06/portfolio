@@ -171,7 +171,9 @@
         .portrait:hover .pixel { opacity: 1; }
         .profile-name { margin: 0 0 8px; font-size: 22px; }
         .profile-text { margin: 0; }
-        .contacts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+        /* SNS とメールは段を分ける */
+        .contacts { display: grid; gap: 8px; margin-top: 14px; }
+        .contacts-social, .contacts-mail { display: flex; flex-wrap: wrap; gap: 8px; }
         .contacts a {
             display: inline-flex;
             align-items: center;
@@ -515,8 +517,8 @@
                                 <p class="profile-name">${esc(data.profile.name)}</p>
                                 <p class="profile-text">${data.profile.aboutHtml}</p>
                                 <div class="contacts">
-                                    ${data.profile.socials.map(s => `<a class="social" href="${esc(s.href)}" target="_blank" rel="noopener noreferrer">${s.icon ? `<img src="${esc(iconUrl(s.icon))}" alt="">` : ''}${esc(s.label)}</a>`).join('')}
-                                    ${data.profile.emails.map(m => MAIL_AS_TEXT ? `<span class="mail">${mailIcon}<span>${esc(m)}</span></span>` : `<a class="mail-button" href="mailto:${esc(m)}">${mailIcon}<span>${esc(m)}</span></a>`).join('')}
+                                    <div class="contacts-social">${data.profile.socials.map(s => `<a class="social" href="${esc(s.href)}" target="_blank" rel="noopener noreferrer">${s.icon ? `<img src="${esc(iconUrl(s.icon))}" alt="">` : ''}${esc(s.label)}</a>`).join('')}</div>
+                                    <div class="contacts-mail">${data.profile.emails.map(m => MAIL_AS_TEXT ? `<span class="mail">${mailIcon}<span>${esc(m)}</span></span>` : `<a class="mail-button" href="mailto:${esc(m)}">${mailIcon}<span>${esc(m)}</span></a>`).join('')}</div>
                                 </div>
                             </div>
                         </div>`) +
