@@ -1,0 +1,7 @@
+@import url("font-base.css");
+
+/* 本文は丸ゴシックのまま、作品名と見出しにドット文字を使う。 */
+.page-head h1, .window-title, .card h3, .research-title, .profile-name, .menu-label {
+    font-family: "DotGothic16", "Zen Maru Gothic", sans-serif;
+    font-weight: 400;
+}

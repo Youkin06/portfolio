@@ -1,0 +1,4 @@
+@import url("font-base.css");
+
+/* 少し手書きらしさのある、やわらかい丸ゴシック。 */
+:root { --font: "Kiwi Maru", "Zen Maru Gothic", sans-serif; }

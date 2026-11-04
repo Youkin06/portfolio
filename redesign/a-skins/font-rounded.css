@@ -1,0 +1,4 @@
+@import url("font-base.css");
+
+/* 丸ゴシックより、さらに角が丸くやわらかい書体。 */
+:root { --font: "M PLUS Rounded 1c", "Noto Sans JP", sans-serif; }

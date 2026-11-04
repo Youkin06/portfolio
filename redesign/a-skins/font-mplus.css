@@ -1,0 +1,4 @@
+@import url("font-base.css");
+
+/* すっきりした今風のゴシック。 */
+:root { --font: "M PLUS 2", "Noto Sans JP", sans-serif; }
