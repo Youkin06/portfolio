@@ -176,3 +176,9 @@ a { color: var(--accent); }
 
 /* ---- 作品一覧：画像は動かさず、タイトルの色だけ変える ---- */
 .card:hover .thumb { transform: none; box-shadow: 0 1px 2px rgba(0, 0, 0, .12); }
+
+/* ---- 見出しの下の線はなし ---- */
+[data-section="about"] .window-title,
+[data-section="about"] [data-block="skills"] .window-title,
+.game .detail-main .window-title { border-bottom: 0; }
+[data-section="about"] [data-block="skills"] { margin-top: 0; }
