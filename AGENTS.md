@@ -23,7 +23,7 @@
 
 ## 改修の方針
 
-- **今後のデザイン・改修のベースは「A-白・色の札案（white-fill）」とする。** 最新版は `redesign/a-skin-white-fill.html`（自己紹介は `#about`）。A 案（`redesign/a-sidebar.html`）に、スキン **white-fill**（`redesign/a-skins/white-fill.css`・`white-fill.js`。共通部分は `white-common.css`、その土台は `store.css`）を重ねたものを指す。白地で、About は赤・Works は青・Research は緑、選んでいる項目は各色で塗って白い文字。About me は白地に草原とキャラクター（空は出さない）。標準フォントは **Zen Maru Gothic** とし、作品一覧のカードは枠線で囲む。見た目の確認・改善提案・フォント比較はこの案を基準にする。left-digital は以前の比較案として残す。
+- **今後のデザイン・改修のベースは「A-白・色の札案（white-fill）」とする。** 最新版は `redesign/a-skin-white-fill.html`（自己紹介は `#about`）。A 案（`redesign/a-sidebar.html`）に、スキン **white-fill**（`redesign/a-skins/white-fill.css`・`white-fill.js`。共通部分は `white-common.css`、その土台は `store.css`）を重ねたものを指す。白地で、About は赤・Works は青・Research は緑、選んでいる項目は各色で塗って白い文字。About me は白地に草原とキャラクター（空は出さない）。プロフィールは「数字で見る」版（`SKIN.profile = 'numbers'`。ほかの版は URL に `?profile=intro|history` を付けて確認できる）。標準フォントは **Zen Maru Gothic** とし、作品一覧のカードは枠線で囲む。見た目の確認・改善提案・フォント比較はこの案を基準にする。left-digital は以前の比較案として残す。
 - スキンは `redesign/a-skins/<名前>.css` と `<名前>.js`（`window.SKIN` の設定）で作り、`sh redesign/a-skins/build.sh` で `redesign/a-skin-<名前>.html` を書き出す。
   - store のセクション色は main の配色を参考に、About me＝赤・Works＝水色・Research＝黄緑。白地の文字には濃い同系色、選択背景には淡い同系色を使う。
   - `window.SKIN` で変えられるもの（形 `layout`・画面の言葉 `text`・アイコン色・メールの出し方）と、CSS から使える目印は、`redesign/a-sidebar.html` の先頭のコメントにまとめてある。

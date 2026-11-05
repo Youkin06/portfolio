@@ -2,6 +2,8 @@
 window.SKIN = {
     iconColor: '1f1f22',
     sky: 'none',
+    // プロフィールは「数字で見る」版（ほかの版は ?profile=intro|history で確認できる）
+    profile: 'numbers',
     detailsMotion: true,
     menuHeadings: true,
     text: {
