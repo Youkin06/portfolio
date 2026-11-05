@@ -51,7 +51,8 @@
 [data-ui] main :is(.contacts a, .link-list a, .item-links a, .exp-links a, .tech-detail-works a, .back, .exp-more summary, .tech > button):active {
     transform: var(--btn-press-move, translate(2px, 2px)); box-shadow: none;
 }
-[data-ui] main .exp-more:is([open], [data-expanded="true"]) summary { background: var(--section-bg); }
+/* 開いたあとも、ほかのボタンと同じ白地のまま（向きの変わる矢印で開いていることを示す） */
+[data-ui] main .exp-more:is([open], [data-expanded]) summary { background: #ffffff; }
 [data-ui] main .tech > button { border: 2px solid var(--u-line); border-radius: var(--u-radius); background: #ffffff; box-shadow: var(--btn-shadow); }
 [data-ui] main .tech > button[aria-expanded="true"] { background: var(--section-bg); box-shadow: var(--btn-shadow-hover); transform: var(--btn-hover-move, translate(-1px, -1px)); }
 
