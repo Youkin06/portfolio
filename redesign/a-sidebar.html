@@ -580,6 +580,8 @@
                             </div>`;
             // ---- プロフィールの版（確認用：URL に ?profile=intro|numbers|history。付けなければ今の形） ----
             const PROFILE_STYLE = new URLSearchParams(location.search).get('profile') || SKIN.profile || '';
+            // ボタンと数字の見た目の案（確認用：URL に ?ui=a|b|c）。html[data-ui] に書き、CSS が見た目を変える。
+            document.documentElement.dataset.ui = new URLSearchParams(location.search).get('ui') || SKIN.ui || '';
             // 「大学：〜」「所属：〜」「目標：〜」の行を、見出しと中身に分けて使う。
             const profileFacts = Object.fromEntries(data.profile.aboutHtml.split(/<br\s*\/?>/).map(line => {
                 const t = line.replace(/<[^>]+>/g, '').trim();
@@ -636,12 +638,12 @@
                             </div>
                         </div>
                         <ul class="profile-stats">${[
-                            [data.projects.length, '作品', '#works'],
-                            [data.awards.length, '受賞・入選', '#about/awards'],
-                            [data.internships.length, 'インターン・バイト', '#about/internships'],
-                            [data.media.length, 'メディア掲載', '#about/media'],
-                            [data.research.length, '研究', `#research/${data.research[0]?.id || ''}`],
-                        ].map(([n, label, href]) => `<li><a href="${href}"><strong>${n}</strong><span>${esc(label)}</span></a></li>`).join('')}</ul>`,
+                            [data.projects.length, '作品', '#works', 'works'],
+                            [data.awards.length, '受賞・入選', '#about/awards', 'about'],
+                            [data.internships.length, 'インターン・バイト', '#about/internships', 'about'],
+                            [data.media.length, 'メディア掲載', '#about/media', 'about'],
+                            [data.research.length, '研究', `#research/${data.research[0]?.id || ''}`, 'research'],
+                        ].map(([n, label, href, section]) => `<li data-to="${section}"><a href="${href}"><strong>${n}</strong><span>${esc(label)}</span></a></li>`).join('')}</ul>`,
                 // これまで：受賞歴・インターン・メディア掲載を、新しい順の年表にする。
                 history: () => `
                         <div class="profile profile--history">${portraitHTML()}

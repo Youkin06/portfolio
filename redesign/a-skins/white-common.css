@@ -1,4 +1,5 @@
 @import url("store.css");
+@import url("https://fonts.googleapis.com/css2?family=DotGothic16&display=swap");
 
 /*
  * 白案の共通部分。地は白、文字は黒に近い色。
@@ -91,3 +92,51 @@ main a:not(.card-link, .contacts a, .profile-stats a):active { background: color
 .exp-more[data-expanded] summary,
 .exp-more[open] summary,
 .exp-more[open]:not([data-expanded]) summary { background: none; }
+
+/* ---- ボタンと数字の見た目の案（?ui=a|b|c。付けなければ今の見た目） ---- */
+/* 数字のタイルは、押した先のページの色を使う。 */
+.profile-stats li[data-to="about"] { --to: #d23340; --to-bg: #fdebed; --to-bg-2: #fbd8dc; }
+.profile-stats li[data-to="works"] { --to: #1479b8; --to-bg: #e6f3fb; --to-bg-2: #cfe7f7; }
+.profile-stats li[data-to="research"] { --to: #4a8513; --to-bg: #edf6e1; --to-bg-2: #dcedc6; }
+
+/* A：まるいアイコン。SNS はアイコンだけの丸いボタン、メールは文字だけ。数字は枠なしで細い線で区切る。 */
+[data-ui="a"] .contacts-social { gap: 10px; }
+[data-ui="a"] .contacts-social a {
+    width: 42px; height: 42px; padding: 0; justify-content: center;
+    border: 1px solid var(--line); border-radius: 50%; font-size: 0;
+}
+[data-ui="a"] .contacts-social a img { width: 20px; height: 20px; }
+[data-ui="a"] .contacts-social a:hover { border-color: var(--section-fg); background: var(--section-bg); }
+[data-ui="a"] .contacts-mail a { padding: 4px 0; border: 0; background: none; font-weight: 500; }
+[data-ui="a"] .contacts-mail a:hover { color: var(--section-fg); text-decoration: underline; text-underline-offset: 3px; }
+[data-ui="a"] .profile-stats { gap: 0; }
+[data-ui="a"] .profile-stats li + li a { border-left: 1px solid var(--line); }
+[data-ui="a"] .profile-stats a { padding: 6px 20px; border: 0; border-radius: 0; }
+[data-ui="a"] .profile-stats strong { font-size: 40px; color: var(--fg); }
+[data-ui="a"] .profile-stats a:hover strong { color: var(--to); }
+[data-ui="a"] .profile-stats a:hover span { text-decoration: underline; text-underline-offset: 3px; }
+
+/* B：ゲームのボタン。黒い線とずらした影で、押すと影の分だけ沈む。数字はドット文字で、影は行き先の色。 */
+[data-ui="b"] .contacts a {
+    border: 2px solid #1f1f22; border-radius: 6px; background: #ffffff;
+    box-shadow: 3px 3px 0 #1f1f22; transition: transform .08s ease, box-shadow .08s ease;
+}
+[data-ui="b"] .contacts a:hover { color: var(--fg); transform: translate(-1px, -1px); box-shadow: 4px 4px 0 #1f1f22; }
+[data-ui="b"] .contacts a:active { transform: translate(3px, 3px); box-shadow: 0 0 0 #1f1f22; }
+[data-ui="b"] .profile-stats a {
+    border: 2px solid #1f1f22; border-radius: 6px; box-shadow: 4px 4px 0 var(--to);
+    transition: transform .08s ease, box-shadow .08s ease;
+}
+[data-ui="b"] .profile-stats a:hover { border-color: #1f1f22; transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--to); }
+[data-ui="b"] .profile-stats a:active { transform: translate(4px, 4px); box-shadow: 0 0 0 var(--to); }
+[data-ui="b"] .profile-stats strong { color: var(--to); font-family: "DotGothic16", var(--font); font-weight: 400; font-size: 38px; }
+
+/* C：色のタイル。SNS とメールは灰色の丸い札、数字は行き先の色の淡いタイル。線を使わない。 */
+[data-ui="c"] .contacts a { border: 0; border-radius: 999px; background: var(--surface-2); padding: 8px 14px; }
+[data-ui="c"] .contacts a:hover { background: var(--section-bg); color: var(--section-fg); }
+[data-ui="c"] .profile-stats a { border: 0; background: var(--to-bg); }
+[data-ui="c"] .profile-stats a:hover { background: var(--to-bg-2); }
+[data-ui="c"] .profile-stats strong { color: var(--to); }
+@media (prefers-reduced-motion: reduce) {
+    [data-ui="b"] :is(.contacts a, .profile-stats a):is(:hover, :active) { transform: none; }
+}
