@@ -728,6 +728,8 @@
             };
 
             // ---- Works ----
+            // 作品一覧のカードのタイトル。「じいや！巨大ロボで…」のように途中に「！」があるときは、そこで改行して読みやすくする。
+            const cardTitle = title => esc(title).replace(/^(.+?！)(?=.)/, '$1<br>');
             const clipHTML = p => p.videoId ? `
                 <video muted loop playsinline preload="none" data-src="${CLIP_BASE}${esc(p.videoId)}.mp4"
                     poster="${CLIP_BASE}${esc(p.videoId)}.jpg" aria-hidden="true"
@@ -738,7 +740,7 @@
                     <article class="card window work" ${tone(i)}${FEATURED.includes(p.id) ? ' data-featured' : ''}>
                         <div class="thumb">${clipHTML(p)}</div>
                         <div class="body">
-                            <h3><a class="card-link" href="#works/${esc(p.id)}">${esc(p.title)}</a><small>${yearOf(p)}</small></h3>
+                            <h3><a class="card-link" href="#works/${esc(p.id)}">${cardTitle(p.title)}</a><small>${yearOf(p)}</small></h3>
                             <p>${esc(p.summary)}</p>${tagsHTML(p.tags)}
                         </div>
                     </article>`;
