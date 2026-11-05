@@ -93,9 +93,24 @@
             scrollbar-width: none;
         }
         .sidebar::-webkit-scrollbar { display: none; }
-        /* サイドバーの一番上の見出し画像（横幅いっぱい） */
-        .sidebar-banner { display: block; flex-shrink: 0; }
-        .sidebar-banner img { display: block; width: 100%; height: auto; }
+        /* サイドバーの一番上の見出し「Youkin」（642×200 の比率で横幅いっぱい）。
+           背景の模様が斜めに流れ、文字は1文字ずつ「黒い影とふち」「白い縁」「色」の3枚を重ねて、Y→o→u→k→i→n の順に跳ねる。 */
+        .sidebar-banner { position: relative; display: block; flex-shrink: 0; aspect-ratio: 642 / 200; overflow: hidden; background: #fff; }
+        .sidebar-banner > * { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; }
+        /* 背景：つなぎ目のない模様（644×200）を縦横2枚分並べ、1枚分ずらし続ける */
+        .banner-bg::before {
+            content: ""; position: absolute; top: 0; left: 0;
+            width: calc(200% * 644 / 642); height: 200%;
+            background: url("../Images/sidebar-banner/bg.png") repeat 0 0 / 50% 50%;
+            image-rendering: pixelated;
+            animation: banner-scroll 28s linear infinite;
+        }
+        @keyframes banner-scroll { to { transform: translate(-50%, -50%); } }
+        .sidebar-banner .hop { animation: banner-hop 1.8s steps(1) infinite; animation-delay: var(--d); }
+        @keyframes banner-hop { 0%, 20% { transform: translateY(-2%); } 21%, 100% { transform: none; } }
+        @media (prefers-reduced-motion: reduce) {
+            .banner-bg::before, .sidebar-banner .hop { animation: none; }
+        }
         .player {
             display: flex;
             align-items: center;
@@ -361,7 +376,27 @@
     </div>
 
     <aside class="sidebar" id="sidebar">
-        <a class="sidebar-banner" href="#about"><img src="../Images/sidebar-banner-sample.svg" alt="ヨウキンのポートフォリオ" width="642" height="200"></a>
+        <a class="sidebar-banner" href="#about" aria-label="Youkin（プロフィールへ）">
+            <span class="banner-bg"></span>
+            <img class="hop" style="--d: 0.00s" src="../Images/sidebar-banner/edge-0.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.15s" src="../Images/sidebar-banner/edge-1.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.30s" src="../Images/sidebar-banner/edge-2.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.45s" src="../Images/sidebar-banner/edge-3.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.60s" src="../Images/sidebar-banner/edge-4.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.75s" src="../Images/sidebar-banner/edge-5.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.00s" src="../Images/sidebar-banner/white-0.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.15s" src="../Images/sidebar-banner/white-1.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.30s" src="../Images/sidebar-banner/white-2.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.45s" src="../Images/sidebar-banner/white-3.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.60s" src="../Images/sidebar-banner/white-4.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.75s" src="../Images/sidebar-banner/white-5.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.00s" src="../Images/sidebar-banner/letter-0.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.15s" src="../Images/sidebar-banner/letter-1.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.30s" src="../Images/sidebar-banner/letter-2.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.45s" src="../Images/sidebar-banner/letter-3.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.60s" src="../Images/sidebar-banner/letter-4.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.75s" src="../Images/sidebar-banner/letter-5.png" alt="" width="642" height="200">
+        </a>
         <a class="player" href="#about" id="player"></a>
         <nav class="menu" aria-label="メニュー" id="menu"></nav>
     </aside>
