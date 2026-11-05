@@ -49,6 +49,8 @@
             html: body ? body.innerHTML.trim() : '',
             links: extraLinks,
             // 研究などで紹介動画があるとき（index.html の data-video）。data-video-audio があれば音を出せる。
+            // 研究などの使用技術（index.html の data-tech）
+            tech: item.getAttribute('data-tech') || '',
             video: item.getAttribute('data-video') ? { src: resolve(item.getAttribute('data-video')), audio: item.hasAttribute('data-video-audio') } : null,
             image: img ? {
                 src: img.getAttribute('src'), alt: img.alt,

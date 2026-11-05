@@ -798,7 +798,7 @@
                     ${headingTag === 'h2' ? `<h2 class="research-title">${esc(r.theme)}</h2>` : ''}
                     <div class="detail">
                         <div class="stack detail-main">
-                            ${block(`research-body-${r.id}`, TEXT.researchBody, `<div class="prose">${paragraphs(r.body)}</div>`)}
+                            ${block(`research-body-${r.id}`, TEXT.researchBody, `<div class="prose">${paragraphs(r.body)}</div>${r.tech ? `<div class="tech-stack"><h3 class="label">使用技術</h3><p class="tech-list">${esc(r.tech)}</p></div>` : ''}`)}
                         </div>
                         <aside class="stack data">
                             ${block(`research-data-${r.id}`, TEXT.researchData, `<dl>${r.lab ? `<div><dt>${esc(TEXT.researchLab)}</dt><dd>${esc(r.lab)}</dd></div>` : ''}<div><dt>${esc(TEXT.researchPeriod)}</dt><dd>${esc(r.period)}</dd></div></dl>`)}
@@ -819,7 +819,8 @@
                 const index = Math.max(0, research.findIndex(r => r.id === id));
                 const r = research[index];
                 return `
-                    <article class="page research">
+                    <!-- 作品ページ（.game）と同じ並べ方：左に枠なしの研究内容、右に研究情報と Link -->
+                    <article class="page research game">
                         ${pageHead(TEXT.research, r.theme)}
                         ${researchVideoHTML(r)}
                         ${researchItemHTML(r, index, 'none')}
