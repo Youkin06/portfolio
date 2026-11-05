@@ -3,7 +3,8 @@
    案ごとの違いは、影の色と大きさだけ（unify-<番号>.css の :root の変数で決める）。
      --box-shadow   … 箱（作品カード・数字のタイル・受賞歴などの行・作品情報・動画）の影
      --btn-shadow   … ボタン（SNS・リンク・詳しく見る・戻る・技術のアイコン）の影
-     --btn-hover-bg … ボタンに触れたときの地の色 */
+     --btn-hover-bg … ボタンに触れたときの地の色
+     --box-hover-move / --btn-hover-move / --btn-press-move … 触れたとき・押したときの動き */
 :root {
     --u-line: #1f1f22;
     --u-radius: 6px;
@@ -18,7 +19,8 @@
 [data-ui] main :is(.vplayer, .research-video) { border: 2px solid var(--u-line); border-radius: var(--u-radius); box-shadow: var(--box-shadow); overflow: hidden; }
 [data-ui] main .portrait { box-shadow: var(--box-shadow); }
 [data-ui] main .profile-stats a { border: 2px solid var(--u-line); border-radius: var(--u-radius); box-shadow: var(--box-shadow); }
-[data-ui] main .profile-stats a:hover { box-shadow: var(--box-shadow-hover, var(--box-shadow)); }
+[data-ui] main .profile-stats a:hover { box-shadow: var(--box-shadow-hover, var(--box-shadow)); transform: var(--box-hover-move, translate(-1px, -1px)); }
+[data-ui] main .profile-stats a:active { box-shadow: none; transform: var(--box-press-move, translate(4px, 4px)); }
 
 /* 受賞歴・インターン・メディア掲載：線で区切った行を、1つずつの箱にする */
 [data-ui] main :is(.item-list, .exp-list) { display: grid; gap: 14px; }
@@ -59,8 +61,12 @@
 @media (prefers-reduced-motion: reduce) {
     [data-ui] main :is(.contacts a, .link-list a, .item-links a, .exp-links a, .tech-detail-works a, .back, .exp-more summary, .tech > button):is(:hover, :active) { transform: none; }
 }
-[data-ui] main .card:is(:hover, :focus-within) { box-shadow: var(--box-shadow-hover, var(--box-shadow)); }
-[data-ui] main .card:has(.card-link:active) { box-shadow: none; }
+[data-ui] main .card { transition: transform .12s ease, box-shadow .12s ease; }
+[data-ui] main .card:is(:hover, :focus-within) { box-shadow: var(--box-shadow-hover, var(--box-shadow)); transform: var(--box-hover-move, translate(-1px, -1px)); }
+[data-ui] main .card:has(.card-link:active) { box-shadow: none; transform: var(--box-press-move, translate(5px, 5px)); }
+@media (prefers-reduced-motion: reduce) {
+    [data-ui] main :is(.card, .profile-stats a):is(:hover, :focus-within, :active) { transform: none; }
+}
 /* Link の箱のボタンは、箱の幅いっぱいにそろえる（長い名前が折り返しても形が崩れない） */
 [data-ui] main .link-list a { width: 100%; justify-content: space-between; }
 /* スマホの受賞歴：作品のボタンは文の下の行に、左寄せで出す */

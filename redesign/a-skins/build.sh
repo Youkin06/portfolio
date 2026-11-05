@@ -60,11 +60,6 @@ build mist '薄曇り案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
 build white-gray '白・灰色サイドバー案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
 build white-line '白・線で区切る案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
 build white-fill '白・色の札案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
-# white-fill の UI の統一案（箱とボタンの形をそろえる。設定は white-fill と共通）
-build unify-1 '統一案1 黒い影' 'family=Zen+Maru+Gothic:wght@400;500;700;900' white-fill
-build unify-2 '統一案2 ページの色の影' 'family=Zen+Maru+Gothic:wght@400;500;700;900' white-fill
-build unify-3 '統一案3 影は箱だけ' 'family=Zen+Maru+Gothic:wght@400;500;700;900' white-fill
-build unify-4 '統一案4 線だけ' 'family=Zen+Maru+Gothic:wght@400;500;700;900' white-fill
 build white-soft '白・やわらかい影案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
 build white-sky '白・淡い空案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
 build white-tint '白・色の札（黒文字）案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
