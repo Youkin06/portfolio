@@ -90,9 +90,6 @@
 [data-ui] main .card .thumb { border-radius: 4px 4px 0 0; }
 [data-ui] main .card:hover .card-link::after { inset: -2px -7px -7px -2px; }
 
-/* リンク（ほかのページやサイトへ移るボタン）だけ、文字をそのページの色にする（About 赤・Works 青・Research 緑）。地は白のまま。
-   詳しく見る・戻る・技術のアイコンは、その場で開け閉めする操作なので黒い文字のまま。 */
-[data-ui] main :is(.contacts a, .link-list a, .item-links a, .exp-links a, .tech-detail-works a),
-[data-ui] main :is(.contacts a, .link-list a, .item-links a, .exp-links a, .tech-detail-works a):is(:hover, :active) {
-    color: var(--section-fg);
-}
+/* 作品ページ・研究ページの Link の箱（遊ぶ・動画・リポジトリなど）のボタンだけ、文字をそのページの色にする（Works 青・Research 緑）。地は白のまま。
+   SNS・作品へのリンク・詳しく見る・戻るなどは黒い文字のまま。 */
+[data-ui] main .link-list a, [data-ui] main .link-list a:is(:hover, :active) { color: var(--section-fg); }
