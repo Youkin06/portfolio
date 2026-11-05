@@ -598,11 +598,11 @@
                                     <div class="contacts-social">${data.profile.socials.map(s => `<a class="social" href="${esc(s.href)}" target="_blank" rel="noopener noreferrer">${s.icon ? `<img src="${esc(iconUrl(s.icon))}" alt="">` : ''}${esc(s.label)}</a>`).join('')}</div>
                                     <div class="contacts-mail">${data.profile.emails.map(m => MAIL_AS_TEXT ? `<span class="mail">${mailIcon}<span>${esc(m)}</span></span>` : `<a class="mail-button" href="mailto:${esc(m)}">${mailIcon}<span>${esc(m)}</span></a>`).join('')}</div>
                                 </div>`;
-            // 大学・所属・目標は、同じ大きさの行で並べる（「大学：」などの見出しは付けない）。目標だけ色を変える。
-            const profileRole = () => `
-                                <p class="profile-fact">${esc(profileFacts['大学'] || '')}</p>
-                                <p class="profile-fact">${esc(profileFacts['所属'] || '')}</p>`;
-            const profileGoal = () => `<p class="profile-fact profile-goal">「${esc(profileFacts['目標'] || '')}」</p>`;
+            // 大学・所属・目標を、見出しと中身の同じ形の行で並べる。目標の中身だけ色を変える（goal = true のとき目標も出す）。
+            const profileRole = (goal = false) => `
+                                <dl class="profile-facts">${['大学', '所属', ...(goal ? ['目標'] : [])].filter(k => profileFacts[k]).map(k => `
+                                    <div${k === '目標' ? ' class="profile-goal"' : ''}><dt>${k}</dt><dd>${esc(k === '目標' ? `「${profileFacts[k]}」` : profileFacts[k])}</dd></div>`).join('')}
+                                </dl>`;
             // 受賞歴・インターン・メディア掲載から、年月の分かるできごとを新しい順に拾う（プロフィールには新しい6件）。
             const profileHistory = () => [
                 ...data.awards.map(a => ({ text: a.text.replace(/^\d{4}年\s*/, ''), when: a.text.match(/(\d{4})/) })),
@@ -634,8 +634,7 @@
                         <div class="profile profile--numbers">${portraitHTML()}
                             <div>
                                 <p class="profile-name">${esc(data.profile.name)}</p>
-                                ${profileRole()}
-                                ${profileGoal()}${contactsHTML()}
+                                ${profileRole(true)}${contactsHTML()}
                             </div>
                         </div>
                         <ul class="profile-stats">${[
@@ -650,8 +649,7 @@
                         <div class="profile profile--history">${portraitHTML()}
                             <div>
                                 <p class="profile-name">${esc(data.profile.name)}</p>
-                                ${profileRole()}
-                                ${profileGoal()}${contactsHTML()}
+                                ${profileRole(true)}${contactsHTML()}
                             </div>
                         </div>
                         <ol class="profile-history">${profileHistory().slice(0, 6).map(e => `<li><time>${e.y}${e.m ? `.${String(e.m).padStart(2, '0')}` : ''}</time><span>${esc(e.text)}</span></li>`).join('')}</ol>`,

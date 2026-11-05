@@ -55,10 +55,15 @@ main a:not(.card-link, .contacts a, .profile-stats a):active { background: color
 .portrait { border-radius: 50%; }
 
 /* ---- プロフィールの版（?profile=intro|numbers|history） ---- */
-/* 大学・所属・目標は同じ大きさと太さの行。目標だけ各色（About は赤）。 */
-.profile-fact { margin: 0 0 4px; font-size: 14px; font-weight: 700; line-height: 1.7; }
-.profile-name + .profile-fact { margin-top: 4px; }
-.profile-goal { margin-bottom: 14px; color: var(--section-fg); }
+/* 名前は太く。大学・所属・目標は「見出し｜中身」の同じ形の行で、目標の中身だけ各色（About は赤）。 */
+.profile-name { font-weight: 900; }
+.profile-facts { display: grid; gap: 4px; margin: 6px 0 14px; }
+.profile-facts > div { display: grid; grid-template-columns: 3em minmax(0, 1fr); gap: 12px; font-size: 14px; line-height: 1.7; }
+.profile-facts dt { font-weight: 700; }
+.profile-facts dd { margin: 0; font-weight: 500; }
+.profile-goal dd { color: var(--section-fg); font-weight: 700; }
+/* 写真のまわりに、ボタンと同じ黒い線。 */
+.portrait { border: 2px solid #1f1f22; }
 /* ひとことと紹介文 */
 .profile-lead { margin: 0 0 12px; font-size: 26px; font-weight: 900; line-height: 1.35; }
 .profile-bio { margin: 0 0 12px; max-width: 40em; line-height: 1.9; }
