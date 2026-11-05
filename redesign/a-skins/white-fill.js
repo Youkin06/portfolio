@@ -10,6 +10,8 @@ window.SKIN = {
     menuHeadings: true,
     text: {
         about: 'About me',
+        // スマホの上の帯のボタン
+        menu: '目次',
         data: '作品情報',
         researchData: '研究情報',
         links: 'Link',

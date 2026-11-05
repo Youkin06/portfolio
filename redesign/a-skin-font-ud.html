@@ -374,8 +374,13 @@
                 background: var(--navy);
                 color: #fff;
             }
-            .topbar strong { display: flex; align-items: center; gap: 10px; font-size: 15px; }
-            .topbar img { width: 32px; height: 32px; border-radius: 6px; image-rendering: pixelated; background: #fff; }
+            .topbar-title { display: flex; align-items: center; min-width: 0; }
+            .topbar .sidebar-banner { height: 44px; width: auto; }
+            .topbar .sidebar-banner > * { width: 100%; height: 100%; border: 0; border-radius: 0; background: none; }
+            .sidebar .sidebar-banner { display: none; }
+            /* 1ページにまとめたスマホの表示：目次で選んだ場所が、上の帯に隠れないようにする */
+            .home-part + .home-part { margin-top: 48px; }
+            main :is([id^="block-"], .home-part) { scroll-margin-top: 88px; }
             .topbar button { border: 2px solid #fff; border-radius: 8px; background: none; color: #fff; font: inherit; font-weight: 700; padding: 4px 12px; }
             main { margin-left: 0; padding: 22px 16px 64px; }
             .profile { grid-template-columns: 1fr; }
@@ -397,7 +402,7 @@
 </head>
 <body>
     <div class="topbar">
-        <strong id="topbar-name"></strong>
+        <div class="topbar-title" id="topbar-name"></div>
         <button type="button" aria-controls="sidebar" aria-expanded="false" id="menu-button"></button>
     </div>
 
@@ -465,6 +470,7 @@
             researchData: 'Data',
             // ページ上部のラベル
             worksList: '作品一覧',
+            researchList: '研究一覧',
             worksLead: '',
             researchNo: 'Research No.',
             researchLab: '研究会',
@@ -554,7 +560,8 @@
             document.getElementById('player').innerHTML = `
                 <img src="${esc(avatar)}" alt="">
                 <div><strong>${esc(data.profile.name)}</strong><span class="label">${esc(TEXT.job)}</span></div>`;
-            document.getElementById('topbar-name').innerHTML = `<img src="${esc(avatar)}" alt="">${esc(data.profile.name)}`;
+            // スマホの上の帯には、サイドバーの一番上の「Youkin」の見出しをそのまま出す（スマホの目次からは外す）
+            document.getElementById('topbar-name').replaceChildren(document.querySelector('.sidebar .sidebar-banner').cloneNode(true));
             document.getElementById('menu-button').textContent = TEXT.menu;
 
             const groupHTML = (section, href, items) => `
@@ -568,8 +575,9 @@
                 groupHTML('works', '#works',
                     `<li><a href="#works" data-key="works/">${esc(TEXT.worksList)}</a></li>` +
                     projects.map(p => `<li><a href="#works/${esc(p.id)}" data-key="works/${esc(p.id)}">${esc(p.title)}<span class="year">${yearOf(p)}</span></a></li>`).join('')) +
-                groupHTML('research', LAYOUT === 'flat' ? '#research' : `#research/${research[0]?.id || ''}`, research.map(r =>
-                    `<li><a href="#research/${r.id}" data-key="research/${r.id}">${esc(r.theme)}</a></li>`).join(''));
+                groupHTML('research', '#research',
+                    `<li><a href="#research" data-key="research/">${esc(TEXT.researchList)}</a></li>` +
+                    research.map(r => `<li><a href="#research/${r.id}" data-key="research/${r.id}">${esc(r.theme)}</a></li>`).join(''));
 
             // ---- 部品 ----
             // 本文中の「制作作品：〇〇」（#project-〇〇）は、そのゲームのページへ。
@@ -735,7 +743,7 @@
                             [data.awards.length, '受賞・入選', '#about/awards', 'about'],
                             [data.internships.length, 'インターン・バイト', '#about/internships', 'about'],
                             [data.media.length, 'メディア掲載', '#about/media', 'about'],
-                            [data.research.length, '研究', `#research/${data.research[0]?.id || ''}`, 'research'],
+                            [data.research.length, '研究', '#research', 'research'],
                         ].map(([n, label, href, section]) => `<li data-to="${section}"><a href="${href}"><strong>${n}</strong><span>${esc(label)}</span></a></li>`).join('')}</ul>`,
                 // これまで：受賞歴・インターン・メディア掲載を、新しい順の年表にする。
                 history: () => `
@@ -878,8 +886,24 @@
                         onloadedmetadata="this.parentElement.toggleAttribute('data-portrait', this.videoHeight > this.videoWidth)"></video>
                     ${r.video.audio ? `<button class="vsound" type="button" data-act="mute" aria-label="${esc(TEXT.soundLabel)}" aria-pressed="false" title="${esc(TEXT.unmute)}">${soundIcon(true)}</button>` : ''}
                 </div>` : '';
+            // 研究一覧：作品一覧と同じカード。画像は研究の動画の静止画、札は使用技術の先頭3つ。
+            const researchYear = r => (r.period.match(/\d{4}/g) || []).pop() || '';
+            const researchCardHTML = (r, i) => `
+                    <article class="card window work research-card" ${tone(i)}>
+                        <div class="thumb">${r.video ? `<img src="${esc(r.video.src.replace(/\.mp4$/, '.jpg'))}" alt="" loading="lazy" decoding="async">` : ''}</div>
+                        <div class="body">
+                            <h3><a class="card-link" href="#research/${r.id}">${esc(r.theme)}</a><small>${researchYear(r)}</small></h3>
+                            <p>${esc(r.lab)}</p>${tagsHTML(r.tech.split('、').map(t => t.replace(/（.*$/, '').trim()).filter(Boolean).slice(0, 3).map(label => ({ key: 'tech', label })))}
+                        </div>
+                    </article>`;
+            const researchListPage = () => `
+                <article class="page">
+                    ${pageHead(TEXT.research, TEXT.researchList)}
+                    <div class="works"><div class="grid">${research.map(researchCardHTML).join('')}</div></div>
+                </article>`;
             const researchPage = id => {
-                const index = Math.max(0, research.findIndex(r => r.id === id));
+                const index = research.findIndex(r => r.id === id);
+                if (index < 0) return researchListPage();
                 const r = research[index];
                 return `
                     <!-- 作品ページ（.game）と同じ並べ方：左に枠なしの研究内容、右に研究情報と Link -->
@@ -913,10 +937,22 @@
                 menuButton.setAttribute('aria-expanded', String(open));
             });
 
-            // ---- 1ページにまとめた About と研究：中の項目の場所 ----
-            const anchorsOf = section => section === 'about'
-                ? ABOUT_SECTIONS.map(id => ({ key: id, el: document.getElementById(`block-${id || 'profile'}`) }))
-                : [];
+            // ---- スマホ：About me（上から順に）→ 作品一覧 → 研究一覧 を1本のスクロールで見せる ----
+            // 作品と研究の1件ずつのページは、スマホでもパソコンと同じ別のページ。
+            const mobile = matchMedia('(max-width: 960px)');
+            const homePage = () => `
+                <article class="page page--narrow about home-part" data-section="about" id="part-about">
+                    ${pageHead(TEXT.about, aboutLabel(''))}
+                    <div class="stack">${aboutBlocks[''](true)}${aboutBlocks.awards()}${aboutBlocks.internships()}${aboutBlocks.media()}</div>
+                </article>
+                <div class="home-part" data-section="works" id="part-works">${worksPage()}</div>
+                <div class="home-part" data-section="research" id="part-research">${researchListPage()}</div>`;
+            // スクロールで今読んでいる場所を目次で選ぶための、場所の一覧
+            const anchorsOf = view => view === 'home' ? [
+                ...ABOUT_SECTIONS.map(id => ({ section: 'about', key: id, el: document.getElementById(`block-${id || 'profile'}`) })),
+                { section: 'works', key: '', el: document.getElementById('part-works') },
+                { section: 'research', key: '', el: document.getElementById('part-research') },
+            ] : [];
 
             // サイドバーの選択と、body の目印を今いる場所に合わせる
             const markActive = (section, subKey) => {
@@ -952,9 +988,9 @@
                 let current = anchors[0];
                 anchors.forEach(a => { if (a.el.getBoundingClientRect().top <= line) current = a; });
                 if (atBottom) current = anchors[anchors.length - 1];
-                if (document.body.dataset.page === `${renderedSection}/${current.key}`) return;
-                markActive(renderedSection, current.key);
-                history.replaceState(null, '', current.key ? `#${renderedSection}/${current.key}` : `#${renderedSection}`);
+                if (document.body.dataset.page === `${current.section}/${current.key}`) return;
+                markActive(current.section, current.key);
+                history.replaceState(null, '', current.key ? `#${current.section}/${current.key}` : `#${current.section}`);
             };
             window.addEventListener('scroll', () => {
                 if (scrollTicking) return;
@@ -967,27 +1003,28 @@
                 const [route, rawSub] = location.hash.slice(1).split('/');
                 const sub = rawSub ? decodeURIComponent(rawSub) : '';
                 const section = ['about', 'works', 'research'].includes(route) ? route : 'about';
-                // 1ページにまとめているのは About だけ
-                // 1ページにまとめている場所は今はない（About も研究も項目ごとのページ）
-                const onePage = false;
+                // スマホでは About・作品一覧・研究一覧を1ページにまとめる（view = 'home'）
+                const view = mobile.matches && (section === 'about' || !sub) ? 'home' : section;
 
                 // 同じ1ページの中の移動なら、作り直さずにその場所までスクロールするだけ
-                if (!(onePage && renderedSection === section)) {
+                if (!(view === 'home' && renderedSection === 'home')) {
                     main.innerHTML =
+                        view === 'home' ? homePage() :
                         section === 'about' ? aboutPage(sub) :
                         section === 'research' ? researchPage(sub) :
                         sub ? gamePage(sub) : worksPage();
-                    renderedSection = section;
+                    renderedSection = view;
                     clipObserver.disconnect();
                     main.querySelectorAll('video[data-src]').forEach(v => clipObserver.observe(v));
                     // 折りたたみ内の写真も先にデコードし、開いた瞬間の表示待ちを減らす。
                     main.querySelectorAll('.exp-detail img').forEach(img => img.decode?.().catch(() => {}));
                 }
 
-                const subKey = section === 'research' && !sub ? research[0]?.id || '' : sub;
-                markActive(section, subKey);
+                markActive(section, sub);
 
-                const target = onePage && sub ? anchorsOf(section).find(a => a.key === sub)?.el : null;
+                const target = view === 'home' && (section !== 'about' || sub)
+                    ? document.getElementById(section === 'about' ? `block-${sub}` : `part-${section}`)
+                    : null;
                 keepChoice = Boolean(target);
                 target ? target.scrollIntoView({ block: 'start' }) : window.scrollTo(0, 0);
                 closeMenu();
@@ -1026,6 +1063,8 @@
             }, true);
 
             window.addEventListener('hashchange', render);
+            // パソコンとスマホの幅をまたいだら、1ページにまとめるかどうかを切り替える
+            mobile.addEventListener('change', () => { renderedSection = null; render(); });
             render();
             document.addEventListener('open-project', event => { location.hash = `works/${event.detail}`; });
         });

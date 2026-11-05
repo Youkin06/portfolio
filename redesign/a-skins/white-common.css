@@ -15,9 +15,9 @@
     --line: #e4e4e7;
     --card-line: #dcdce0;
 }
-body[data-section="about"], .menu-group[data-section="about"] { --section-fg: #d23340; --section-bg: #fdebed; }
-body[data-section="works"], .menu-group[data-section="works"] { --section-fg: #1479b8; --section-bg: #e6f3fb; }
-body[data-section="research"], .menu-group[data-section="research"] { --section-fg: #4a8513; --section-bg: #edf6e1; }
+body[data-section="about"], .menu-group[data-section="about"], .home-part[data-section="about"] { --section-fg: #d23340; --section-bg: #fdebed; }
+body[data-section="works"], .menu-group[data-section="works"], .home-part[data-section="works"] { --section-fg: #1479b8; --section-bg: #e6f3fb; }
+body[data-section="research"], .menu-group[data-section="research"], .home-part[data-section="research"] { --section-fg: #4a8513; --section-bg: #edf6e1; }
 
 .sidebar { border-right: 0; }
 .card, .card:hover, .card:focus-within { border-color: var(--card-line); }
