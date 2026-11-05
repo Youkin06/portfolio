@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2240" height="560" viewBox="0 0 2240 560">
+  <!-- About me の上に置く見出し画像の仮置き（2240×560、表示は最大 1120×280） -->
+  <rect width="2240" height="560" fill="#ffffff"/>
+  <!-- ゲームのボタン風：ずらした赤い影と黒い枠 -->
+  <rect x="44" y="44" width="2160" height="480" rx="28" fill="#e2483d"/>
+  <rect x="20" y="20" width="2160" height="480" rx="28" fill="#ffffff" stroke="#1c1c1c" stroke-width="8"/>
+  <!-- 3色の札（About 赤・Works 青・Research 緑） -->
+  <rect x="110" y="110" width="64" height="64" rx="10" fill="#e2483d"/>
+  <rect x="110" y="198" width="64" height="64" rx="10" fill="#2f7fd6"/>
+  <rect x="110" y="286" width="64" height="64" rx="10" fill="#4fae3a"/>
+  <text x="1120" y="300" text-anchor="middle"
+        font-family="'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', 'Hiragino Sans', sans-serif"
+        font-size="200" font-weight="900" fill="#1c1c1c" letter-spacing="12">ヨウキン</text>
+  <text x="1120" y="410" text-anchor="middle"
+        font-family="'Zen Maru Gothic', 'Hiragino Maru Gothic ProN', 'Hiragino Sans', sans-serif"
+        font-size="64" font-weight="700" fill="#e2483d" letter-spacing="24">のポートフォリオ</text>
+  <text x="2090" y="460" text-anchor="end" font-family="sans-serif" font-size="28" fill="#9a9a9a">SAMPLE 2240×560</text>
+</svg>

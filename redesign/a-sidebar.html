@@ -138,6 +138,7 @@
         main { position: relative; margin-left: calc(var(--sidebar-w) + 32px); padding: 28px 40px 96px; }
         main > .page { position: relative; }
         .page--narrow { max-width: 920px; }
+        .about-banner { display: block; width: 100%; height: auto; margin: 0 0 24px; }
         @keyframes pop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
         .page-head { margin: 4px 0 22px; }
         .page-head .label { color: var(--k, var(--accent)); }
@@ -670,6 +671,7 @@
                 const id = ABOUT_SECTIONS.includes(sub) ? sub : '';
                 return `
                     <article class="page page--narrow about">
+                        ${id === '' ? `<img class="about-banner" src="../Images/about-banner-sample.svg" alt="ヨウキンのポートフォリオ" width="2240" height="560">` : ''}
                         ${pageHead(TEXT.about, aboutLabel(id))}
                         <div class="stack" data-single>${aboutBlocks[id](true)}</div>
                         ${profileCharacter}
