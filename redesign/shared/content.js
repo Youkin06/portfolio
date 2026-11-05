@@ -48,6 +48,8 @@
             period: text(item.querySelector('.period')),
             html: body ? body.innerHTML.trim() : '',
             links: extraLinks,
+            // 研究などで紹介動画があるとき（index.html の data-video）。data-video-audio があれば音を出せる。
+            video: item.getAttribute('data-video') ? { src: resolve(item.getAttribute('data-video')), audio: item.hasAttribute('data-video-audio') } : null,
             image: img ? {
                 src: img.getAttribute('src'), alt: img.alt,
                 width: Number(img.getAttribute('width')) || null,
