@@ -95,7 +95,7 @@
         .sidebar::-webkit-scrollbar { display: none; }
         /* サイドバーの一番上の見出し「Youkin」（642×200 の比率で横幅いっぱい）。
            背景の模様が斜めに流れ、文字は1文字ずつ「黒い影とふち」「白い縁」「色」の3枚を重ねて、Y→o→u→k→i→n の順に跳ねる。
-           いちばん上に、ゲームの窓のような黒・白・黒の3重線の枠（動かない）を重ねる。 */
+           いちばん上に、黒一色の枠（動かない）を重ねる。 */
         .sidebar-banner { position: relative; display: block; flex-shrink: 0; aspect-ratio: 642 / 200; overflow: hidden; background: var(--sidebar-bg, #fff); }  /* 地はサイドバーと同じ色（模様の地は透明） */
         .sidebar-banner > * { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; }
         /* 背景：つなぎ目のない模様（644×200）を縦横2枚分並べ、1枚分ずらし続ける */
