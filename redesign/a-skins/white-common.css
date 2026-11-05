@@ -85,3 +85,9 @@ main a:not(.card-link, .contacts a, .profile-stats a):active { background: color
 @media (max-width: 960px) {
     .profile-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+/* ---- 詳しく見る ----
+   開いたあとも summary に色の地を付けない（矢印の向きと本文で、開いていることは分かる）。 */
+.exp-more[data-expanded] summary,
+.exp-more[open] summary,
+.exp-more[open]:not([data-expanded]) summary { background: none; }
