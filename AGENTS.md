@@ -12,7 +12,7 @@
 - `redesign/` … 全体改修の試作4案（A〜D）。`redesign/shared/content.js` が本番の `index.html` から内容を読み取って表示するため、内容の修正は `index.html` だけでよい。
   - 今後のベースは **A-白・色の札案（white-fill、`redesign/a-skin-white-fill.html`）**。A 案（`redesign/a-sidebar.html`）にスキンを重ねたものを使う。見た目違いの「スキン」は `redesign/a-skins/*.css` と `build.sh` で作る。
   - フォント比較は `redesign/font-compare.html`。現行（Zen Maru Gothic）と `font-original`・`font-zen`・`font-ud`・`font-mincho` の4案を同じページで比較できる。各案は store の文言・レイアウトを共用し、`build.sh` で生成する。
-- `Images/research/` … 研究のページで流す動画と静止画。`index.html` の研究の枠に `data-video="Images/research/<名前>.mp4"` を書くと表示される（音を出せる動画は `data-video-audio` も付ける）。人の顔がはっきり映る動画は、顔を隠してから置く。
+- `Images/research/` … 研究のページで流す動画と静止画。`index.html` の研究の枠に `data-video="Images/research/<名前>.mp4"` を書くと表示される（音を出せる動画は `data-video-audio` も付ける）。人の顔がはっきり映る動画は、顔をドット絵のアイコンで隠してから置く（VR ゴーグルを付けている人は隠さない）。動画はほかと同じ横長（16:9）にそろえる。
 - `Images/clips/` … 作品一覧で動かす6秒のループ動画と静止画（ファイル名は YouTube の動画 ID）。
 - 作品ページの全編動画は別リポジトリ `Youkin06/portfolio-media`（GitHub Pages）に置き、`https://youkin06.github.io/portfolio-media/videos/<動画ID>.mp4` で読み込む。
 
