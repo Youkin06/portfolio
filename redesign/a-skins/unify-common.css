@@ -89,3 +89,10 @@
 [data-ui] main .card { overflow: visible; }
 [data-ui] main .card .thumb { border-radius: 4px 4px 0 0; }
 [data-ui] main .card:hover .card-link::after { inset: -2px -7px -7px -2px; }
+
+/* リンク（ほかのページやサイトへ移るボタン）だけ、そのページの色の淡い地と濃い文字にする（About 赤・Works 青・Research 緑）。
+   詳しく見る・戻る・技術のアイコンは、その場で開け閉めする操作なので白地のまま。 */
+[data-ui] main :is(.contacts a, .link-list a, .item-links a, .exp-links a, .tech-detail-works a),
+[data-ui] main :is(.contacts a, .link-list a, .item-links a, .exp-links a, .tech-detail-works a):is(:hover, :active) {
+    background: var(--section-bg); color: var(--section-fg);
+}
