@@ -148,3 +148,18 @@ main a:not(.card-link, .contacts a, .profile-stats a):active { background: color
 @media (prefers-reduced-motion: reduce) {
     [data-ui="b"] :is(.contacts a, .profile-stats a):is(:hover, :active) { transform: none; }
 }
+
+/* ---- B（ゲームのボタン）の作品一覧：カードもプロフィールのボタンと同じ形 ----
+   黒い線で囲み、右下に Works の青の影。乗せると少し浮き、押すと影の分だけ沈む。 */
+[data-ui="b"] .card {
+    border: 2px solid #1f1f22; border-radius: 6px;
+    box-shadow: 5px 5px 0 var(--section-fg);
+    transition: transform .08s ease, box-shadow .08s ease;
+}
+[data-ui="b"] .card .thumb { border-bottom: 2px solid #1f1f22; }
+[data-ui="b"] .card:hover, [data-ui="b"] .card:focus-within { border-color: #1f1f22; transform: translate(-1px, -1px); box-shadow: 6px 6px 0 var(--section-fg); }
+[data-ui="b"] .card:hover .thumb { border-bottom-color: #1f1f22; }
+[data-ui="b"] .card:has(.card-link:active) { transform: translate(5px, 5px); box-shadow: 0 0 0 var(--section-fg); }
+@media (prefers-reduced-motion: reduce) {
+    [data-ui="b"] .card:is(:hover, :focus-within), [data-ui="b"] .card:has(.card-link:active) { transform: none; }
+}
