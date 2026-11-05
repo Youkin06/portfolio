@@ -1,0 +1,7 @@
+@import url("white-fill.css");
+@import url("unify-common.css");
+/* 統一案4 線だけ：ふだんは影なしで黒い線だけ。触れたときだけ、浮き上がって黒い影が出る。 */
+body {
+    --box-shadow: none; --box-shadow-hover: 5px 5px 0 #1f1f22;
+    --btn-shadow: none; --btn-shadow-hover: 3px 3px 0 #1f1f22;
+}

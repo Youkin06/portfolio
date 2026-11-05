@@ -1,0 +1,7 @@
+@import url("white-fill.css");
+@import url("unify-common.css");
+/* 統一案3 影は箱だけ：箱はページの色の影、ボタンは黒い線だけ。触れると淡いページの色で塗る。 */
+body {
+    --box-shadow: 5px 5px 0 var(--section-fg); --box-shadow-hover: 7px 7px 0 var(--section-fg);
+    --btn-shadow: none; --btn-shadow-hover: none; --btn-hover-bg: var(--section-bg); --btn-hover-move: none; --btn-press-move: translateY(1px);
+}

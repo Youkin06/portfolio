@@ -1,0 +1,7 @@
+@import url("white-fill.css");
+@import url("unify-common.css");
+/* 統一案2 ページの色の影：箱もボタンも、影をそのページの色（About 赤・Works 青・Research 緑）にする。 */
+body {
+    --box-shadow: 5px 5px 0 var(--section-fg); --box-shadow-hover: 7px 7px 0 var(--section-fg);
+    --btn-shadow: 3px 3px 0 var(--section-fg); --btn-shadow-hover: 4px 4px 0 var(--section-fg);
+}

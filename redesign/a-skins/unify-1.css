@@ -1,0 +1,7 @@
+@import url("white-fill.css");
+@import url("unify-common.css");
+/* 統一案1 黒い影：箱もボタンも、黒い線と黒いずらした影。色は文字と数字だけに使う。 */
+body {
+    --box-shadow: 4px 4px 0 #1f1f22; --box-shadow-hover: 6px 6px 0 #1f1f22;
+    --btn-shadow: 3px 3px 0 #1f1f22; --btn-shadow-hover: 4px 4px 0 #1f1f22;
+}
