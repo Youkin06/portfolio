@@ -218,6 +218,17 @@
         /* アイコンだけを並べる（名前はマウスを乗せたときと読み上げで出る） */
         .tech-stack-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 18px; }
         .tech img { width: 44px; height: 44px; display: block; }
+        .tech > button { display: block; padding: 4px; margin: -4px; border: 0; border-radius: 8px; background: none; cursor: pointer; }
+        .tech > button[aria-expanded="true"] { background: var(--line); }
+        .tech-detail { margin-top: 16px; padding: 12px 16px; border: 2px solid var(--line); border-radius: 8px; font-size: 14px; }
+        .tech-detail-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 0 0 6px; }
+        .tech-detail-head strong { font-size: 16px; }
+        .tech-detail-head span { color: var(--muted); font-size: 13px; }
+        .tech-detail-points { margin: 0; padding-left: 1.2em; display: grid; gap: 2px; }
+        .tech-detail-label { margin: 10px 0 4px; color: var(--muted); font-size: 12px; font-weight: 700; }
+        .tech-detail-works { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+        .tech-detail-works a { display: inline-block; padding: 2px 10px; border: 1px solid var(--line); border-radius: 999px; color: inherit; font-size: 13px; text-decoration: none; }
+        .tech-detail-works a:hover { border-color: currentColor; }
         /* Skills：既定はブロックのゲージ。言葉（.skill-word）はスキンで出す */
         .skills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 24px; }
         .skill-group h3 { margin: 0 0 8px; color: var(--muted); }
@@ -479,20 +490,34 @@
         const CLIP_BASE = new URL('../Images/clips/', location.href).href;
         // アイコンは Devicon 2.16.0 の同じ素材をローカル配信し、外部接続待ちをなくす。
         const DEVICON = new URL('../Images/icons/devicon/', location.href).href;
+        // 押すと下に出る説明：使ってきた長さ（since）・得意なこと（points）。
+        // 使った作品は、作品と研究の「使用技術」から word（正規表現）で見つけて自動で並べる。
         const TECH_STACK = [
-            { id: 'csharp', name: 'C#' },
-            { id: 'unity', name: 'Unity' },
-            { id: 'c', name: 'C' },
-            { id: 'cpp', name: 'C++' },
-            { id: 'python', name: 'Python' },
-            { id: 'git', name: 'Git' },
-            { id: 'github', name: 'GitHub' },
-            { id: 'blender', name: 'Blender' },
-            { id: 'figma', name: 'Figma' },
-            { id: 'notion', name: 'Notion' },
+            { id: 'csharp', name: 'C#', since: '約5年（中学3年から）', word: /C#|Unity/,
+                points: ['MonoBehaviour に頼らないクラスの設計', '非同期処理（Task・UniTask）', '設計・デザインパターンに興味があります', '勉強中：イベント駆動・リアクティブプログラミング（UniRx）'] },
+            { id: 'unity', name: 'Unity', since: '約5年（中学3年から）', word: /Unity/,
+                points: ['DOTween を使った UI の演出', 'コルーチン・UniTask での非同期処理', '2D（タイルマップ など）', 'MediaPipe・Meta SDK・toio SDK との連携'] },
+            { id: 'c', name: 'C', since: '約半年', word: /(^|[^A-Za-z])C(?![+#A-Za-z])/,
+                points: ['大学の授業と、C++ の勉強で使用', '標準入出力で、ターミナルで動く鬼ごっこゲームを制作'] },
+            { id: 'cpp', name: 'C++', since: '約半年', word: /C\+\+/,
+                points: ['SDL で描画するテトリスを制作', 'DirectX 11 での描画と、HLSL のシェーダー', 'Arduino の制御（Useless Machine）'] },
+            { id: 'python', name: 'Python', since: '約半年', word: /Python/,
+                points: ['大学の授業で使用', 'Pyxel で KamoRogue を制作'] },
+            { id: 'git', name: 'Git', since: '約1年', word: /Git(?!Hub)/,
+                points: ['ブランチ運用・worktree', 'GitHub Actions で CI/CD', '共同開発の経験があります'] },
+            { id: 'github', name: 'GitHub', since: '約1年', word: /GitHub/,
+                points: ['ブランチ運用・プルリクエスト', 'GitHub Actions で CI/CD', '共同開発の経験があります'] },
+            { id: 'blender', name: 'Blender', since: '高校の3年間', word: /Blender/,
+                points: ['建物・乗り物・キャラクターのモデリング', 'ボーンとウェイトの設定', 'Life is Tech! で基本操作を教えています'] },
+            { id: 'figma', name: 'Figma', since: '約2年', word: /Figma/,
+                points: ['UI のデザイン', 'ZELLY SWIPE の素材はすべて Figma で制作', 'MCP と組み合わせたデザイン制作'] },
+            { id: 'notion', name: 'Notion', word: /Notion/,
+                points: ['よく使っています'] },
             // devicon にないものは Simple Icons から（Images/icons/simpleicons/）
-            { id: 'claude', name: 'Claude', src: '../Images/icons/simpleicons/claude.svg' },
-            { id: 'codex', name: 'Codex', src: '../Images/icons/simpleicons/openai.svg' },
+            { id: 'claude', name: 'Claude', since: '2026年から', word: /Claude/, src: '../Images/icons/simpleicons/claude.svg',
+                points: ['よく使っています', 'CLI（Claude Code）での開発', 'Artifacts などのいろいろな機能'] },
+            { id: 'codex', name: 'Codex', since: '2026年から', word: /Codex/, src: '../Images/icons/simpleicons/openai.svg',
+                points: ['よく使っています', 'CLI での開発'] },
         ];
         const MEDIA_BASE = 'https://youkin06.github.io/portfolio-media/videos/';
 
@@ -708,11 +733,25 @@
                         </div>
                         <ol class="profile-history">${profileHistory().slice(0, 6).map(e => `<li><time>${e.y}${e.m ? `.${String(e.m).padStart(2, '0')}` : ''}</time><span>${esc(e.text)}</span></li>`).join('')}</ol>`,
             };
+            // 技術スタックのアイコンを押すと、アイコンの下に出る説明
+            const techWorks = tech => [
+                ...projects.filter(p => p.tech.split('、').some(name => tech.word.test(name.trim()))).map(p => [`#works/${p.id}`, p.title]),
+                ...research.filter(r => r.tech.split('、').some(name => tech.word.test(name.trim()))).map(r => [`#research/${r.id}`, r.theme]),
+            ];
+            const techDetailHTML = tech => {
+                const works = techWorks(tech);
+                return `
+                    <div class="tech-detail" id="tech-detail-${esc(tech.id)}" data-tech="${esc(tech.id)}" hidden>
+                        <p class="tech-detail-head"><strong>${esc(tech.name)}</strong>${tech.since ? `<span>${esc(tech.since)}</span>` : ''}</p>
+                        <ul class="tech-detail-points">${tech.points.map(t => `<li>${esc(t)}</li>`).join('')}</ul>
+                        ${works.length ? `<p class="tech-detail-label">使った作品</p><ul class="tech-detail-works">${works.map(([href, title]) => `<li><a href="${esc(href)}">${esc(title)}</a></li>`).join('')}</ul>` : ''}
+                    </div>`;
+            };
             const aboutBlocks = {
                 '': (single = false) => block('profile', single ? null : TEXT.profile, (PROFILE_VERSIONS[PROFILE_STYLE] || PROFILE_VERSIONS[''])()) +
                     block('skills', TEXT.skills, `<ul class="tech-stack-list">${TECH_STACK.map(tech => `
-                        <li class="tech" data-tech="${esc(tech.id)}" title="${esc(tech.name)}"><img src="${tech.src || `${DEVICON}${tech.id}.svg`}" alt="${esc(tech.name)}" width="44" height="44" loading="eager" decoding="async"></li>`).join('')}
-                    </ul>`),
+                        <li class="tech" data-tech="${esc(tech.id)}"><button type="button" title="${esc(tech.name)}" aria-expanded="false" aria-controls="tech-detail-${esc(tech.id)}"><img src="${tech.src || `${DEVICON}${tech.id}.svg`}" alt="${esc(tech.name)}" width="44" height="44" loading="eager" decoding="async"></button></li>`).join('')}
+                    </ul>${TECH_STACK.map(techDetailHTML).join('')}`),
                 internships: (single = false) => block('internships', single ? null : TEXT.internships, `<ol class="exp-list timeline">${data.internships.map(expHTML).join('')}</ol>`),
                 awards: (single = false) => block('awards', single ? null : TEXT.awards, `<ul class="item-list awards">${data.awards.map(itemHTML).join('')}</ul>`),
                 media: (single = false) => block('media', single ? null : TEXT.media, `<ul class="item-list media">${data.media.map(itemHTML).join('')}</ul>`),
@@ -953,6 +992,15 @@
                 video.muted = !video.muted;
                 if (video.paused) video.play().catch(() => {});
                 syncPlayer(player);
+            });
+            // 技術スタック：押すと説明を開き、もう一度押すと閉じる。開くのは1つだけ。
+            main.addEventListener('click', event => {
+                const button = event.target.closest('.tech > button');
+                if (!button) return;
+                const open = button.getAttribute('aria-expanded') !== 'true';
+                const list = button.closest('[data-block="skills"]');
+                list.querySelectorAll('.tech > button').forEach(b => b.setAttribute('aria-expanded', String(b === button && open)));
+                list.querySelectorAll('.tech-detail').forEach(d => { d.hidden = !(open && d.id === button.getAttribute('aria-controls')); });
             });
             main.addEventListener('volumechange', event => {
                 const player = event.target.closest?.('[data-player]');
