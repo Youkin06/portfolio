@@ -55,7 +55,7 @@ main a:not(.card-link, .contacts a, .profile-stats a):active { background: color
 .portrait { border-radius: 50%; }
 
 /* ---- プロフィールの版（?profile=intro|numbers|history） ---- */
-.profile-role { margin: 2px 0 12px; font-size: 14px; }
+.profile-role { margin: 2px 0 8px; font-size: 14px; font-weight: 700; }
 .profile-goal { margin: 0 0 14px; font-weight: 700; line-height: 1.7; }
 .profile-goal::before { content: "目標　"; color: var(--section-fg); }
 /* ひとことと紹介文 */

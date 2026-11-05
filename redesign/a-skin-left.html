@@ -597,7 +597,10 @@
                                     <div class="contacts-social">${data.profile.socials.map(s => `<a class="social" href="${esc(s.href)}" target="_blank" rel="noopener noreferrer">${s.icon ? `<img src="${esc(iconUrl(s.icon))}" alt="">` : ''}${esc(s.label)}</a>`).join('')}</div>
                                     <div class="contacts-mail">${data.profile.emails.map(m => MAIL_AS_TEXT ? `<span class="mail">${mailIcon}<span>${esc(m)}</span></span>` : `<a class="mail-button" href="mailto:${esc(m)}">${mailIcon}<span>${esc(m)}</span></a>`).join('')}</div>
                                 </div>`;
-            const profileRole = () => `<p class="profile-role">${esc(profileFacts['大学'] || '')}</p>`;
+            // 大学は1行、所属は小さな札で並べる（「大学：」「所属：」の見出しは付けない）。
+            const profileRole = () => `
+                                <p class="profile-role">${esc(profileFacts['大学'] || '')}</p>
+                                <ul class="profile-chips">${(profileFacts['所属'] || '').split('、').filter(Boolean).map(x => `<li>${esc(x)}</li>`).join('')}</ul>`;
             // 受賞歴・インターン・メディア掲載から、年月の分かるできごとを新しい順に拾う（プロフィールには新しい6件）。
             const profileHistory = () => [
                 ...data.awards.map(a => ({ text: a.text.replace(/^\d{4}年\s*/, ''), when: a.text.match(/(\d{4})/) })),
@@ -621,8 +624,7 @@
                                 <p class="profile-lead">${esc(data.hero.tagline)}</p>
                                 <p class="profile-name">${esc(data.profile.name)}</p>
                                 ${profileRole()}
-                                <p class="profile-bio">Unity を中心に、VR やハンドトラッキング、2D アクションなど、いろいろな遊び方のゲームを作っています。目標は「${esc(profileFacts['目標'] || '')}」ことです。</p>
-                                <ul class="profile-chips">${(profileFacts['所属'] || '').split('、').map(x => `<li>${esc(x)}</li>`).join('')}</ul>${contactsHTML()}
+                                <p class="profile-bio">Unity を中心に、VR やハンドトラッキング、2D アクションなど、いろいろな遊び方のゲームを作っています。目標は「${esc(profileFacts['目標'] || '')}」ことです。</p>${contactsHTML()}
                             </div>
                         </div>`,
                 // 数字で見る：作品・受賞・インターン・メディア掲載・研究の数。押すとそのページへ。
