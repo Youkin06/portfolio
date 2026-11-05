@@ -1,5 +1,4 @@
 @import url("store.css");
-@import url("https://fonts.googleapis.com/css2?family=DotGothic16&display=swap");
 
 /*
  * 白案の共通部分。地は白、文字は黒に近い色。
@@ -56,9 +55,10 @@ main a:not(.card-link, .contacts a, .profile-stats a):active { background: color
 .portrait { border-radius: 50%; }
 
 /* ---- プロフィールの版（?profile=intro|numbers|history） ---- */
-.profile-role { margin: 2px 0 8px; font-size: 14px; font-weight: 700; }
-.profile-goal { margin: 0 0 14px; font-weight: 700; line-height: 1.7; }
-.profile-goal::before { content: "目標　"; color: var(--section-fg); }
+/* 大学・所属・目標は同じ大きさと太さの行。目標だけ各色（About は赤）。 */
+.profile-fact { margin: 0 0 4px; font-size: 14px; font-weight: 700; line-height: 1.7; }
+.profile-name + .profile-fact { margin-top: 4px; }
+.profile-goal { margin-bottom: 14px; color: var(--section-fg); }
 /* ひとことと紹介文 */
 .profile-lead { margin: 0 0 12px; font-size: 26px; font-weight: 900; line-height: 1.35; }
 .profile-bio { margin: 0 0 12px; max-width: 40em; line-height: 1.9; }
@@ -129,7 +129,9 @@ main a:not(.card-link, .contacts a, .profile-stats a):active { background: color
 }
 [data-ui="b"] .profile-stats a:hover { border-color: #1f1f22; transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--to); }
 [data-ui="b"] .profile-stats a:active { transform: translate(4px, 4px); box-shadow: 0 0 0 var(--to); }
-[data-ui="b"] .profile-stats strong { color: var(--to); font-family: "DotGothic16", var(--font); font-weight: 400; font-size: 38px; }
+[data-ui="b"] .profile-stats strong { color: var(--to); }
+/* B の数字のタイルは、行き先によらずすべて赤（About の色）。 */
+[data-ui="b"] .profile-stats li { --to: #d23340; }
 
 /* C：色のタイル。SNS とメールは灰色の丸い札、数字は行き先の色の淡いタイル。線を使わない。 */
 [data-ui="c"] .contacts a { border: 0; border-radius: 999px; background: var(--surface-2); padding: 8px 14px; }
