@@ -248,6 +248,8 @@
         /* 作品・研究のページ：本文と、右のデータ欄 */
         .vplayer { position: relative; aspect-ratio: 16 / 9; border: 3px solid var(--navy); border-radius: var(--radius); overflow: hidden; background: #000; margin-bottom: 20px; }
         .vplayer video { width: 100%; height: 100%; display: block; object-fit: contain; background: #000; }
+        /* 縦長の研究動画（Useless Machine など）は、横幅いっぱいにせず縦長の枠で出す。 */
+        .vplayer[data-portrait] { aspect-ratio: 9 / 16; width: min(100%, calc(70vh * 9 / 16)); }
         .vsound {
             position: absolute;
             top: 12px;
@@ -759,12 +761,21 @@
                     </div>
                 </article>`;
             // 研究は1件ずつのページ
+            // 研究の紹介動画。音のある動画だけ、作品ページと同じ音の切り替えボタンを付ける。縦長の動画は縦長の枠で出す。
+            const researchVideoHTML = r => r.video ? `
+                <div class="vplayer research-video" data-player>
+                    <video src="${esc(r.video.src)}" poster="${esc(r.video.src.replace(/\.mp4$/, '.jpg'))}"
+                        autoplay muted loop playsinline preload="metadata" aria-label="${esc(r.theme)} の動画"
+                        onloadedmetadata="this.parentElement.toggleAttribute('data-portrait', this.videoHeight > this.videoWidth)"></video>
+                    ${r.video.audio ? `<button class="vsound" type="button" data-act="mute" aria-label="${esc(TEXT.soundLabel)}" aria-pressed="false" title="${esc(TEXT.unmute)}">${soundIcon(true)}</button>` : ''}
+                </div>` : '';
             const researchPage = id => {
                 const index = Math.max(0, research.findIndex(r => r.id === id));
                 const r = research[index];
                 return `
                     <article class="page research">
                         ${pageHead(TEXT.research, r.theme)}
+                        ${researchVideoHTML(r)}
                         ${researchItemHTML(r, index, 'none')}
                     </article>`;
             };
