@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A-フォント比較・明朝の見出し | 矢追陽平 Portfolio</title>
+    <!-- 中身（本番の index.html）は、フォントや CSS を待たずにすぐ読み込み始める（shared/content.js がこれを使う） -->
+    <script>window.portfolioSource = fetch('../index.html', { cache: 'no-cache' }).then(response => response.text());</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="shared/base.css">

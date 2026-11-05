@@ -59,7 +59,7 @@ build mist '薄曇り案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
 # 白案の色違い（About は赤、Works は青、Research は緑）
 build white-gray '白・灰色サイドバー案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
 build white-line '白・線で区切る案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
-build white-fill '白・色の札案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
+build white-fill '白・色の札案' 'family=Zen+Maru+Gothic:wght@400;700;900'
 build white-soft '白・やわらかい影案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
 build white-sky '白・淡い空案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
 build white-tint '白・色の札（黒文字）案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'

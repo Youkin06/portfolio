@@ -153,8 +153,8 @@
     };
 
     window.loadPortfolio = async () => {
-        const response = await fetch(SOURCE_URL, { cache: 'no-cache' });
-        const html = await response.text();
+        // ページの <head> で先に読み込み始めていれば、それを使う
+        const html = await (window.portfolioSource || fetch(SOURCE_URL, { cache: 'no-cache' }).then(response => response.text()));
         return parse(new DOMParser().parseFromString(html, 'text/html'));
     };
 })();
