@@ -7,6 +7,9 @@
 
 cd "$(dirname "$0")/.." || exit 1
 
+# 本文に Noto Sans JP を使う案（A案のまま・デジタル庁系・Lato＋Noto のフォント比較）
+NOTO_SKINS='left left-digital digital font-original'
+
 build() {
     name=$1; title=$2; fonts=$3; config_name=${4:-$1}
     # フォントを足さない案は3つめの引数を '' にする
@@ -15,7 +18,10 @@ build() {
     config=''
     [ -f "a-skins/${config_name}.js" ] && config="    <script src=\"a-skins/${config_name}.js\"></script>\\
 "
+    # Noto Sans JP は、それを本文に使う案だけ読み込む（ほかの案は日本語のそろったフォントを先に使うので、読み込んでも使われない）。
+    case " $NOTO_SKINS " in *" $name "*) drop_noto='' ;; *) drop_noto='/family=Noto+Sans+JP/d' ;; esac
     sed -e "s#<title>A サイドバー案#<title>A-${title}#" \
+        -e "${drop_noto:-s/^\$//}" \
         -e "s#^</head>#${font_link}    <link rel=\"stylesheet\" href=\"a-skins/${name}.css\">\\
 ${config}</head>#" \
         a-sidebar.html > "a-skin-${name}.html"
