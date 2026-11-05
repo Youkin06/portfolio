@@ -1,6 +1,7 @@
 // 草原を歩くキャラクター（ぼくのにっき、KamoRogue のカモ）を動かす。
 // プロフィールでは、立ち止まる → 行き先を決めて歩く、をくり返す。
-// 受賞歴などほかのページへ移ると、近い方の画面の端へ歩いて出ていく。プロフィールに戻ると、端から歩いて戻ってくる。
+// 2体が重ならないよう、ぼくのにっきは草原の左側、カモは右側だけを歩く（zone は草原の幅に対する割合）。
+// 受賞歴などほかのページへ移ると、自分の側の画面の端へ歩いて出ていく。プロフィールに戻ると、同じ端から歩いて戻ってくる。
 // 状態は data-state="idle|walk" に書き、どの画像を見せるかは CSS が決める。元画像はどちらも右向き。
 // ページを移ると草原は描き直されるが、位置はここで覚えているので、続きから動く。
 // 触れて止まっている間（data-paused）と、動きを減らす設定のときは動かさない。
@@ -8,36 +9,41 @@
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
     const walkers = [
         // ぼくのにっき：idle1・idle2 で立ち止まり、walk1・walk2 で歩く。
-        { selector: '.profile-character', speed: 70, idle: [2, 6], start: 0.05 },
+        { selector: '.profile-character', speed: 70, idle: [2, 6], zone: [0, 0.45], exit: 'left' },
         // カモ：走り回り、ときどき少しだけ止まる。
-        { selector: '.profile-kamo', speed: 140, idle: [0.3, 1.2], start: 0.6 },
+        { selector: '.profile-kamo', speed: 140, idle: [0.3, 1.2], zone: [0.55, 1], exit: 'right' },
     ].map(w => ({ ...w, x: null, goal: null, idleLeft: 1, facing: 1 }));
 
     const step = (w, dt, home) => {
         const el = document.querySelector(w.selector);
         if (!el || !el.parentElement) return;
         const size = el.offsetWidth;
-        const room = el.parentElement.clientWidth - size;
+        const width = el.parentElement.clientWidth;
+        // 自分の側で、体ごと収まる左端の範囲。
+        const lo = width * w.zone[0], hi = width * w.zone[1] - size;
+        const room = hi - lo;
         if (room <= 0) return;
-        const offLeft = -size - 30, offRight = room + size + 30;
+        const offLeft = -size - 30, offRight = width + 30;
+        const exitX = w.exit === 'left' ? offLeft : offRight;
         const outside = x => x <= offLeft || x >= offRight;
-        const inside = x => x >= 0 && x <= room;
+        const inside = x => x >= lo && x <= hi;
+        const somewhere = (a, b) => lo + room * (a + Math.random() * (b - a));
 
-        if (w.x === null) w.x = home ? room * w.start : offLeft;
+        if (w.x === null) w.x = home ? somewhere(0.1, 0.9) : exitX;
         if (home && el.hasAttribute('data-paused')) return;
 
         if (!home) {
             // ほかのページ：もう外にいれば何もしない。まだ中なら近い方の端へ。
             if (outside(w.x)) return;
-            if (w.goal === null || !outside(w.goal)) w.goal = w.x < room / 2 ? offLeft : offRight;
+            w.goal = exitX;
         } else if (!inside(w.x) || (w.goal !== null && !inside(w.goal))) {
-            // プロフィールに戻った：画面の外にいるなら、中のどこかへ歩いて入ってくる。
-            if (w.goal === null || !inside(w.goal)) w.goal = room * (0.1 + Math.random() * 0.8);
+            // プロフィールに戻った：自分の側の外にいるなら、その中のどこかへ歩いて入ってくる。
+            if (w.goal === null || !inside(w.goal)) w.goal = somewhere(0.1, 0.9);
         } else if (w.goal === null) {
             w.idleLeft -= dt;
             if (w.idleLeft <= 0) {
                 // 近すぎる行き先は選ばない（その場で足踏みに見えるため）。
-                do w.goal = Math.random() * room; while (Math.abs(w.goal - w.x) < room * 0.2 && room > 200);
+                do w.goal = somewhere(0, 1); while (Math.abs(w.goal - w.x) < room * 0.2 && room > 150);
             }
         }
 
