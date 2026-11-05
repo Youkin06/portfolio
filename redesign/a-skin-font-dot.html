@@ -90,7 +90,9 @@
             border-radius: var(--radius);
             overflow: hidden auto;
             overscroll-behavior: contain;
+            scrollbar-width: none;
         }
+        .sidebar::-webkit-scrollbar { display: none; }
         /* サイドバーの一番上の見出し画像（横幅いっぱい） */
         .sidebar-banner { display: block; flex-shrink: 0; }
         .sidebar-banner img { display: block; width: 100%; height: auto; }
