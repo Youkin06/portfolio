@@ -601,7 +601,7 @@
             // 大学・所属・目標を、見出しと中身の同じ形の行で並べる。目標の中身だけ色を変える（goal = true のとき目標も出す）。
             const profileRole = (goal = false) => `
                                 <dl class="profile-facts">${['大学', '所属', ...(goal ? ['目標'] : [])].filter(k => profileFacts[k]).map(k => `
-                                    <div${k === '目標' ? ' class="profile-goal"' : ''}><dt>${k}</dt><dd>${esc(k === '目標' ? `「${profileFacts[k]}」` : profileFacts[k])}</dd></div>`).join('')}
+                                    <div${k === '目標' ? ' class="profile-goal"' : ''}><dt>${k}</dt><dd>${esc(profileFacts[k])}</dd></div>`).join('')}
                                 </dl>`;
             // 受賞歴・インターン・メディア掲載から、年月の分かるできごとを新しい順に拾う（プロフィールには新しい6件）。
             const profileHistory = () => [

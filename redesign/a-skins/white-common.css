@@ -62,8 +62,9 @@ main a:not(.card-link, .contacts a, .profile-stats a):active { background: color
 .profile-facts dt { font-weight: 700; }
 .profile-facts dd { margin: 0; font-weight: 500; }
 .profile-goal dd { color: var(--section-fg); font-weight: 700; }
-/* 写真のまわりに、ボタンと同じ黒い線。 */
-.portrait { border: 2px solid #1f1f22; }
+/* 写真のまわりに、ボタンと同じ黒い線と、右下にずらした赤い影（数字のタイルと同じ）。 */
+.portrait { border: 2px solid #1f1f22; box-shadow: 5px 5px 0 #d23340; overflow: visible; }
+.portrait img { border-radius: 50%; }
 /* ひとことと紹介文 */
 .profile-lead { margin: 0 0 12px; font-size: 26px; font-weight: 900; line-height: 1.35; }
 .profile-bio { margin: 0 0 12px; max-width: 40em; line-height: 1.9; }
