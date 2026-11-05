@@ -481,10 +481,15 @@
             { id: 'unity', name: 'Unity' },
             { id: 'c', name: 'C' },
             { id: 'cpp', name: 'C++' },
+            { id: 'python', name: 'Python' },
             { id: 'git', name: 'Git' },
             { id: 'github', name: 'GitHub' },
             { id: 'blender', name: 'Blender' },
             { id: 'figma', name: 'Figma' },
+            { id: 'notion', name: 'Notion' },
+            // devicon にないものは Simple Icons から（Images/icons/simpleicons/）
+            { id: 'claude', name: 'Claude', src: '../Images/icons/simpleicons/claude.svg' },
+            { id: 'codex', name: 'Codex', src: '../Images/icons/simpleicons/openai.svg' },
         ];
         const MEDIA_BASE = 'https://youkin06.github.io/portfolio-media/videos/';
 
@@ -703,7 +708,7 @@
             const aboutBlocks = {
                 '': (single = false) => block('profile', single ? null : TEXT.profile, (PROFILE_VERSIONS[PROFILE_STYLE] || PROFILE_VERSIONS[''])()) +
                     block('skills', TEXT.skills, `<ul class="tech-stack-list">${TECH_STACK.map(tech => `
-                        <li class="tech" data-tech="${esc(tech.id)}" title="${esc(tech.name)}"><img src="${DEVICON}${tech.id}.svg" alt="${esc(tech.name)}" width="44" height="44" loading="eager" decoding="async"></li>`).join('')}
+                        <li class="tech" data-tech="${esc(tech.id)}" title="${esc(tech.name)}"><img src="${tech.src || `${DEVICON}${tech.id}.svg`}" alt="${esc(tech.name)}" width="44" height="44" loading="eager" decoding="async"></li>`).join('')}
                     </ul>`),
                 internships: (single = false) => block('internships', single ? null : TEXT.internships, `<ol class="exp-list timeline">${data.internships.map(expHTML).join('')}</ol>`),
                 awards: (single = false) => block('awards', single ? null : TEXT.awards, `<ul class="item-list awards">${data.awards.map(itemHTML).join('')}</ul>`),
