@@ -40,7 +40,7 @@
 
 - **編集したら毎回、確認用リンクを渡す。**
   - リポジトリ直下でローカルサーバーを起動する（起動していなければ）：
-    `python3 -m http.server 8000 --bind 127.0.0.1`
+    `python3 tools/serve.py`（ブラウザにファイルを覚えさせないので、直した内容がすぐ反映される。ポートを変えるときは `python3 tools/serve.py 8001`）
   - `curl` で応答を確認してから、返答の最後に確認用リンクを貼る。
     - 公開中のサイト：http://127.0.0.1:8000/index.html
     - 最新版のベース：http://127.0.0.1:8000/redesign/a-skin-white-fill.html#about
