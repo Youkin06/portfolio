@@ -90,6 +90,9 @@
             border-radius: var(--radius);
             overflow: hidden;
         }
+        /* サイドバーの一番上の見出し画像（横幅いっぱい） */
+        .sidebar-banner { display: block; flex-shrink: 0; }
+        .sidebar-banner img { display: block; width: 100%; height: auto; }
         .player {
             display: flex;
             align-items: center;
@@ -138,7 +141,6 @@
         main { position: relative; margin-left: calc(var(--sidebar-w) + 32px); padding: 28px 40px 96px; }
         main > .page { position: relative; }
         .page--narrow { max-width: 920px; }
-        .about-banner { display: block; width: 100%; height: auto; margin: 0 0 24px; }
         @keyframes pop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
         .page-head { margin: 4px 0 22px; }
         .page-head .label { color: var(--k, var(--accent)); }
@@ -356,6 +358,7 @@
     </div>
 
     <aside class="sidebar" id="sidebar">
+        <a class="sidebar-banner" href="#about"><img src="../Images/sidebar-banner-sample.svg" alt="ヨウキンのポートフォリオ" width="624" height="312"></a>
         <a class="player" href="#about" id="player"></a>
         <nav class="menu" aria-label="メニュー" id="menu"></nav>
     </aside>
@@ -674,7 +677,6 @@
                 const id = ABOUT_SECTIONS.includes(sub) ? sub : '';
                 return `
                     <article class="page page--narrow about">
-                        ${id === '' ? `<img class="about-banner" src="../Images/about-banner-sample.svg" alt="ヨウキンのポートフォリオ" width="2240" height="560">` : ''}
                         ${pageHead(TEXT.about, aboutLabel(id))}
                         <div class="stack" data-single>${aboutBlocks[id](true)}</div>
                         ${profileCharacter}
