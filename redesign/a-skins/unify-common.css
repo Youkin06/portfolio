@@ -93,3 +93,7 @@
 /* 作品ページ・研究ページの Link の箱（遊ぶ・動画・リポジトリなど）のボタンだけ、文字をそのページの色にする（Works 青・Research 緑）。地は白のまま。
    SNS・作品へのリンク・詳しく見る・戻るなどは黒い文字のまま。 */
 [data-ui] main .link-list a, [data-ui] main .link-list a:is(:hover, :active) { color: var(--section-fg); }
+
+/* スクロールバーはどのページ・どの場所でも出さない（スクロール自体はできる） */
+html, body, * { scrollbar-width: none; }
+::-webkit-scrollbar { display: none; }
