@@ -769,7 +769,7 @@
                             </div>
                         </div>
                         <ol class="profile-history">${profileHistory().slice(0, 6).map(e => `<li><time>${e.y}${e.m ? `.${String(e.m).padStart(2, '0')}` : ''}</time><span>${esc(e.text)}</span></li>`).join('')}</ol>`,
-                // すっきり：名前 → 目標 → 大学・所属を1行。数字のタイルは出さず、SNS はアイコンだけ、メールは文字だけ。
+                // すっきり：名前 → 目標 → 大学・所属を1行。数字のタイルは出さず、メールは文字だけ、その下に SNS をアイコンだけで並べる。
                 simple: () => `
                         <div class="profile profile--simple">${portraitHTML()}
                             <div>
@@ -777,8 +777,8 @@
                                 ${profileFacts['目標'] ? `<p class="profile-catch">${esc(profileFacts['目標'])}</p>` : ''}
                                 <p class="profile-where">${['大学', '所属'].filter(k => profileFacts[k]).map(k => esc(profileFacts[k])).join('　／　')}</p>
                                 <div class="contacts">
-                                    <div class="contacts-social">${data.profile.socials.map(s => `<a class="social" href="${esc(s.href)}" target="_blank" rel="noopener noreferrer" title="${esc(s.label)}" aria-label="${esc(s.label)}">${s.icon ? `<img src="${esc(iconUrl(s.icon))}" alt="">` : esc(s.label)}</a>`).join('')}</div>
                                     <p class="contacts-mail-text">${data.profile.emails.map(esc).join('　／　')}</p>
+                                    <div class="contacts-social">${data.profile.socials.map(s => `<a class="social" href="${esc(s.href)}" target="_blank" rel="noopener noreferrer" title="${esc(s.label)}" aria-label="${esc(s.label)}">${s.icon ? `<img src="${esc(iconUrl(s.icon))}" alt="">` : esc(s.label)}</a>`).join('')}</div>
                                 </div>
                             </div>
                         </div>`,
