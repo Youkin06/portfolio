@@ -1,0 +1,334 @@
+/* カモとDepthDiaryは16×16ドット。1ドットの表示幅を共通にする。 */
+.profile-meadow, .profile-flight { --profile-pixel-size: 6px; --ground-h: calc(8 * var(--profile-pixel-size)); }
+/* About me の各ページは、サイドバーの右側すべてを空と草原にする。キャラクターはこの中で暮らす。
+   空は画面に固定し、草原は画面の下端にそろえる。内容はその上に重ねて流す。
+   プロフィールは1画面に収まるのでスクロールバーを出さない。長いページは最後の項目が草原より上まで来るよう下をあける。 */
+html:has(body[data-page="about/"]:not([data-view="scroll"])) { scrollbar-width: none; }
+html:has(body[data-page="about/"]:not([data-view="scroll"]))::-webkit-scrollbar { display: none; }
+.profile-meadow {
+    position: fixed;
+    inset: 0 0 0 var(--sidebar-w);
+    overflow: hidden;
+}
+.page.about > :not(.profile-meadow, .profile-flight) { position: relative; z-index: 1; }
+@media (min-width: 961px) {
+    body[data-section="about"]:not([data-page="about/"], [data-view="scroll"]) main { padding-bottom: 220px; }
+}
+/* 空の上で読めるように、About me の本文の色を時間帯で変える。スマホでは空を出さないので、白地のまま。
+   明け方と昼：リンクを濃い赤に。夕方と夜：文字と線を白に、リンクを薄い赤に、ボタンは半透明の白に。空を出さないスキン（none）はスキンの色のまま。
+   黒一色のアイコン（Unity・GitHub・Notion・Codex）は夕方と夜に白く反転する。 */
+@media (min-width: 961px) {
+    :is([data-sky="dawn"], [data-sky="day"]) body[data-section="about"] main { --section-fg: #8e1a23; --accent: #8e1a23; }
+    :is([data-sky="evening"], [data-sky="night"]) body[data-section="about"] main {
+        --fg: #fff;
+        --muted: #fff;
+        --section-fg: #ffc2c7;
+        --accent: #ffc2c7;
+        --section-bg: #ffffff24;
+        --line: #ffffff59;
+        --surface: #ffffff1f;
+        color: #fff;
+    }
+    :is([data-sky="evening"], [data-sky="night"]) body[data-page="about/"] :is([data-tech="unity"], [data-tech="github"], [data-tech="notion"], [data-tech="codex"]) img { filter: invert(1); }
+}
+/* 空。時間帯（profile-sky.js が html[data-sky] に書く）で色を変える。上から下へなめらかに明るくなる。 */
+[data-sky="none"] .profile-sky { display: none; }
+.profile-sky {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(var(--sky-colors));
+    --sky-colors: #6fb6ee, #82c0f1, #96caf4, #abd5f6, #c2e1f8;
+}
+[data-sky="dawn"] .profile-sky { --sky-colors: #8a9fd4, #b3b3de, #dcbcd8, #f2cdbc, #fae0b4; }
+[data-sky="evening"] .profile-sky { --sky-colors: #4f5c9c, #85699f, #c8737f, #ec8f66, #f6b45e; }
+[data-sky="night"] .profile-sky { --sky-colors: #161b38, #1c2346, #232b54, #2b3462, #343e70; }
+.profile-sky > * { position: absolute; image-rendering: pixelated; background: no-repeat center / 100% 100%; }
+/* 星は空の下の方だけ。上の方はプロフィールの文字と重なって読みにくいため出さない。 */
+.profile-stars {
+    inset: 55% 0 0;
+    background: url("../../Images/profile-character/stars.png") repeat 0 0 / calc(170 * var(--profile-pixel-size)) auto;
+    opacity: 0;
+}
+[data-sky="night"] .profile-stars { opacity: 1; }
+[data-sky="dawn"] .profile-stars { opacity: .35; }
+/* 太陽と月は時刻に合わせて左から右へ弧を描く（位置は profile-sky.js が書く）。 */
+.profile-sun, .profile-moon {
+    width: calc(10 * var(--profile-pixel-size));
+    height: calc(10 * var(--profile-pixel-size));
+    transform: translate(-50%, -50%);
+    display: none;
+}
+.profile-sun { background-image: url("../../Images/profile-character/sun.png"); left: var(--sun-x, 70%); top: var(--sun-y, 30%); }
+.profile-moon { background-image: url("../../Images/profile-character/moon.png"); left: var(--moon-x, 70%); top: var(--moon-y, 30%); }
+[data-sky="dawn"] .profile-sun, [data-sky="day"] .profile-sun, [data-sky="evening"] .profile-sun,
+[data-sky="night"] .profile-moon { display: block; }
+.profile-cloud {
+    left: 0;
+    top: var(--cloud-y);
+    width: calc(20 * var(--profile-pixel-size) * var(--cloud-scale, 1));
+    height: calc(7 * var(--profile-pixel-size) * var(--cloud-scale, 1));
+    background-image: url("../../Images/profile-character/cloud.png");
+    animation: profile-cloud var(--cloud-time) linear var(--cloud-delay) infinite;
+}
+[data-sky="evening"] .profile-cloud { filter: sepia(.5) saturate(1.6) hue-rotate(-20deg) brightness(.95); }
+[data-sky="night"] .profile-cloud { opacity: .18; }
+@keyframes profile-cloud {
+    from { transform: translateX(-160px); }
+    to { transform: translateX(calc(100vw - var(--sidebar-w))); }
+}
+/* 夜は地面だけ少し暗くする。キャラクターは元の色のまま見せる。 */
+[data-sky="night"] .profile-ground { filter: brightness(.62) saturate(.8); }
+[data-sky="evening"] .profile-ground { filter: brightness(.88) sepia(.15); }
+/* 草原の地面。8ドットの高さで、上2ドットは草の先、下2ドットは土。 */
+.profile-ground {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: var(--ground-h);
+    background: url("../../Images/profile-character/grass.png") repeat-x left bottom / auto 100%;
+    z-index: 1;
+    image-rendering: pixelated;
+}
+/* 草の上を散歩。足元は草の先に少し埋める。 */
+.profile-walkway {
+    --character-size: 128px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--ground-h) - 2 * var(--profile-pixel-size));
+    height: var(--character-size);
+    z-index: 2;
+    pointer-events: none;
+}
+.profile-character {
+    position: absolute;
+    /* 元画像の足の下にある余白ぶん下げて、草の上に立たせる。 */
+    bottom: -9px;
+    /* 最初は画面の外。profile-walk.js が位置を書く（プロフィールなら中へ、ほかのページなら外のまま）。 */
+    left: -200px;
+    width: var(--character-size);
+    height: var(--character-size);
+}
+/* 位置・向き・待機か歩きか（data-state）は profile-walk.js が書く。元画像は右向き。 */
+.profile-character-facing {
+    width: 100%;
+    height: 100%;
+}
+.profile-character-pose { position: absolute; inset: 0; }
+.profile-character-pose img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+/* 表示するのは常に1枚だけ。透過部分に前のフレームを残さない。 */
+/* idle1・idle2 は立ち止まり、walk1・walk2 は歩き。 */
+.profile-character-walk,
+.profile-character[data-state="walk"] .profile-character-idle { opacity: 0; }
+.profile-character[data-state="walk"] .profile-character-walk { opacity: 1; }
+.profile-character-idle img { animation: profile-frame-first 800ms steps(1, end) infinite; }
+.profile-character-walk img { animation: profile-frame-first 320ms steps(1, end) infinite; }
+.profile-character-pose img + img { animation-name: profile-frame; }
+@keyframes profile-frame {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+}
+@keyframes profile-frame-first {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+/* KamoRogue: Player.py の画像バンク0、(0, 0) / (16, 0) の16px画像。
+   ゲームと同じ6フレームごと（30fpsで200ms）に走行画像を切り替える。 */
+.profile-kamo {
+    --kamo-size: calc(16 * var(--profile-pixel-size));
+    position: absolute;
+    bottom: 0;
+    width: var(--kamo-size);
+    height: var(--kamo-size);
+    left: -200px;
+}
+/* 位置と向きは profile-walk.js が書く。元画像は右向き。 */
+.profile-kamo-facing {
+    width: 100%;
+    height: 100%;
+}
+.profile-kamo-frame {
+    position: absolute;
+    inset: 0;
+    animation: profile-frame-first 400ms steps(1, end) infinite;
+}
+.profile-kamo-frame + .profile-kamo-frame { animation-name: profile-frame; }
+.profile-kamo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+}
+/* 目と画像を同じフレームに固定し、切り替え時の同期ずれを防ぐ。 */
+.profile-kamo-frame::after {
+    content: "";
+    position: absolute;
+    left: 62.5%;
+    top: 25%;
+    width: 6.25%;
+    height: 6.25%;
+    background: #000;
+}
+.profile-kamo-frame + .profile-kamo-frame::after { top: 31.25%; }
+/* DepthDiaryのPlayer。操作を遮らず飛行し、進行方向に機首を向ける。 */
+.profile-flight {
+    /* 空の高いところ（見出しの右、文字と重ならない帯）を飛ぶ。
+       空とは別の層にして内容より手前に置き、触れたときの吹き出しが隠れないようにする。 */
+    position: fixed;
+    top: 56px;
+    left: calc(var(--sidebar-w) + (100vw - var(--sidebar-w)) * .45);
+    right: 40px;
+    height: 54px;
+    z-index: 2;
+    pointer-events: none;
+}
+/* 画面の上端に近いので、作品への吹き出しはロケットの下に出す。 */
+main .profile-depth-player a.profile-guest-link { top: calc(100% + 6px); bottom: auto; }
+.profile-depth-player .profile-guest-link::after { top: auto; bottom: 100%; }
+.profile-depth-player {
+    position: absolute;
+    /* 最初は画面の外。profile-flight.js が位置を書く。 */
+    left: 30%;
+    top: -200px;
+    width: calc(16 * var(--profile-pixel-size));
+    height: calc(16 * var(--profile-pixel-size));
+    transform: translate(-50%, -50%);
+}
+/* 位置と機首の向きは profile-flight.js が書く。元画像は機首が上向き。 */
+.profile-depth-player-facing {
+    width: 100%;
+    height: 100%;
+    transform: rotate(45deg);
+}
+/* Unityのidle_playerと同じ順番で、1枚250ms・全体1秒のループ。 */
+.profile-depth-player img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+    opacity: 0;
+    animation: profile-depth-player-frame 1s steps(1, end) calc(var(--frame-index) * 250ms) infinite;
+}
+@keyframes profile-depth-player-frame {
+    0% { opacity: 1; }
+    25%, 100% { opacity: 0; }
+}
+@media (max-width: 960px) {
+    .profile-meadow, .profile-flight { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .profile-character, .profile-character-facing,
+    .profile-character-pose, .profile-character-pose img { animation: none; }
+    .profile-character-walk, .profile-character-idle img + img { opacity: 0; }
+    .profile-character { left: 5%; }
+    .profile-kamo { left: calc(100% - var(--kamo-size)); }
+    /* 動きを減らす設定では、プロフィール以外のページにキャラクターを出さない（歩いて出ていく代わり）。 */
+    body:not([data-page="about/"]) :is(.profile-walkway, .profile-flight) { display: none; }
+    .profile-kamo, .profile-kamo-facing, .profile-kamo-frame { animation: none; }
+    .profile-kamo-frame + .profile-kamo-frame { opacity: 0; }
+    .profile-flight { display: none; }
+    .profile-cloud { left: var(--cloud-rest); animation: none; }
+}
+
+/* キャラクターに触れると、その場で待って作品へ案内する。 */
+[data-profile-guest] { pointer-events: auto; }
+[data-profile-guest][data-paused],
+[data-profile-guest][data-paused] > .profile-character-facing,
+[data-profile-guest][data-paused] > .profile-kamo-facing,
+[data-profile-guest][data-paused] > .profile-depth-player-facing { animation-play-state: paused; }
+/* 移動と向きだけ止め、ぼくのにっきは待機の2枚を動かし続ける。 */
+.profile-character[data-paused] .profile-character-idle { animation: none; opacity: 1; }
+.profile-character[data-paused] .profile-character-walk { animation: none; opacity: 0; }
+/* Kamoには専用idle素材がないため、立ち止まっている間も走るときと同じ2枚で上下に揺れる。触れて止めたときだけ1枚目で止まる。 */
+.profile-kamo[data-paused] .profile-kamo-frame { animation: none; opacity: 1; }
+.profile-kamo[data-paused] .profile-kamo-frame + .profile-kamo-frame { opacity: 0; }
+/* DEPTH DIARYの画像は元からidleなので、停止中も4枚のループを保つ。 */
+.profile-guest-trigger {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    padding: 0;
+    border-radius: 16px;
+    background: transparent;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+.profile-guest-trigger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* 吹き出しは、どのスキン・時間帯でも白地に黒い文字（暗いスキンや夜に地や文字の色が変わっても読めるように）。 */
+main a.profile-guest-link {
+    --fg: #1f1f22;
+    --muted: #4a4a50;
+    --surface: #ffffff;
+    --accent: #b3262f; /* 触れたときの文字色も、白地で読める濃さに */
+    --line: #e2e2de;
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    z-index: 2;
+    display: grid;
+    gap: 3px;
+    width: max-content;
+    max-width: min(200px, 60vw);
+    padding: 9px 13px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface, #fff);
+    color: var(--fg);
+    box-shadow: 0 3px 12px #00000014;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.4;
+    text-align: center;
+    text-decoration: none;
+    transform: translateX(-50%);
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+/* 本体と吹き出しの間でもhoverを途切れさせない。 */
+.profile-guest-link::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 10px;
+}
+.profile-guest-link span { font-size: 11px; font-weight: 400; color: var(--muted); }
+[data-profile-guest][data-paused] .profile-guest-link {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* 全部スクロール版（?view=scroll）：草原の代わりに、箱（受賞歴・インターンの1件）の上の線に立って歩く。
+   箱の位置は変えない。見出し（「受賞歴」など）の文字とは重ならないよう、歩く範囲は profile-walk.js が見出しの右側にしぼる。 */
+.perch-walkway {
+    --profile-pixel-size: 4px;
+    --character-size: 96px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 100%;
+    height: var(--character-size);
+    pointer-events: none;
+}
+.perch-walkway .profile-character { bottom: -7px; }
+.has-perch { position: relative; }
+@media (max-width: 960px) {
+    .perch-walkway { --profile-pixel-size: 3px; --character-size: 72px; }
+    .perch-walkway .profile-character { bottom: -5px; }
+}

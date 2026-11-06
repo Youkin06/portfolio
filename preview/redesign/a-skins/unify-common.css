@@ -1,0 +1,105 @@
+/* UI の統一案の共通部分（white-fill に重ねる）。
+   全ページの「箱」と「ボタン」を同じ形にそろえる：線は 2px の黒、角は 6px、地は白。
+   案ごとの違いは、影の色と大きさだけ（unify-<番号>.css の :root の変数で決める）。
+     --box-shadow   … 箱（作品カード・数字のタイル・受賞歴などの行・作品情報・動画）の影
+     --btn-shadow   … ボタン（SNS・リンク・詳しく見る・戻る・技術のアイコン）の影
+     --btn-hover-bg … ボタンに触れたときの地の色
+     --box-hover-move / --btn-hover-move / --btn-press-move … 触れたとき・押したときの動き */
+:root {
+    --u-line: #1f1f22;
+    --u-radius: 6px;
+}
+
+/* ---- 箱 ---- */
+[data-ui] main :is(.card, .tech-detail, .item, .exp, .data .window, .pager a) {
+    border: 2px solid var(--u-line); border-radius: var(--u-radius); background: #ffffff;
+    box-shadow: var(--box-shadow);
+}
+[data-ui] main .card .thumb { border-bottom: 2px solid var(--u-line); }
+/* 作品ページ・研究ページの動画は、線で囲まない（角の丸みだけそろえる） */
+[data-ui] main :is(.vplayer, .research-video) { border: 0; border-radius: var(--u-radius); box-shadow: none; overflow: hidden; }
+/* 顔写真には影を付けない（黒い線の丸だけ） */
+[data-ui] main .portrait { box-shadow: none; }
+[data-ui] main .profile-stats a { border: 2px solid var(--u-line); border-radius: var(--u-radius); box-shadow: var(--box-shadow); }
+[data-ui] main .profile-stats a:hover { box-shadow: var(--box-shadow-hover, var(--box-shadow)); transform: var(--box-hover-move, translate(-1px, -1px)); }
+[data-ui] main .profile-stats a:active { box-shadow: none; transform: var(--box-press-move, translate(4px, 4px)); }
+
+/* 受賞歴・インターン・メディア掲載：線で区切った行を、1つずつの箱にする */
+[data-ui] main :is(.item-list, .exp-list) { display: grid; gap: 14px; }
+[data-ui] main :is(.item, .exp), [data-ui] main :is(.item, .exp):first-child, [data-ui] main :is(.item, .exp):last-child { padding: 14px 18px; }
+[data-ui] main .exp-list.timeline::before, [data-ui] main .exp::before { content: none; }
+
+/* 作品情報・研究情報・Link の箱 */
+[data-ui] main .data .window-title { padding-top: 14px; }
+
+/* ---- ボタン ---- */
+[data-ui] main :is(.contacts a, .link-list a, .item-links a, .exp-links a, .tech-detail-works a, .back, .exp-more summary) {
+    display: inline-flex; align-items: center; gap: 6px; width: fit-content; max-width: 100%;
+    margin: 0; padding: 5px 12px; border: 2px solid var(--u-line); border-radius: var(--u-radius);
+    background: #ffffff; color: var(--fg); font-size: 13px; font-weight: 700; line-height: 1.5;
+    text-decoration: none; box-shadow: var(--btn-shadow);
+    transition: transform .08s ease, box-shadow .08s ease, background-color .12s ease;
+}
+[data-ui] main .link-list { display: grid; gap: 10px; }
+[data-ui] main .exp-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+[data-ui] main .awards .item-links { display: flex; justify-content: flex-end; }
+[data-ui] main .item-links { margin-top: 8px; }
+[data-ui] main .back { margin-bottom: 14px; }
+[data-ui] main .exp-more summary { margin-top: 8px; padding: 3px 10px; font-size: 12px; }
+[data-ui] main .exp-more summary::before { border-color: currentColor; }
+[data-ui] main :is(.contacts a, .link-list a, .item-links a, .exp-links a, .tech-detail-works a, .back, .exp-more summary, .tech > button):hover {
+    color: var(--fg); background: var(--btn-hover-bg, #ffffff); transform: var(--btn-hover-move, translate(-1px, -1px)); box-shadow: var(--btn-shadow-hover);
+}
+[data-ui] main :is(.contacts a, .link-list a, .item-links a, .exp-links a, .tech-detail-works a, .back, .exp-more summary, .tech > button):active {
+    transform: var(--btn-press-move, translate(2px, 2px)); box-shadow: none;
+}
+/* 開いたあとも、ほかのボタンと同じ白地のまま（向きの変わる矢印で開いていることを示す） */
+[data-ui] main .exp-more:is([open], [data-expanded]) summary { background: #ffffff; }
+[data-ui] main .tech > button { border: 2px solid var(--u-line); border-radius: var(--u-radius); background: #ffffff; box-shadow: var(--btn-shadow); }
+[data-ui] main .tech > button[aria-expanded="true"] { background: #ffffff; box-shadow: var(--btn-shadow-hover); transform: var(--btn-hover-move, translate(-1px, -1px)); }
+
+/* 札（タグ）は押せないので、線も影もない淡い色の札のまま。角だけそろえる */
+[data-ui] main .tag { border-radius: 4px; }
+
+@media (prefers-reduced-motion: reduce) {
+    [data-ui] main :is(.contacts a, .link-list a, .item-links a, .exp-links a, .tech-detail-works a, .back, .exp-more summary, .tech > button):is(:hover, :active) { transform: none; }
+}
+[data-ui] main .card { transition: transform .12s ease, box-shadow .12s ease; }
+[data-ui] main .card:is(:hover, :focus-within) { box-shadow: var(--box-shadow-hover, var(--box-shadow)); transform: var(--box-hover-move, translate(-1px, -1px)); }
+[data-ui] main .card:has(.card-link:active) { box-shadow: none; transform: var(--box-press-move, translate(5px, 5px)); }
+@media (prefers-reduced-motion: reduce) {
+    [data-ui] main :is(.card, .profile-stats a):is(:hover, :focus-within, :active) { transform: none; }
+}
+/* Link の箱のボタンは、箱の幅いっぱいにそろえる（長い名前が折り返しても形が崩れない） */
+[data-ui] main .link-list a { width: 100%; justify-content: space-between; }
+/* スマホの受賞歴：作品のボタンは文の下の行に、左寄せで出す */
+@media (max-width: 600px) {
+    [data-ui] main .awards .item { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+    [data-ui] main .awards .item-links { justify-content: flex-start; text-align: left; }
+}
+
+/* 浮き上がったあとも、元の位置に触れている間は「触れている」ままにする。
+   右下の端に触れると、箱が左上へ逃げてカーソルが外れ、戻ってまた触れて…とガタガタするため、
+   浮き上がっている間だけ、見えない触れる範囲を右下へ動いた分（--lift）だけ広げる。 */
+[data-ui] main :is(.contacts a, .link-list a, .item-links a, .exp-links a, .tech-detail-works a, .back, .exp-more summary, .tech > button) { --lift: 3px; position: relative; }
+[data-ui] main .profile-stats a { --lift: 5px; position: relative; }
+/* マウスのときだけ広げる。スマホ（iPhone）では触れたときに新しい飾り（::after）が出ると、
+   1回目のタップが「触れた」だけになり、2回押さないと開かないため */
+@media (hover: hover) and (pointer: fine) {
+    [data-ui] main :is(.contacts a, .link-list a, .item-links a, .exp-links a, .tech-detail-works a, .back, .exp-more summary, .tech > button, .profile-stats a):hover::after {
+        content: ""; position: absolute; inset: -2px calc(-2px - var(--lift)) calc(-2px - var(--lift)) -2px;
+    }
+}
+/* 作品カードはカード全体で中身を角に合わせて切り抜いていたが、切り抜くと広げた範囲も切れてしまう。
+   切り抜きは画像の枠（.thumb）だけで行い、カード全体のリンクの範囲を広げる */
+[data-ui] main .card { overflow: visible; }
+[data-ui] main .card .thumb { border-radius: 4px 4px 0 0; }
+@media (hover: hover) and (pointer: fine) { [data-ui] main .card:hover .card-link::after { inset: -2px -7px -7px -2px; } }
+
+/* 作品ページ・研究ページの Link の箱（遊ぶ・動画・リポジトリなど）のボタンだけ、文字をそのページの色にする（Works 青・Research 緑）。地は白のまま。
+   SNS・作品へのリンク・詳しく見る・戻るなどは黒い文字のまま。 */
+[data-ui] main .link-list a, [data-ui] main .link-list a:is(:hover, :active) { color: var(--section-fg); }
+
+/* スクロールバーはどのページ・どの場所でも出さない（スクロール自体はできる） */
+html, body, * { scrollbar-width: none; }
+::-webkit-scrollbar { display: none; }

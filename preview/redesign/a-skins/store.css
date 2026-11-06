@@ -1,0 +1,287 @@
+@import url("left.css");
+
+/*
+ * ゲーム投稿サイト案：unityroom や itch.io のような「ゲームを並べて見せる場所」の雰囲気。
+ * - 飾りは最小限。主役は作品の画像と動く見本
+ * - 白い地に、黒に近い文字。About は赤、Works は水色、Research は黄緑
+ * - 作品ページは、左に説明、右に「作品の情報」の表と「遊ぶ・見る」ボタン
+ * 文言は A 案のまま変えない。
+ */
+:root {
+    --bg: #ffffff;
+    --fg: #222222;
+    --muted: #222222; /* 灰色の文字は使わず、本文と同じ色にする */
+    --surface: #ffffff;
+    --surface-2: #f1f1ef;
+    --sidebar-bg: #f2f2f0;
+    --line: #e2e2de;
+    --navy: #222222;
+    --navy-2: #3a3a3a;
+    --cursor: #ff7a2f;
+    --red: #ff7a2f;
+    --orange: #ff7a2f;
+    --sky: #ff7a2f;
+    --green: #ff7a2f;
+    --accent: #e8621c;
+    --tag-bg: #f1f1ef;
+    --tag-fg: #222222;
+    --highlight-bg: #fff1e6;
+    --highlight-fg: #b5470d;
+    --radius: 6px;
+    --font: "Zen Maru Gothic", "Noto Sans JP", "Hiragino Sans", sans-serif;
+}
+
+/* main の赤・水色・黄緑を受け継ぐ。文字は白地で読める濃さに。 */
+body[data-section="about"], .menu-group[data-section="about"] {
+    --section-color: #ff0000;
+    --section-fg: #bc2934;
+    --section-bg: #fff0f1;
+}
+body[data-section="works"], .menu-group[data-section="works"] {
+    --section-color: #87ceeb;
+    --section-fg: #126d96;
+    --section-bg: #eaf7fd;
+}
+body[data-section="research"], .menu-group[data-section="research"] {
+    --section-color: #adff2f;
+    --section-fg: #426d14;
+    --section-bg: #eff9df;
+}
+body[data-section] {
+    --accent: var(--section-fg);
+    --highlight-bg: var(--section-bg);
+    --highlight-fg: var(--section-fg);
+}
+
+body { background: var(--bg); background-image: none; font-size: 15px; }
+.label { letter-spacing: .06em; text-transform: none; font-weight: 700; color: var(--muted); }
+a { color: var(--accent); }
+
+/* ---- サイドバー：作者ページの左の列 ---- */
+/* サイドバーは薄い灰色にして、白い本文と分ける。選んでいる項目は白く抜く。 */
+.sidebar { background: var(--sidebar-bg); color: var(--fg); border-right: 1px solid var(--line); }
+.player { flex-direction: column; align-items: flex-start; gap: 10px; padding: 26px 22px 20px; border-bottom: 1px solid var(--line); color: var(--fg); }
+.player img { width: 84px; height: 84px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface-2); }
+.player strong { font-size: 18px; }
+.player .label { color: var(--muted); font-size: 12px; }
+.menu { padding: 10px 12px 20px; }
+.menu-group { margin-top: 22px; }
+.menu-group:first-child { margin-top: 6px; }
+/* 大項目（About / Works / Research）は大きく、中の項目と差をつける */
+.menu-label { color: var(--section-fg); font-size: 20px; font-weight: 900; line-height: inherit; letter-spacing: .01em; padding: 0 10px; margin-bottom: 6px; }
+.menu-label::after { display: none; }
+.menu-list a { color: var(--fg); padding: 6px 10px; border-radius: 4px; font-size: 14px; }
+.menu-list a::before { display: none; }
+.menu-list a:hover { background: transparent; color: var(--section-fg); }
+.menu-list a.active { background: var(--surface); color: var(--section-fg); font-weight: 700; }
+.menu-list .no, .menu-list .year { color: var(--fg); font-weight: 400; }
+.menu-list a.active .year, .menu-list a.active .no { color: var(--section-fg); }
+
+/* ---- 見出し ---- */
+.page { max-width: 1120px; }
+.page-head { margin-bottom: 26px; }
+.page-head .label { color: var(--section-fg); }
+.page-head h1 { font-size: clamp(28px, 3.2vw, 38px); font-weight: 800; line-height: 1.25; }
+.page-head p { color: var(--muted); }
+.back { color: var(--muted); font-weight: 700; font-size: 13px; }
+.back:hover { color: var(--accent); text-decoration: none; }
+
+/* ---- 中身の箱：線1本の白い箱、見出しは本文の上に置くだけ ---- */
+.window { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: none; }
+.window-title { background: none; color: var(--fg); border-radius: 0; padding: 16px 20px 0; font-size: 13px; letter-spacing: .04em; }
+.window-title::before { display: none; }
+.window-title .count { color: var(--muted); font-weight: 400; }
+.window-body { padding: 10px 20px 18px; }
+.window-body:first-child { padding-top: 18px; }
+
+/* ---- プロフィール ---- */
+.portrait { border: 0; border-radius: var(--radius); }
+.contacts a { border: 1px solid var(--line); border-radius: 4px; color: var(--fg); background: var(--surface); font-weight: 700; }
+.contacts a:hover { background: var(--surface); color: var(--accent); }
+.gauge i { border-radius: 2px; background: var(--line); }
+.gauge i.on { background: var(--accent); box-shadow: none; }
+.exp, .item { border-bottom: 1px solid var(--line); }
+.exp-more summary { width: fit-content; max-width: 100%; color: var(--accent); }
+.exp-more summary { list-style: none; }
+.exp-more summary::-webkit-details-marker { display: none; }
+.exp-more summary::marker { content: ""; }
+.exp-more summary::before {
+    content: "";
+    display: inline-block;
+    width: .42em;
+    height: .42em;
+    margin: 0 .55em .1em .1em;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    vertical-align: middle;
+    transform: rotate(-45deg);
+    transition: transform .24s cubic-bezier(.2, .8, .2, 1);
+}
+.exp-more[data-expanded="true"] summary::before,
+.exp-more[open]:not([data-expanded]) summary::before { transform: rotate(45deg); }
+.awards .item-text::before { content: none; }
+.awards .item { display: grid; grid-template-columns: minmax(0, 1fr) minmax(200px, 320px); align-items: baseline; gap: 12px 24px; }
+.awards .item-links { justify-content: flex-end; min-width: 0; margin-top: 0; text-align: right; }
+.awards .item-links a { max-width: 100%; overflow-wrap: anywhere; }
+@media (max-width: 600px) {
+    .awards .item { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: start; gap: 12px; }
+    .awards .item-text { font-size: 14px; }
+}
+
+/* 詳細の写真は本文の右に小さく添える。閉じている間は details が隠す。 */
+.exp-detail[data-photo] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 112px;
+    align-items: start;
+    gap: 20px;
+    margin-top: 12px;
+}
+.exp-detail[data-photo] .exp-copy { min-width: 0; }
+.exp-detail[data-photo] .exp-copy p { margin-top: 0; }
+.exp-detail[data-photo] figure { width: 112px; max-width: 100%; margin: 0; }
+.exp-detail[data-photo] figure img { width: 100%; height: auto; border: 0; border-radius: var(--radius); }
+.exp-detail[data-photo] figcaption { margin-top: 4px; font-size: 11px; }
+@media (max-width: 600px) {
+    .exp-detail[data-photo] { grid-template-columns: minmax(0, 1fr) 80px; gap: 12px; }
+    .exp-detail[data-photo] figure { width: 80px; }
+}
+
+/* ---- 作品一覧：ゲームの並ぶ棚 ---- */
+.featured, .grid { gap: 28px 22px; }
+.grid { grid-template-columns: repeat(3, 1fr); }
+.card { background: var(--surface); border: 1px solid #c9c9c4; border-radius: var(--radius); box-shadow: none; overflow: hidden; }
+.card:hover, .card:focus-within { transform: none; box-shadow: none; border-color: #c9c9c4; }
+.card .thumb { border: 0; border-bottom: 1px solid #c9c9c4; border-radius: 0; overflow: hidden; box-shadow: none; }
+.card .no { top: 8px; left: 8px; border: 0; border-radius: 4px; background: rgba(0, 0, 0, .6); color: #fff; font-size: 11px; letter-spacing: .04em; }
+.card .body { padding: 12px 14px 16px; }
+.card h3 { font-size: 16px; font-weight: 800; }
+.featured .card h3 { font-size: 19px; }
+.card-link { color: var(--fg); }
+.card:hover .card-link { color: var(--accent); }
+.card p { font-size: 13px; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.card .tags { margin-top: 8px; }
+.tag { border: 0; border-radius: 3px; font-weight: 700; font-size: 11px; padding: 4px 7px; background: var(--tag-bg); color: var(--tag-fg); }
+/* タグごとに色を決める（同じタグはどの作品でも同じ色） */
+.tag-unity       { background: #e6eeff; color: #1d4fb8; }
+.tag-vr          { background: #def5f2; color: #0f766e; }
+.tag-hackathon   { background: #ffeadb; color: #c2410c; }
+.tag-game-jam    { background: #fde7f1; color: #be185d; }
+.tag-winner,
+.tag-gc-koshien  { background: #fff1bf; color: #8a5a00; }
+.tag-google-play { background: #e3f6e8; color: #15803d; }
+.tag-internship  { background: #efe8ff; color: #6d28d9; }
+.tag-team-dev    { background: #dff1fd; color: #0369a1; }
+.tag-solo-dev    { background: #eef5dc; color: #4d7c0f; }
+.tag-blender     { background: #fdf0d2; color: #a1580a; }
+.tag-nomaps      { background: #ffe3e6; color: #be123c; }
+.tag-exhibition  { background: #fbe6f6; color: #a21caf; }
+.tag-illust      { background: #eaf7d4; color: #3f6212; }
+.tag-two-d       { background: #dcf4f8; color: #0e7490; }
+.tag-three-d     { background: #ffe6d6; color: #9a3412; }
+.tag-dot-e       { background: #e2e6ff; color: #3730a3; }
+.tag-android     { background: #dcf7e4; color: #166534; }
+.tag-unity1week  { background: #f2e6ff; color: #7e22ce; }
+.tag-python      { background: #fdf6c3; color: #854d0e; }
+.tag-pyxel       { background: #d3f6ef; color: #115e59; }
+.tag-modeling    { background: #f8e3fc; color: #86198f; }
+
+/* ---- 作品ページ：左に説明、右に作品の情報 ---- */
+.vplayer { border: 0; border-radius: var(--radius); box-shadow: 0 2px 8px rgba(0, 0, 0, .12); }
+.vsound { border-radius: 50%; border: 0; background: rgba(0, 0, 0, .6); }
+@media (min-width: 1181px) {
+    .game .detail { grid-template-columns: minmax(0, 1fr) 300px; }
+    .game .detail .data { order: 2; position: sticky; top: 24px; }
+}
+.game .detail-main .window { border: 0; background: none; }
+.game .detail-main .window-title { padding: 0 0 8px; font-size: 18px; letter-spacing: 0; border-bottom: 1px solid var(--line); }
+.game .detail-main .window-body { padding: 12px 0 0; }
+.prose p { font-size: 15px; line-height: 1.9; }
+/* 作品の情報：表のように */
+.data dl { gap: 0; }
+.data dl > div { display: grid; grid-template-columns: 6em 1fr; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.data dl > div:last-child { border-bottom: 0; }
+.data dt { color: var(--muted); font-size: 13px; letter-spacing: 0; }
+.data dd { margin: 0; font-size: 14px; }
+/* 遊ぶ・見るボタン：最初の1つだけ目立たせる */
+.link-list { gap: 8px; }
+/* リンクはボタンにせず、普通の文字のリンク */
+.link-list { gap: 6px; }
+.link-list a { display: inline; padding: 0; border: 0; border-radius: 0; background: none; color: var(--accent); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.link-list a:hover { background: none; color: var(--highlight-fg); }
+
+/* 作品情報・LINK の見出しを大きく */
+.data .window-title { font-size: 17px; font-weight: 800; letter-spacing: .02em; padding-top: 18px; }
+.pager a { border: 1px solid var(--line); box-shadow: none; }
+.pager a:hover { background: var(--surface); color: var(--accent); }
+.pager a:hover .label { color: var(--muted); }
+
+/* ---- スマホ ---- */
+.topbar { background: var(--surface); color: var(--fg); border-bottom: 1px solid var(--line); }
+.topbar img { border-radius: 50%; }
+.topbar button { border: 1px solid var(--line); color: var(--fg); border-radius: 4px; }
+@media (max-width: 960px) { .grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+
+/* ---- About：箱をやめて、作品一覧と同じく地の上に直接置く ---- */
+[data-section="about"] .window { background: none; border: 0; border-radius: 0; box-shadow: none; }
+[data-section="about"] .window-title { padding: 0 0 10px; font-size: 26px; font-weight: 900; letter-spacing: .01em; color: var(--fg); border-bottom: 2px solid var(--fg); }
+[data-section="about"] .window-title .count { font-size: 14px; font-weight: 700; }
+/* スキルはプロフィールの中の小見出し */
+[data-section="about"] [data-block="skills"] .window-title { font-size: 17px; font-weight: 800; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+[data-section="about"] [data-block="skills"] { margin-top: -12px; }
+[data-section="about"] .window-body,
+[data-section="about"] .window-body:first-child { padding: 14px 0 0; }
+[data-section="about"] .stack { gap: 40px; }
+
+/* ---- サイドバーをすっきり：アイコン・名前・肩書き、境目の線、作品の年を出さない ---- */
+.sidebar .player { display: none; }
+.sidebar { border-right: 0; }
+.sidebar .menu { padding-top: 22px; }
+.menu-list .year { display: none; }
+
+/* ---- 作品一覧：画像の位置を保つ ---- */
+.card:hover .thumb { transform: none; box-shadow: none; }
+
+/* ---- 見出しの下の線はなし ---- */
+[data-section="about"] .window-title,
+[data-section="about"] [data-block="skills"] .window-title,
+.game .detail-main .window-title { border-bottom: 0; }
+[data-section="about"] [data-block="skills"] { margin-top: 0; }
+/* プロフィールでは技術スタックを写真の段に少し寄せ、下の空との間をあける。 */
+[data-page="about/"] [data-block="skills"] { margin-top: -16px; }
+
+/* ---- リンクに触れたときの反応 ---- */
+.menu-list a, main a:not(.card-link), .exp-more summary {
+    transition: color .16s ease;
+}
+main a:not(.card-link) {
+    border-radius: 4px;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+}
+.card-link { transition: color .16s ease; }
+
+/* ホバーは文字色だけ。背景は現在選んでいる項目・開いている詳細に付ける。 */
+.menu-list a:hover, .contacts a:hover, .back:hover { transform: none; }
+main a:not(.card-link):hover, .exp-more summary:hover { color: var(--accent); }
+.exp-more[data-expanded="true"] summary,
+.exp-more[open]:not([data-expanded]) summary { background: var(--section-bg); }
+
+a:focus-visible, .exp-more summary:focus-visible {
+    outline: 2px solid var(--section-fg, var(--accent));
+    outline-offset: 3px;
+}
+main a:not(.card-link):focus-visible, .menu-list a:focus-visible {
+    color: var(--section-fg);
+}
+.card:has(.card-link:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+.card:focus-within .card-link { color: var(--accent); }
+
+@media (prefers-reduced-motion: reduce) {
+    .menu-list a, main a, .card, .exp-more summary { transition: none; }
+    .menu-list a:hover, .contacts a:hover, .back:hover { transform: none; }
+    .exp-more summary::before { transition: none; }
+}
