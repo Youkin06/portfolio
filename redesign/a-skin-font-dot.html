@@ -610,10 +610,10 @@
             document.getElementById('topbar-name').replaceChildren(document.querySelector('.sidebar .sidebar-banner').cloneNode(true));
             document.getElementById('menu-button').textContent = TEXT.menu;
 
-            // 全部スクロール版（確認用：URL に ?view=scroll）。パソコンでもスマホと同じ1本のスクロールにし、
+            // 全部スクロール版（SKIN.view = 'scroll'。URL の ?view=scroll|pages で切り替えて確認できる）。パソコンでもスマホと同じ1本のスクロールにし、
             // 草原の代わりに、キャラクターを箱の上で歩かせる（ぼくのにっき：受賞歴の神ゲー創造主エボリューション、カモ：インターンの Unity メンター）。
             // 目次の作品・研究は1件ずつ並べず、「作品ページ」「研究ページ」の中に畳んでおく（押すと開く）。
-            const ONE_SCROLL = new URLSearchParams(location.search).get('view') === 'scroll' || SKIN.view === 'scroll';
+            const ONE_SCROLL = (new URLSearchParams(location.search).get('view') || SKIN.view) === 'scroll';
             if (ONE_SCROLL) document.body.dataset.view = 'scroll';
             // 目次の中の、開け閉めできるまとまり（全部スクロール版の「作品ページ」「研究ページ」）
             const foldHTML = (label, items) => `
