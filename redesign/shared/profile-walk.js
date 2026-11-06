@@ -6,6 +6,7 @@
 // ページを移ると草原は描き直されるが、位置はここで覚えているので、続きから動く。
 // 全部スクロール版では、箱の上（data-perch の中）を歩く。どのページを読んでいても出ていかない。
 // 箱のすぐ上に見出し（「受賞歴」など）があるときは、見出しの文字に当たらないよう、その右側だけを歩く。
+// 見出しの右に歩ける場所が残らないとき（スマホのインターンなど）は、箱の右端に立ったままにする。
 // 触れて止まっている間（data-paused）と、動きを減らす設定のときは動かさない。
 (function () {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -29,6 +30,13 @@
         const hi = width * zone[1] - size;
         if (perched) lo = Math.max(lo, titleRight(el.parentElement));
         const room = hi - lo;
+        if (perched && room <= 0) {
+            w.x = hi; w.goal = null; w.facing = -1;
+            el.dataset.state = 'idle';
+            el.style.left = `${w.x}px`;
+            el.querySelector('[class$="-facing"]').style.transform = `scaleX(${w.facing})`;
+            return;
+        }
         if (room <= 0) return;
         const offLeft = -size - 30, offRight = width + 30;
         const exitX = w.exit === 'left' ? offLeft : offRight;

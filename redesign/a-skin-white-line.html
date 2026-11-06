@@ -430,6 +430,9 @@
             .skills { grid-template-columns: 1fr; }
         }
         @media (max-width: 600px) {
+            /* スマホではインターンの見出しを2行に：1行目に役割、2行目に会社名（「/」は出さない。大きさと太さはそのまま） */
+            .exp-head .exp-org { flex-basis: 100%; }
+            .exp-role + .exp-org::before { content: none; }
             .grid, .pager { grid-template-columns: 1fr; }
             .pager .next { grid-column: auto; }
             .window-body { padding: 16px; }

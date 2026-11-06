@@ -249,9 +249,9 @@ main .profile-depth-player a.profile-guest-link { top: calc(100% + 6px); bottom:
 /* 移動と向きだけ止め、ぼくのにっきは待機の2枚を動かし続ける。 */
 .profile-character[data-paused] .profile-character-idle { animation: none; opacity: 1; }
 .profile-character[data-paused] .profile-character-walk { animation: none; opacity: 0; }
-/* Kamoには専用idle素材がないため、通常姿勢の1枚目で待機する。 */
-.profile-kamo:is([data-paused], [data-state="idle"]) .profile-kamo-frame { animation: none; opacity: 1; }
-.profile-kamo:is([data-paused], [data-state="idle"]) .profile-kamo-frame + .profile-kamo-frame { opacity: 0; }
+/* Kamoには専用idle素材がないため、立ち止まっている間も走るときと同じ2枚で上下に揺れる。触れて止めたときだけ1枚目で止まる。 */
+.profile-kamo[data-paused] .profile-kamo-frame { animation: none; opacity: 1; }
+.profile-kamo[data-paused] .profile-kamo-frame + .profile-kamo-frame { opacity: 0; }
 /* DEPTH DIARYの画像は元からidleなので、停止中も4枚のループを保つ。 */
 .profile-guest-trigger {
     position: absolute;
