@@ -83,14 +83,18 @@
    浮き上がっている間だけ、見えない触れる範囲を右下へ動いた分（--lift）だけ広げる。 */
 [data-ui] main :is(.contacts a, .link-list a, .item-links a, .exp-links a, .tech-detail-works a, .back, .exp-more summary, .tech > button) { --lift: 3px; position: relative; }
 [data-ui] main .profile-stats a { --lift: 5px; position: relative; }
-[data-ui] main :is(.contacts a, .link-list a, .item-links a, .exp-links a, .tech-detail-works a, .back, .exp-more summary, .tech > button, .profile-stats a):hover::after {
-    content: ""; position: absolute; inset: -2px calc(-2px - var(--lift)) calc(-2px - var(--lift)) -2px;
+/* マウスのときだけ広げる。スマホ（iPhone）では触れたときに新しい飾り（::after）が出ると、
+   1回目のタップが「触れた」だけになり、2回押さないと開かないため */
+@media (hover: hover) and (pointer: fine) {
+    [data-ui] main :is(.contacts a, .link-list a, .item-links a, .exp-links a, .tech-detail-works a, .back, .exp-more summary, .tech > button, .profile-stats a):hover::after {
+        content: ""; position: absolute; inset: -2px calc(-2px - var(--lift)) calc(-2px - var(--lift)) -2px;
+    }
 }
 /* 作品カードはカード全体で中身を角に合わせて切り抜いていたが、切り抜くと広げた範囲も切れてしまう。
    切り抜きは画像の枠（.thumb）だけで行い、カード全体のリンクの範囲を広げる */
 [data-ui] main .card { overflow: visible; }
 [data-ui] main .card .thumb { border-radius: 4px 4px 0 0; }
-[data-ui] main .card:hover .card-link::after { inset: -2px -7px -7px -2px; }
+@media (hover: hover) and (pointer: fine) { [data-ui] main .card:hover .card-link::after { inset: -2px -7px -7px -2px; } }
 
 /* 作品ページ・研究ページの Link の箱（遊ぶ・動画・リポジトリなど）のボタンだけ、文字をそのページの色にする（Works 青・Research 緑）。地は白のまま。
    SNS・作品へのリンク・詳しく見る・戻るなどは黒い文字のまま。 */
