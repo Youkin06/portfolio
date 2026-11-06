@@ -246,6 +246,8 @@
         .tech-stack-list { gap: 10px; }
         .tech-detail { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px 24px; margin-top: 12px; padding: 10px 16px; border: 2px solid var(--line); border-radius: 8px; background: var(--surface); font-size: 13px; line-height: 1.6; }
         .tech-detail[hidden] { display: none; }
+        /* 説明の上の余白を、外へはみ出させずにこの中に含める（伸びる動きの最後に、余白のぶんだけ急に伸びないように） */
+        .tech-details { display: flow-root; }
         .tech-detail > div:only-child { grid-column: 1 / -1; }
         .tech-detail-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 0 0 4px; }
         .tech-detail-head strong { font-size: 15px; }
