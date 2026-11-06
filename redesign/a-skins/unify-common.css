@@ -47,8 +47,12 @@
 [data-ui] main .back { margin-bottom: 14px; }
 [data-ui] main .exp-more summary { margin-top: 8px; padding: 3px 10px; font-size: 12px; }
 [data-ui] main .exp-more summary::before { border-color: currentColor; }
-[data-ui] main :is(.contacts a, .link-list a, .item-links a, .exp-links a, .tech-detail-works a, .back, .exp-more summary, .tech > button):hover {
-    color: var(--fg); background: var(--btn-hover-bg, #ffffff); transform: var(--btn-hover-move, translate(-1px, -1px)); box-shadow: var(--btn-shadow-hover);
+/* 触れたときに浮き上がるのはマウスのときだけ。スマホ（iPhone）では触れた見た目が変わると、
+   1回目のタップが「触れた」だけになり、「詳しく見る」などを2回押さないと開かないため。スマホでは押したときに沈む動きだけにする */
+@media (hover: hover) and (pointer: fine) {
+    [data-ui] main :is(.contacts a, .link-list a, .item-links a, .exp-links a, .tech-detail-works a, .back, .exp-more summary, .tech > button):hover {
+        color: var(--fg); background: var(--btn-hover-bg, #ffffff); transform: var(--btn-hover-move, translate(-1px, -1px)); box-shadow: var(--btn-shadow-hover);
+    }
 }
 [data-ui] main :is(.contacts a, .link-list a, .item-links a, .exp-links a, .tech-detail-works a, .back, .exp-more summary, .tech > button):active {
     transform: var(--btn-press-move, translate(2px, 2px)); box-shadow: none;
