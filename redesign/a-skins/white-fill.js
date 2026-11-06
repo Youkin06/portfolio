@@ -4,6 +4,8 @@ window.SKIN = {
     sky: 'none',
     // プロフィールは「すっきり」版（ほかの版は ?profile=numbers|intro|history で確認できる）
     profile: 'simple',
+    // About me → 作品一覧 → 研究一覧を1本のスクロールで見せる（以前の項目ごとのページは ?view=pages で確認できる）
+    view: 'scroll',
     // リンクボタンと数字は「ゲームのボタン」案（黒い線とずらした影）
     ui: 'b',
     detailsMotion: true,
