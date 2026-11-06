@@ -1,8 +1,9 @@
-// 試作デザイン共通：本番の index.html から内容を読み取り、扱いやすいデータに変換する。
-// 内容の更新は index.html だけで済み、4案すべてに反映される。
+// 新しいデザイン共通：content.html（以前のサイトのページ）から内容を読み取り、扱いやすいデータに変換する。
+// 内容の更新は content.html だけで済み、トップページとすべての案に反映される。
 
 (function () {
-    const SOURCE_URL = new URL('../index.html', location.href);
+    // 置き場所はページの <head> で決める（window.PORTFOLIO_SOURCE）。書いていないページは redesign/ の中にある前提。
+    const SOURCE_URL = new URL(window.PORTFOLIO_SOURCE || '../content.html', location.href);
 
     const text = el => (el ? el.textContent.replace(/\s+/g, ' ').trim() : '');
     const resolve = path => (path ? new URL(path, SOURCE_URL).href : '');
@@ -48,8 +49,8 @@
             period: text(item.querySelector('.period')),
             html: body ? body.innerHTML.trim() : '',
             links: extraLinks,
-            // 研究などで紹介動画があるとき（index.html の data-video）。data-video-audio があれば音を出せる。
-            // 研究などの使用技術（index.html の data-tech）
+            // 研究などで紹介動画があるとき（content.html の data-video）。data-video-audio があれば音を出せる。
+            // 研究などの使用技術（content.html の data-tech）
             tech: item.getAttribute('data-tech') || '',
             video: item.getAttribute('data-video') ? { src: resolve(item.getAttribute('data-video')), audio: item.hasAttribute('data-video-audio') } : null,
             image: img ? {

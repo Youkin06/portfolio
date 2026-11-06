@@ -60,6 +60,18 @@ build mist '薄曇り案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
 build white-gray '白・灰色サイドバー案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
 build white-line '白・線で区切る案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
 build white-fill '白・色の札案' 'family=Zen+Maru+Gothic:wght@400;700;900'
+
+# 公開用のトップページ（リポジトリ直下の index.html）。white-fill を、置き場所に合わせて書き換えて書き出す。
+# 直接は編集しない（a-sidebar.html・スキンを直して、このスクリプトをもう一度実行する）。
+sed -E \
+    -e 's#<title>[^<]*</title>#<title>矢追陽平（ヨウキン）のポートフォリオ</title>#' \
+    -e 's#^<head>$#<head><!-- redesign/a-skins/build.sh が redesign/a-sidebar.html と white-fill から作るファイル。直接は編集しない。 -->#' \
+    -e "s#'\.\./content\.html'#'content.html'#" \
+    -e 's#(src|href)="\.\./#\1="#g' \
+    -e 's#url\("\.\./Images#url("Images#g' \
+    -e "s#'\.\./Images/#'Images/#g" \
+    -e 's#(src|href)="(shared|a-skins)/#\1="redesign/\2/#g' \
+    a-skin-white-fill.html > ../index.html
 build white-soft '白・やわらかい影案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
 build white-sky '白・淡い空案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
 build white-tint '白・色の札（黒文字）案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'

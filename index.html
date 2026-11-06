@@ -1,1166 +1,1078 @@
 <!DOCTYPE html>
 <html lang="ja">
-
-<head>
+<head><!-- redesign/a-skins/build.sh が redesign/a-sidebar.html と white-fill から作るファイル。直接は編集しない。 -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ようへいのポートフォリオ</title>
-
-    <!-- ファビコンの設定 -->
+    <title>矢追陽平（ヨウキン）のポートフォリオ</title>
     <link rel="icon" href="Images/Rocket.png" type="image/png">
-
-    <!-- Google Fonts (見栄えを良くするため) -->
+    <!-- 中身（content.html）は、フォントや CSS を待たずにすぐ読み込み始める（shared/content.js がこれを使う）。
+         公開用のトップページ（リポジトリ直下の index.html）は build.sh がこのファイルから作り、置き場所に合わせて '../' を外す。 -->
+    <script>
+        window.PORTFOLIO_SOURCE = 'content.html';
+        window.portfolioSource = fetch(window.PORTFOLIO_SOURCE, { cache: 'no-cache' }).then(response => response.text());
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Press+Start+2P&family=VT323&display=swap"
-        rel="stylesheet">
+    <link rel="stylesheet" href="redesign/shared/base.css">
+    <!--
+        スキン（見た目違い）の作り方
+        ・</head> の直前に、スキンの CSS と設定の JS（window.SKIN を決める）を足す。HTML の書き換えはしない。
+        ・window.SKIN で変えられるもの（書かなかった項目は既定のまま）
+            layout   : 'sections'（既定。サイドバーに中の項目も出す）
+                       'tabs'    （選んだ大項目の中の項目だけ出す）
+                       'flat'    （サイドバーに中の項目を出さない）
+            text     : 画面の言葉。下の TEXT の項目名で上書きする
+            iconColor: SNS アイコンの色（16進数6桁、# なし）
+            mail     : 'button'（既定。メールを開くボタン）か 'text'（選んでコピーできる文字）
+        ・CSS から使える目印
+            body[data-layout][data-section="about|works|research"][data-page="works/zelly-swipe" など]
+            .menu-group[data-section][data-active]、.menu-label（大項目へのリンク）、.menu-list a.active
+            色分け用の [data-index]（0 始まり）と [data-tone]（0〜3）。既定の色は下の CSS で決めている
+            スキル li[data-level="1〜5"]（.skill-name / .gauge / .skill-word）
+            経歴 .exp（.exp-period / .exp-role / .exp-org / .exp-more / .exp-links）
+            リンク .link--work（作品へ）/ .link--external（外のサイト。印は .ext-mark）
+            About の中の項目と研究は、1つずつのページ（#about/awards、#research/2 など）
+        ・build.sh は行頭の </head> を目印に差し込むので、閉じタグ </head> は必ず1行に単独で書く
+    -->
+    <style>
+        /*
+         * 既定の見た目：ゲームのメニュー画面。
+         * サイドバーはRPGのコマンドウィンドウ、中身はタイトルバー付きのウィンドウで統一する。
+         * 色は今のサイトの4色（赤・オレンジ・水色・黄緑）。
+         */
+        :root {
+            --bg: #e9edf5;
+            --fg: #1c2238;
+            --muted: #5d6680;
+            --surface: #ffffff;
+            --surface-2: #f2f4f9;
+            --line: #d9deea;
+            --navy: #1c2238;
+            --navy-2: #2a3258;
+            --cursor: #ffd84d;
+            --red: #ff5a5a;
+            --orange: #ffa51f;
+            --sky: #4fb6e8;
+            --green: #8fd11c;
+            --accent: #2b78c5;
+            --tag-bg: #f2f4f9;
+            --tag-fg: #1c2238;
+            --highlight-bg: #ffd84d;
+            --highlight-fg: #1c2238;
+            --sidebar-w: 312px;
+            --radius: 12px;
+        }
 
-    <!-- 外部CSSファイルの読み込み -->
-    <link rel="stylesheet" href="style.css?v=1.6">
+        /* 色分け：data-tone（0〜3）を今のサイトの4色に。スキンはここを上書きする */
+        [data-tone="0"] { --k: var(--red); }
+        [data-tone="1"] { --k: var(--orange); }
+        [data-tone="2"] { --k: var(--sky); }
+        [data-tone="3"] { --k: var(--green); }
+        [data-section="about"] { --k: var(--green); }
+        [data-section="works"] { --k: var(--orange); }
+        [data-section="research"] { --k: var(--sky); }
 
+        /* 方眼紙のようなドットの背景 */
+        body {
+            background-color: var(--bg);
+            background-image: radial-gradient(rgba(28, 34, 56, .12) 1px, transparent 1.2px);
+            background-size: 18px 18px;
+        }
+
+        /* ラベル（WORKS・No.01 など）は同じフォントで、字間を広げて小さく */
+        .label { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+
+        /* ---- サイドバー：コマンドウィンドウ ---- */
+        .sidebar {
+            position: fixed;
+            inset: 16px auto 16px 16px;
+            width: var(--sidebar-w);
+            display: flex;
+            flex-direction: column;
+            background: var(--navy);
+            color: #fff;
+            border: 3px solid #fff;
+            outline: 3px solid var(--navy);
+            border-radius: var(--radius);
+            overflow: hidden;
+        }
+        /* サイドバーの一番上の見出し「Youkin」（642×200 の比率で横幅いっぱい）。スクロールするのは下のメニューだけなので、ここは動かない。
+           背景の模様が斜めに流れ、文字は1文字ずつ「黒い影とふち」「白い縁」「色」の3枚を重ねて、Y→o→u→k→i→n の順に跳ねる。
+           いちばん上に、真上・真下の文字と同じ色の帯を黒い線で挟んだ枠（帯は外側2段が明るい色、内側1段が文字の色。色は文字と文字の真ん中でぱきっと変わる。動かない）を重ねる。 */
+        .sidebar-banner { position: relative; display: block; flex-shrink: 0; aspect-ratio: 642 / 200; overflow: hidden; background: var(--sidebar-bg, #fff); }  /* 地はサイドバーと同じ色（模様の地は透明） */
+        .sidebar-banner > * { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; }
+        /* 背景：つなぎ目のない模様（644×200）を縦横2枚分並べ、1枚分ずらし続ける */
+        .banner-bg::before {
+            content: ""; position: absolute; top: 0; left: 0;
+            width: calc(200% * 644 / 642); height: 200%;
+            background: url("Images/sidebar-banner/bg.png") repeat 0 0 / 50% 50%;
+            image-rendering: pixelated;
+            animation: banner-scroll 28s linear infinite;
+        }
+        @keyframes banner-scroll { to { transform: translate(-50%, -50%); } }
+        .sidebar-banner .hop { animation: banner-hop 1.8s steps(1) infinite; animation-delay: var(--d); }
+        @keyframes banner-hop { 0%, 20% { transform: translateY(-2%); } 21%, 100% { transform: none; } }
+        @media (prefers-reduced-motion: reduce) {
+            .banner-bg::before, .sidebar-banner .hop { animation: none; }
+        }
+        .player {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 18px;
+            border-bottom: 2px dashed rgba(255, 255, 255, .22);
+            color: #fff;
+            text-decoration: none;
+        }
+        .player img { width: 52px; height: 52px; border-radius: 8px; image-rendering: pixelated; background: #fff; border: 2px solid #fff; }
+        .player strong { display: block; font-size: 16px; }
+        .player .label { color: #aeb7d6; font-size: 11px; }
+
+        .menu { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: none; scrollbar-width: none; padding: 8px 10px 16px; }  /* 強く動かしても跳ね返らない */
+        .menu::-webkit-scrollbar { display: none; }
+        .menu-group { margin-top: 12px; }
+        .menu-label { display: flex; align-items: center; gap: 10px; margin: 0 0 4px; padding: 2px 10px; color: var(--k); text-decoration: none; }
+        .menu-label::after { content: ""; flex: 1; height: 2px; background: currentColor; opacity: .35; }
+        .menu-list { list-style: none; margin: 0; padding: 0; }
+        .menu-list a {
+            position: relative;
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            padding: 7px 10px 7px 28px;
+            border-radius: 6px;
+            color: #dfe4f3;
+            text-decoration: none;
+            font-size: 14px;
+            line-height: 1.45;
+        }
+        .menu-list .no, .menu-list .year { font-size: 12px; color: #8790b3; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+        .menu-list .no { width: 1.6em; }
+        .menu-list .year { margin-left: auto; }
+        .menu-list a::before { content: "▶"; position: absolute; left: 10px; top: 9px; font-size: 10px; color: var(--cursor); opacity: 0; }
+        .menu-list a:hover { background: var(--navy-2); color: #fff; }
+        .menu-list a:hover::before { opacity: .5; }
+        .menu-list a.active { background: var(--navy-2); color: #fff; font-weight: 700; }
+        .menu-list a.active::before { opacity: 1; }
+
+        /* layout: 'tabs' は選んだ大項目の中だけ、'flat' は中の項目を出さない */
+        [data-layout="tabs"] .menu-group:not([data-active]) .menu-list { display: none; }
+        [data-layout="flat"] .menu-list { display: none; }
+        [data-layout="flat"] .menu-label { padding: 8px 10px; }
+
+        /* ---- 右側 ---- */
+        main { position: relative; margin-left: calc(var(--sidebar-w) + 32px); padding: 28px 40px 96px; }
+        main > .page { position: relative; }
+        .page--narrow { max-width: 920px; }
+        @keyframes pop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+        .page-head { margin: 4px 0 22px; }
+        .page-head .label { color: var(--k, var(--accent)); }
+        .page-head h1 { margin: 4px 0 0; font-size: clamp(26px, 3.2vw, 36px); font-weight: 900; line-height: 1.3; }
+        .page-head p { margin: 6px 0 0; color: var(--muted); }
+        .back { display: inline-block; margin-bottom: 8px; font-size: 14px; font-weight: 700; color: var(--accent); text-decoration: none; }
+        .back:hover { text-decoration: underline; }
+
+        /* すべての中身はこのウィンドウ（.block）に入れる */
+        .window { background: var(--surface); border: 3px solid var(--navy); border-radius: var(--radius); box-shadow: 0 5px 0 rgba(28, 34, 56, .16); scroll-margin-top: 20px; }
+        .window-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0;
+            padding: 8px 16px;
+            background: var(--navy);
+            color: #fff;
+            border-radius: calc(var(--radius) - 4px) calc(var(--radius) - 4px) 0 0;
+        }
+        .window-title::before { content: ""; width: 10px; height: 10px; background: var(--k, var(--cursor)); flex-shrink: 0; }
+        .window-title .count { margin-left: auto; color: #aeb7d6; letter-spacing: .04em; }
+        .window-body { padding: 18px 22px; }
+        .stack { display: grid; gap: 20px; align-content: start; }
+
+        /* About：プロフィール */
+        .profile { display: grid; grid-template-columns: 190px 1fr; gap: 22px; align-items: start; }
+        .portrait { position: relative; aspect-ratio: 1; border: 3px solid var(--navy); border-radius: var(--radius); overflow: hidden; background: #fff; }
+        .portrait img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity .2s ease; }
+        .portrait .pixel { opacity: 0; image-rendering: pixelated; }
+        .portrait:hover .pixel { opacity: 1; }
+        .profile-name { margin: 0 0 8px; font-size: 22px; }
+        .profile-text { margin: 0; }
+        /* SNS とメールは段を分ける */
+        .contacts { display: grid; gap: 8px; margin-top: 14px; }
+        .contacts-social, .contacts-mail { display: flex; flex-wrap: wrap; gap: 8px; }
+        .contacts a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border: 2px solid var(--navy);
+            border-radius: 8px;
+            color: var(--fg);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .contacts a:hover { background: var(--navy); color: #fff; }
+        .contacts img { width: 16px; height: 16px; }
+        .contacts .mail { display: inline-flex; align-items: center; gap: 8px; padding: 6px 4px; font-size: 13px; }
+        .contacts .mail > span { user-select: all; overflow-wrap: anywhere; min-width: 0; }
+        .contacts .mail-icon { flex-shrink: 0; }
+
+        /* 技術スタック */
+        /* アイコンだけを並べる（名前はマウスを乗せたときと読み上げで出る） */
+        .tech-stack-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 18px; }
+        .tech img { width: 44px; height: 44px; display: block; }
+        /* アイコンは押せる札にする。押すと下に説明が開く */
+        .tech > button { display: grid; place-items: center; width: 56px; height: 56px; padding: 0; border: 2px solid var(--line); border-radius: 8px; background: var(--surface); cursor: pointer; }
+        .tech > button img { width: 36px; height: 36px; }
+        .tech > button:hover, .tech > button[aria-expanded="true"] { border-color: var(--fg); }
+        .tech-stack-list { gap: 10px; }
+        .tech-detail { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px 24px; margin-top: 12px; padding: 10px 16px; border: 2px solid var(--line); border-radius: 8px; background: var(--surface); font-size: 13px; line-height: 1.6; }
+        .tech-detail[hidden] { display: none; }
+        .tech-detail > div:only-child { grid-column: 1 / -1; }
+        .tech-detail-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 0 0 4px; }
+        .tech-detail-head strong { font-size: 15px; }
+        .tech-detail-head span { color: var(--muted); font-size: 12px; }
+        .tech-detail-points { margin: 0; padding-left: 1.2em; }
+        .tech-detail-label { margin: 0 0 6px; color: var(--muted); font-size: 12px; font-weight: 700; }
+        .tech-detail-works { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+        .tech-detail-works a { display: inline-block; padding: 1px 8px; border: 1px solid var(--line); border-radius: 999px; color: inherit; font-size: 12px; text-decoration: none; }
+        .tech-detail-works a:hover { border-color: currentColor; }
+        .tech-detail-more { align-self: center; color: var(--muted); font-size: 12px; }
+        /* 草原のあるプロフィール（広い画面）では、説明を下の草原の上に重ね、ページの高さを変えない */
+        @media (min-width: 961px) {
+            .page.about > .stack:has([data-block="skills"]) { z-index: 3; }
+            [data-block="skills"] .window-body { position: relative; }
+            .tech-detail { position: absolute; left: 0; right: 0; top: 100%; margin-top: 10px; }
+        }
+        /* Skills：既定はブロックのゲージ。言葉（.skill-word）はスキンで出す */
+        .skills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px 24px; }
+        .skill-group h3 { margin: 0 0 8px; color: var(--muted); }
+        .skill-group ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 14px; }
+        .skill-group li { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; }
+        .skill-word { display: none; }
+        .gauge { display: flex; gap: 3px; }
+        .gauge i { width: 12px; height: 12px; background: var(--line); }
+        .gauge i.on { background: var(--k, var(--sky)); box-shadow: inset 0 -3px 0 rgba(0, 0, 0, .18); }
+
+        /* 経歴（インターン・バイト） */
+        .exp-list, .item-list { list-style: none; margin: 0; padding: 0; }
+        .exp, .item { padding: 14px 0; border-bottom: 2px dotted var(--line); }
+        .exp:first-child, .item:first-child { padding-top: 0; }
+        .exp:last-child, .item:last-child { border-bottom: 0; padding-bottom: 0; }
+        .exp-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; }
+        .exp-role { margin: 0; font-size: 15px; }
+        .exp-org { color: var(--muted); font-size: 13px; }
+        .exp-period { margin-left: auto; color: var(--muted); font-size: 13px; }
+        .exp-more summary { cursor: pointer; font-size: 13px; color: var(--accent); margin-top: 4px; font-weight: 700; -webkit-user-select: none; user-select: none; }
+        .exp-content { display: flow-root; }
+        .exp-more p { margin: 6px 0 0; font-size: 14px; line-height: 1.85; }
+        .exp-more figure { margin: 10px 0 0; max-width: 340px; }
+        .exp-more figure img { border-radius: 8px; border: 2px solid var(--navy); }
+        .exp-more figcaption { font-size: 12px; color: var(--muted); }
+        .exp-links, .item-links { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 6px; font-size: 13px; }
+        .item-text { font-weight: 700; font-size: 15px; }
+        .awards .item-text::before { content: "★ "; color: var(--orange); }
+
+        /* 作品一覧：上の2本は大きく、残りは3列 */
+        .featured { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+        .card { position: relative; overflow: hidden; transition: transform .12s ease, box-shadow .12s ease; }
+        .card:hover, .card:focus-within { transform: translateY(-4px); box-shadow: 0 9px 0 rgba(28, 34, 56, .16); }
+        .card .thumb { position: relative; aspect-ratio: 16 / 9; background: #000; border-bottom: 3px solid var(--navy); }
+        .card .thumb img, .card .thumb video { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .card .no { position: absolute; top: 8px; left: 8px; padding: 2px 8px; background: var(--navy); color: #fff; border-left: 6px solid var(--k); }
+        .card .body { padding: 12px 14px 14px; }
+        .card h3 { margin: 0; font-size: 16px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+        .card h3 small { font-size: 12px; color: var(--muted); font-weight: 500; }
+        /* タイトルのリンクをカード全体に広げる */
+        .card-link { color: inherit; text-decoration: none; }
+        .card-link::after { content: ""; position: absolute; inset: 0; }
+        .card-link:focus-visible { outline: none; }
+        .card:has(.card-link:focus-visible) { outline: 3px solid var(--accent); outline-offset: 2px; }
+        .card p { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+        .featured .card h3 { font-size: 20px; }
+        .featured .card p { font-size: 14px; }
+
+        /* 作品・研究のページ：本文と、右のデータ欄 */
+        .vplayer { position: relative; aspect-ratio: 16 / 9; border: 3px solid var(--navy); border-radius: var(--radius); overflow: hidden; background: #000; margin-bottom: 20px; }
+        .vplayer video { width: 100%; height: 100%; display: block; object-fit: contain; background: #000; }
+        /* 縦長の研究動画（Useless Machine など）は、横幅いっぱいにせず縦長の枠で出す。 */
+        .vplayer[data-portrait] { aspect-ratio: 9 / 16; width: min(100%, calc(70vh * 9 / 16)); }
+        .vsound {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: grid;
+            place-items: center;
+            width: 44px;
+            height: 44px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            background: rgba(28, 34, 56, .6);
+            color: #fff;
+            padding: 0;
+            cursor: pointer;
+        }
+        .vsound:hover { background: #fff; color: var(--navy); }
+        .vsound svg { display: block; width: 24px; height: 24px; pointer-events: none; }
+        @media (hover: hover) and (pointer: fine) {
+            .vsound { opacity: 0; pointer-events: none; transition: opacity .15s ease; }
+            .vplayer:hover .vsound, .vsound:focus-visible { opacity: 1; pointer-events: auto; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .vsound { transition: none; }
+        }
+
+        .detail { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
+        .game .detail { grid-template-columns: 300px minmax(0, 1fr); }
+        .prose p { margin: 0; font-size: 15px; line-height: 1.95; }
+        .prose p + p { margin-top: 1em; }
+        .data dl { margin: 0; display: grid; gap: 12px; font-size: 14px; }
+        .data dt { color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .06em; }
+        .data dd { margin: 2px 0 0; }
+        .data .tags { margin: 0 0 16px; }
+        .link-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+        .link-list a {
+            display: block;
+            padding: 9px 12px;
+            border: 2px solid var(--navy);
+            border-radius: 8px;
+            color: var(--fg);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        .link-list a:hover { background: var(--navy); color: #fff; }
+        .tag { border-color: var(--line); font-weight: 700; }
+
+        .research-item { scroll-margin-top: 20px; }
+        .research-item + .research-item { margin-top: 40px; }
+        .research-title { margin: 0 0 14px; font-size: 22px; }
+
+        .pager { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 36px; }
+        .pager a { padding: 12px 16px; color: var(--fg); text-decoration: none; font-weight: 700; }
+        .pager a:hover { background: var(--navy); color: #fff; }
+        .pager .label { display: block; color: var(--muted); font-size: 11px; }
+        .pager a:hover .label { color: #aeb7d6; }
+        .pager .next { text-align: right; grid-column: 2; }
+
+        .topbar { display: none; }
+
+        /* ---- 画面が狭いとき ---- */
+        @media (max-width: 1180px) {
+            .detail, .game .detail { grid-template-columns: 1fr; }
+            .detail .data { order: -1; }
+        }
+        @media (max-width: 960px) {
+            .sidebar { inset: 64px 10px 10px 10px; width: auto; z-index: 30; transform: translateY(-120%); transition: transform .25s ease; }
+            .menu-open .sidebar { transform: none; }
+            .topbar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                position: sticky;
+                top: 0;
+                z-index: 31;
+                padding: 10px 14px;
+                background: var(--navy);
+                color: #fff;
+            }
+            .topbar-title { display: flex; align-items: center; min-width: 0; }
+            .topbar .sidebar-banner { height: 44px; width: auto; }
+            .topbar .sidebar-banner > * { width: 100%; height: 100%; border: 0; border-radius: 0; background: none; }
+            .sidebar .sidebar-banner { display: none; }
+            /* 1ページにまとめたスマホの表示：目次で選んだ場所が、上の帯に隠れないようにする */
+            .home-part + .home-part { margin-top: 48px; }
+            main :is([id^="block-"], .home-part) { scroll-margin-top: 88px; }
+            .topbar button { border: 2px solid #fff; border-radius: 8px; background: none; color: #fff; font: inherit; font-weight: 700; padding: 4px 12px; }
+            main { margin-left: 0; padding: 22px 16px 64px; }
+            .profile { grid-template-columns: 1fr; }
+            .portrait { width: 160px; }
+            .grid { grid-template-columns: 1fr 1fr; }
+            .featured { grid-template-columns: 1fr; }
+            .skills { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .grid, .pager { grid-template-columns: 1fr; }
+            .pager .next { grid-column: auto; }
+            .window-body { padding: 16px; }
+        }
+    </style>
+    <link rel="stylesheet" href="redesign/shared/profile-character.css">
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="redesign/a-skins/white-fill.css">
+    <script src="redesign/a-skins/white-fill.js"></script>
 </head>
-
 <body>
-
-    <!-- p5.jsのキャンバスを格納する専用コンテナ -->
-    <div id="canvas-container"></div>
-
-    <!-- ===== LOADING ===== -->
-    <div id="loading-screen">
-        <div id="loading-text"></div>
+    <div class="topbar">
+        <div class="topbar-title" id="topbar-name"></div>
+        <button type="button" aria-controls="sidebar" aria-expanded="false" id="menu-button"></button>
     </div>
 
-    <!-- ===== 1. ナビゲーションバー (常に固定) ===== -->
-    <header class="navbar hidden">
-        <nav>
-            <ul>
-                <li><a href="#top">TOP</a></li>
-                <li><a href="#profile">PROFILE</a></li>
-                <li><a href="#projects">PROJECTS</a></li>
-                <li><a href="#experience">EXPERIENCE</a></li>
-                <li><a href="#skills">SKILLS</a></li>
-            </ul>
-        </nav>
-    </header>
+    <aside class="sidebar" id="sidebar">
+        <a class="sidebar-banner" href="#about" aria-label="Youkin（プロフィールへ）">
+            <span class="banner-bg"></span>
+            <img class="hop" style="--d: 0.00s" src="Images/sidebar-banner/edge-0.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.15s" src="Images/sidebar-banner/edge-1.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.30s" src="Images/sidebar-banner/edge-2.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.45s" src="Images/sidebar-banner/edge-3.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.60s" src="Images/sidebar-banner/edge-4.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.75s" src="Images/sidebar-banner/edge-5.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.00s" src="Images/sidebar-banner/white-0.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.15s" src="Images/sidebar-banner/white-1.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.30s" src="Images/sidebar-banner/white-2.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.45s" src="Images/sidebar-banner/white-3.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.60s" src="Images/sidebar-banner/white-4.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.75s" src="Images/sidebar-banner/white-5.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.00s" src="Images/sidebar-banner/letter-0.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.15s" src="Images/sidebar-banner/letter-1.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.30s" src="Images/sidebar-banner/letter-2.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.45s" src="Images/sidebar-banner/letter-3.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.60s" src="Images/sidebar-banner/letter-4.png" alt="" width="642" height="200">
+            <img class="hop" style="--d: 0.75s" src="Images/sidebar-banner/letter-5.png" alt="" width="642" height="200">
+            <img src="Images/sidebar-banner/frame.png" alt="" width="642" height="200">
+        </a>
+        <a class="player" href="#about" id="player"></a>
+        <nav class="menu" aria-label="メニュー" id="menu"></nav>
+    </aside>
 
-    <!-- ===== メインコンテンツ ===== -->
-    <main>
+    <main id="main"><p>読み込み中…</p></main>
 
-        <!-- ===== 2. TOP (ヒーローセクション) ===== -->
-        <section id="top" class="hero-section">
-            <div class="hero-video-background">
-                <iframe
-                    data-video-src="https://www.youtube.com/embed/SF-bYdyrLYs?autoplay=1&mute=1&loop=1&playlist=SF-bYdyrLYs&controls=0&rel=0" loading="lazy"
-                    referrerpolicy="strict-origin-when-cross-origin"
-                    frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-            </div>
-            <div class="hero-content">
-                <h1 class="scroll-animate from-up">時間を忘れてプレイできるゲームを。</h1>
-                <p class="scroll-animate from-up">矢追陽平（ようきん）</p>
-            </div>
-        </section>
+    <script src="redesign/shared/content.js"></script>
+    <script src="redesign/shared/ui.js"></script>
+    <script src="redesign/shared/details-motion.js"></script>
+    <script src="redesign/shared/menu-keyboard.js"></script>
+    <script src="redesign/shared/profile-guests.js"></script>
+    <script src="redesign/shared/profile-sky.js"></script>
+    <script src="redesign/shared/profile-flight.js"></script>
+    <script src="redesign/shared/profile-walk.js"></script>
+    <script>
+        const { esc, tagsHTML, thumbUrl, linkHTML } = PortfolioUI;
 
-        <!-- ===== 3. プロフィール ===== -->
-        <section id="profile" class="section-container">
-            <div id="profile-background" class="section-background-canvas"></div>
-            <h2 class="scroll-animate from-down">PROFILE</h2>
-            <div class="profile-content">
-                <div class="profile-sidebar">
-                    <div class="profile-image-container">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <img src="Images/YoheiYaoi-600.jpg" width="600" height="600" decoding="async" alt="顔写真" class="profile-image pc-image"> <!-- PC用画像 -->
-                                <img src="Images/YoheiYaoi-600.jpg" width="600" height="600" decoding="async" alt="顔写真（スマホ用）" class="profile-image mobile-image">
+        // ---- スキンの設定（書かなかった項目は既定のまま） ----
+        const SKIN = window.SKIN || {};
+        const LAYOUT = ['sections', 'tabs', 'flat'].includes(SKIN.layout) ? SKIN.layout : 'sections';
+        const TEXT = {
+            job: 'Job : Unity Engineer',
+            menu: 'MENU',
+            // サイドバーの大項目
+            about: 'About',
+            works: 'Works',
+            research: 'Research',
+            // About の中の項目
+            profile: 'プロフィール',
+            awards: '受賞歴',
+            internships: 'インターン・バイト経験',
+            media: 'メディア掲載',
+            // ウィンドウの見出し
+            status: 'Status',
+            skills: 'Tech Stack',
+            data: 'Data',
+            links: 'Links',
+            researchBody: '研究内容',
+            researchData: 'Data',
+            // ページ上部のラベル
+            worksList: '作品一覧',
+            researchList: '研究一覧',
+            worksLead: '',
+            researchNo: 'Research No.',
+            researchLab: '研究会',
+            researchPeriod: '期間',
+            back: '← 作品一覧へ戻る',
+            prev: '◀ Prev',
+            next: 'Next ▶',
+            more: '詳しく見る',
+            count: n => `${n}件`,
+            // スキルの段階（1〜5）の言葉
+            skillLevels: ['', '学習中', '基礎', '応用', '習熟', '得意分野'],
+            unmute: '音を出す',
+            mute: '音を消す',
+            soundLabel: '動画の音声',
+            ...(SKIN.text || {}),
+        };
+        const ICON_COLOR = /^[0-9a-f]{6}$/i.test(SKIN.iconColor || '') ? SKIN.iconColor : '1c2238';
+        const MAIL_AS_TEXT = SKIN.mail === 'text';
+
+        // 開発期間に年が書かれていない作品の制作年（GitHub・コミット日・大会名から確認）
+        const YEAR_FALLBACK = { 'sausage-smash': 2026, 'jiya-robot-tea': 2026, 'project-siro': 2026, 'zelly-swipe': 2026, 'frying-pan': 2026 };
+        const yearOf = p => (/(\d{4})年/.exec(p.period) || [])[1] || YEAR_FALLBACK[p.id] || '';
+        const no = i => String(i + 1).padStart(2, '0');
+        // 色分けの目印（色そのものは CSS で決める）
+        const tone = i => `data-index="${i}" data-tone="${i % 4}"`;
+
+        // About の中の項目（今のサイトの PROFILE と同じ並び。研究は Research として独立）
+        const ABOUT_SECTIONS = ['', 'awards', 'internships', 'media'];
+        const aboutLabel = id => TEXT[id || 'profile'];
+
+        // 作品一覧で大きく出す2本
+        const FEATURED = ['sausage-smash', 'pintch-witch'];
+
+        // 動く見本（6秒のループ）と、作品ページの全編動画の置き場所
+        const CLIP_BASE = new URL('Images/clips/', location.href).href;
+        // アイコンは Devicon 2.16.0 の同じ素材をローカル配信し、外部接続待ちをなくす。
+        const DEVICON = new URL('Images/icons/devicon/', location.href).href;
+        // 押すと下に出る説明：使ってきた長さ（since）・得意なこと（points、プロフィールをスクロールさせないため3つまで・短く）。
+        // 使った作品は、作品と研究の「使用技術」から word（正規表現）で見つけて自動で並べる。
+        const TECH_STACK = [
+            { id: 'csharp', name: 'C#', since: '約5年（中学3年から）', word: /C#|Unity/,
+                points: ['MonoBehaviour に頼らないクラス設計', '非同期処理（Task・UniTask）', '勉強中：リアクティブ（UniRx）'] },
+            { id: 'unity', name: 'Unity', since: '約5年（中学3年から）', word: /Unity/,
+                points: ['DOTween を使った UI の演出', '2D（タイルマップ など）', 'MediaPipe・Meta・toio の SDK 連携'] },
+            { id: 'c', name: 'C', since: '約半年', word: /(^|[^A-Za-z])C(?![+#A-Za-z])/,
+                points: ['大学の授業と、C++ の勉強で使用', 'ターミナルで動く鬼ごっこゲームを制作'] },
+            { id: 'cpp', name: 'C++', since: '約半年', word: /C\+\+/,
+                points: ['SDL で描画するテトリスを制作', 'DirectX 11 と HLSL で描画・シェーダー', 'Arduino の制御'] },
+            { id: 'python', name: 'Python', since: '約半年', word: /Python/,
+                points: ['Pyxel でゲームを制作', '大学の授業で使用'] },
+            { id: 'git', name: 'Git', since: '約1年', word: /Git(?!Hub)/,
+                points: ['ブランチ運用・worktree', '共同開発の経験あり'] },
+            { id: 'github', name: 'GitHub', since: '約1年', word: /GitHub/,
+                points: ['GitHub Actions で CI/CD', '共同開発の経験あり'] },
+            { id: 'blender', name: 'Blender', since: '高校の3年間', word: /Blender/,
+                points: ['建物・乗り物・キャラクターのモデリング', 'ボーンとウェイトの設定', 'Life is Tech! で基本操作を教えています'] },
+            { id: 'figma', name: 'Figma', since: '約2年', word: /Figma/,
+                points: ['UI のデザイン', 'ZELLY SWIPE の素材をすべて制作', 'MCP と組み合わせたデザイン'] },
+            { id: 'notion', name: 'Notion', word: /Notion/,
+                points: ['よく使っています'] },
+            // devicon にないものは Simple Icons から（Images/icons/simpleicons/）
+            { id: 'claude', name: 'Claude', since: '2026年から', word: /Claude/, src: 'Images/icons/simpleicons/claude.svg',
+                points: ['Claude Code（CLI）で開発', 'Artifacts などの機能も活用'] },
+            { id: 'codex', name: 'Codex', since: '2026年から', word: /Codex/, src: 'Images/icons/simpleicons/openai.svg',
+                points: ['CLI で開発'] },
+        ];
+        // 使った作品は、プロフィールに収まるよう4つまで出し、残りは数だけ出す
+        const TECH_WORKS_MAX = 4;
+        const MEDIA_BASE = 'https://youkin06.github.io/portfolio-media/videos/';
+
+        document.body.dataset.layout = LAYOUT;
+
+        loadPortfolio().then(data => {
+            const projects = data.projects;
+            // 研究は「【研究会名】テーマ」の形なので、研究会名とテーマに分ける。
+            const research = data.research.map((r, i) => {
+                const m = /^【(.+?)】(.+)$/.exec(r.org);
+                const [body] = r.html.split(/<strong>\s*関連リンク/);
+                const links = [...new DOMParser().parseFromString(r.html, 'text/html').querySelectorAll('a[href]')]
+                    .map(a => ({ href: a.getAttribute('href'), label: a.textContent.replace(/\s+/g, ' ').trim() }));
+                return { ...r, id: String(i + 1), lab: m ? m[1] : '', theme: m ? m[2] : r.org, body: body.replace(/(<br\s*\/?>\s*)+$/, ''), links };
+            });
+            const main = document.getElementById('main');
+
+            // ---- サイドバー ----
+            const avatar = data.profile.pixel || data.profile.photo;
+            document.getElementById('player').innerHTML = `
+                <img src="${esc(avatar)}" alt="">
+                <div><strong>${esc(data.profile.name)}</strong><span class="label">${esc(TEXT.job)}</span></div>`;
+            // スマホの上の帯には、サイドバーの一番上の「Youkin」の見出しをそのまま出す（スマホの目次からは外す）
+            document.getElementById('topbar-name').replaceChildren(document.querySelector('.sidebar .sidebar-banner').cloneNode(true));
+            document.getElementById('menu-button').textContent = TEXT.menu;
+
+            const groupHTML = (section, href, items) => `
+                <div class="menu-group" data-section="${section}">
+                    ${SKIN.menuHeadings ? `<h2 class="menu-label label">${esc(TEXT[section])}</h2>` : `<a class="menu-label label" href="${href}">${esc(TEXT[section])}</a>`}
+                    ${LAYOUT === 'flat' ? '' : `<ul class="menu-list">${items}</ul>`}
+                </div>`;
+            document.getElementById('menu').innerHTML =
+                groupHTML('about', '#about', ABOUT_SECTIONS.map(id =>
+                    `<li><a href="${id ? `#about/${id}` : '#about'}" data-key="about/${id}">${esc(aboutLabel(id))}</a></li>`).join('')) +
+                groupHTML('works', '#works',
+                    `<li><a href="#works" data-key="works/">${esc(TEXT.worksList)}</a></li>` +
+                    projects.map(p => `<li><a href="#works/${esc(p.id)}" data-key="works/${esc(p.id)}">${esc(p.title)}<span class="year">${yearOf(p)}</span></a></li>`).join('')) +
+                groupHTML('research', '#research',
+                    `<li><a href="#research" data-key="research/">${esc(TEXT.researchList)}</a></li>` +
+                    research.map(r => `<li><a href="#research/${r.id}" data-key="research/${r.id}">${esc(r.theme)}</a></li>`).join(''));
+
+            // ---- 部品 ----
+            // 本文中の「制作作品：〇〇」（#project-〇〇）は、そのゲームのページへ。
+            const fixProjectLinks = html => html.replace(/href="#project-/g, 'href="#works/');
+            const link = l => fixProjectLinks(linkHTML(l)).replace('class="link--internal" href="#works/', 'class="link--work" href="#works/');
+
+            // title を null にすると見出しを出さない（ページの見出しと同じ言葉が重なるとき）
+            const block = (key, title, body, count) => `
+                <section class="window block" data-block="${key}" id="block-${key}">
+                    ${title === null ? '' : `<h2 class="window-title label">${esc(title)}${count !== undefined ? `<span class="count">${esc(TEXT.count(count))}</span>` : ''}</h2>`}
+                    <div class="window-body">${body}</div>
+                </section>`;
+
+            // 説明は「詳しく見る」で開く。一度に開くのは1つだけ。
+            // 開閉の動きがあるスキンは details-motion.js が、ないスキンはブラウザの name 属性が、ほかの開いている項目を閉じる。
+            const expHTML = i => `
+                <li class="exp">
+                    <div class="exp-head">
+                        <h3 class="exp-role">${esc(i.role || i.org)}</h3>
+                        ${i.role ? `<span class="exp-org">${esc(i.org)}</span>` : ''}
+                        <time class="exp-period">${esc(i.period)}</time>
+                    </div>
+                    <details class="exp-more"${SKIN.detailsMotion ? '' : ' name="exp"'}><summary>${esc(TEXT.more)}</summary>
+                        <div class="exp-content"><div class="exp-detail"${i.image ? ' data-photo' : ''}>
+                            <div class="exp-copy">
+                                <p>${fixProjectLinks(i.html)}</p>
+                                ${i.links.length ? `<div class="exp-links">${i.links.map(link).join('')}</div>` : ''}
                             </div>
-                            <div class="flip-card-back">
-                                <img src="Images/YoheiDot.gif" alt="裏面のGIF" class="profile-image">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="profile-field" id="name-field">
-                        <h3>Name</h3>
-                        <p>矢追陽平（ヨウキン）</p>
-                    </div>
-                    <div class="social-links">
-                        <div class="social-link-hover-shell">
-                            <a href="https://x.com/youkin06" target="_blank" rel="noopener noreferrer"
-                                class="social-link-item">
-                                <img src="https://cdn.simpleicons.org/x/FFFFFF" alt="X">
-                                <span>X(Twitter)</span>
-                            </a>
-                        </div>
-                        <div class="social-link-hover-shell">
-                            <a href="https://github.com/Youkin06" target="_blank" rel="noopener noreferrer"
-                                class="social-link-item">
-                                <img src="https://cdn-icons-png.flaticon.com/512/733/733553.png" alt="GitHub">
-                                <span>GitHub</span>
-                            </a>
-                        </div>
-                        <div class="social-link-hover-shell">
-                            <a href="https://qiita.com/youkin06" target="_blank" rel="noopener noreferrer"
-                                class="social-link-item">
-                                <img src="https://cdn.simpleicons.org/qiita/55C500" alt="Qiita">
-                                <span>Qiita</span>
-                            </a>
-                        </div>
-                        <div class="social-link-hover-shell">
-                            <a href="https://scrapbox.io/yohei/" target="_blank" rel="noopener noreferrer"
-                                class="social-link-item">
-                                <img src="https://scrapbox.io/favicon.ico" alt="Scrapbox">
-                                <span>Scrapbox</span>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="contact-info">
-                        <a href="mailto:yopi.games.tokyo@gmail.com">yopi.games.tokyo@gmail.com</a>
-                        <a href="mailto:yohei0607@keio.jp">yohei0607@keio.jp</a>
-                    </div>
-                </div>
-                <div class="profile-text">
-                    <div class="profile-field">
-                        <h3>About Me</h3>
-                        <p>大学：慶應義塾大学環境情報学部2年<br>
-                            所属：Life is Tech!、Iwaken Lab.、中西泰人研究会<br>
-                            目標：「異分野技術を掛け合わせた遊びの発明で、次世代の遊び場となるゲームを創る」</p>
-                    </div>
+                            ${i.image ? `<figure><img src="${esc(i.image.src)}" alt="${esc(i.image.alt)}"${i.image.width && i.image.height ? ` width="${i.image.width}" height="${i.image.height}"` : ''} loading="eager" decoding="async"><figcaption>${esc(i.image.caption)}</figcaption></figure>` : ''}
+                        </div></div>
+                    </details>
+                </li>`;
+            const itemHTML = a => `
+                <li class="item"><span class="item-text">${esc(a.text)}</span>
+                ${a.link ? `<div class="item-links">${link(a.link)}</div>` : ''}</li>`;
 
-                    <!-- 受賞歴アコーディオン -->
-                    <div class="accordion-hover-shell">
-                    <div class="accordion">
-                        <div class="accordion-toggle">
-                            <h3>受賞歴</h3>
-                            <span class="icon-arrow"></span>
-                        </div>
-                        <div class="accordion-content award-list">
-                            <p class="award-item">
-                                <span>神ゲー創造主エボリューション2026 一次審査通過</span>
-                                <a href="#project-pintch-witch" class="award-project-link">作品：PiNTCH WiTCH // Shadow play</a>
-                            </p>
-                            <p class="award-item">
-                                <span>Made in Japan XR Project XR Hackathon2026 優勝</span>
-                                <a href="#project-sausage-smash" class="award-project-link">作品：Sausage Smash</a>
-                            </p>
-                            <p class="award-item">
-                                <span>2025年ゲームクリエイター甲子園 ノミネート作品</span>
-                                <a href="#project-boku-no-nikki" class="award-project-link">作品：ぼくのにっき</a>
-                            </p>
-                            <p class="award-item">
-                                <span>2024年ゲームクリエイター甲子園U18 セミファイナル進出</span>
-                                <a href="#project-depth-diary" class="award-project-link">作品：DEPTH DIARY</a>
-                            </p>
-                            <!-- 必要に応じて追加 -->
+            const gaugeHTML = rating => `<span class="gauge" aria-hidden="true">${[1, 2, 3, 4, 5].map(n => `<i class="${n <= rating ? 'on' : ''}"></i>`).join('')}</span>`;
+            const iconUrl = src => src.replace(/(cdn\.simpleicons\.org\/[^/]+)\/[0-9a-f]{6}$/i, `$1/${ICON_COLOR}`);
+            const mailIcon = '<svg class="mail-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/></svg>';
 
-                        </div>
-                    </div>
-                    </div>
-                    <!-- インターン・バイト経験アコーディオン -->
-                    <div class="accordion-hover-shell">
-                    <div class="accordion">
-                        <div class="accordion-toggle">
-                            <h3>インターン・バイト経験</h3>
-                            <span class="icon-arrow"></span>
-                        </div>
-                        <div class="accordion-content">
-                            <!-- 枠1 -->
-                            <div class="experience-item internship-experience">
-                                <div class="experience-header experience-detail-toggle" role="button" tabindex="0"
-                                    aria-expanded="false">
-                                    <span class="experience-heading">
-                                        <span class="experience-role">Unityメンター</span>
-                                        <span class="experience-separator" aria-hidden="true">/</span>
-                                        <span class="company-name">ライフイズテック株式会社</span>
-                                    </span>
-                                    <span class="experience-header-meta"><span class="period">2025年7月~</span><span
-                                            class="detail-arrow"></span></span>
-                                </div>
-                                <div class="experience-detail-content life-is-tech-detail">
-                                    <div class="experience-detail-copy">
-                                        <p class="experience-details">
-                                            中高生向けUnity教育のメンターを担当しています。技術指導を通して、基礎から応用まであらゆるレベルの生徒に対応できる技術力を徹底的に習得しました。専門用語を避けて説明する言語化能力と、即座に問題を解決する基礎力を確立しました。
-                                        </p>
-                                        <a href="https://life-is-tech.com/" target="_blank" rel="noopener noreferrer"
-                                            class="experience-project-link">会社の公式サイト ↗</a>
+            // 段落ごとに <p> に分けて読みやすくする（元の文章は <br><br> で段落を区切っている）。
+            const paragraphs = html => html.split(/(?:<br\s*\/?>\s*){2,}/).map(part => `<p>${part.trim()}</p>`).join('');
+
+            const pageHead = (label, title, lead) => `
+                <header class="page-head">${label ? `<div class="label">${esc(label)}</div>` : ''}<h1>${esc(title)}</h1>${lead ? `<p>${esc(lead)}</p>` : ''}</header>`;
+
+            const pagerHTML = (prev, next, href, label) => `
+                <nav class="pager" aria-label="前後">
+                    ${prev ? `<a class="window prev" href="${href(prev)}"><span class="label">${esc(TEXT.prev)}</span>${esc(label(prev))}</a>` : ''}
+                    ${next ? `<a class="window next" href="${href(next)}"><span class="label">${esc(TEXT.next)}</span>${esc(label(next))}</a>` : ''}
+                </nav>`;
+
+            // ---- About ----
+            const profileCharacter = `
+                            <div class="profile-meadow">
+                              <div class="profile-sky" aria-hidden="true">
+                                <span class="profile-stars"></span>
+                                <span class="profile-sun"></span>
+                                <span class="profile-moon"></span>
+                                <span class="profile-cloud" style="--cloud-y: 60%; --cloud-time: 140s; --cloud-delay: -40s; --cloud-rest: 12%"></span>
+                                <span class="profile-cloud" style="--cloud-y: 74%; --cloud-scale: .7; --cloud-time: 190s; --cloud-delay: -130s; --cloud-rest: 58%"></span>
+                                <span class="profile-cloud" style="--cloud-y: 66%; --cloud-scale: .85; --cloud-time: 165s; --cloud-delay: -95s; --cloud-rest: 80%"></span>
+                              </div>
+                              <div class="profile-walkway">
+                                <div class="profile-character" data-profile-guest>
+                                  <button class="profile-guest-trigger" type="button" aria-label="ぼくのにっきのキャラクター：作品リンクを表示" aria-expanded="false"></button>
+                                  <a class="profile-guest-link" href="#works/boku-no-nikki">ぼくのにっき<span>作品を見る →</span></a>
+                                  <div class="profile-character-facing">
+                                    <div class="profile-character-pose profile-character-idle">
+                                      <img src="Images/profile-character/idle1.png" alt="" width="256" height="256">
+                                      <img src="Images/profile-character/idle2.png" alt="" width="256" height="256">
                                     </div>
-                                    <figure class="experience-activity-figure">
-                                        <img src="Images/LifeIsTechMentor-336.jpg" alt="Life is Tech!でメンターとして活動する矢追陽平"
-                                            class="experience-activity-image" width="336" height="504" loading="eager" decoding="async">
-                                        <figcaption>夏キャンプでのメンター活動の写真</figcaption>
-                                    </figure>
+                                    <div class="profile-character-pose profile-character-walk">
+                                      <img src="Images/profile-character/walk1.png" alt="" width="256" height="256">
+                                      <img src="Images/profile-character/walk2.png" alt="" width="256" height="256">
+                                    </div>
+                                  </div>
                                 </div>
+                                <div class="profile-kamo" data-profile-guest>
+                                  <button class="profile-guest-trigger" type="button" aria-label="KamoRogueのキャラクター：作品リンクを表示" aria-expanded="false"></button>
+                                  <a class="profile-guest-link" href="#works/project-6">KamoRogue<span>作品を見る →</span></a>
+                                  <div class="profile-kamo-facing">
+                                    <span class="profile-kamo-frame"><img src="Images/profile-character/kamo-run1.png" alt="" width="16" height="16"></span>
+                                    <span class="profile-kamo-frame"><img src="Images/profile-character/kamo-run2.png" alt="" width="16" height="16"></span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="profile-ground"></div>
                             </div>
-                            <!-- 枠2 -->
-                            <div class="experience-item internship-experience">
-                                <div class="experience-header experience-detail-toggle" role="button" tabindex="0"
-                                    aria-expanded="false">
-                                    <span class="experience-heading">
-                                        <span class="experience-role">ゲーム開発エンジニア</span>
-                                        <span class="experience-separator" aria-hidden="true">/</span>
-                                        <span class="company-name">株式会社シフト</span>
-                                    </span>
-                                    <span class="experience-header-meta"><span class="period">2025年10月~</span><span
-                                            class="detail-arrow"></span></span>
+                            <div class="profile-flight">
+                              <div class="profile-depth-player" data-profile-guest>
+                                <button class="profile-guest-trigger" type="button" aria-label="DEPTH DIARYのキャラクター：作品リンクを表示" aria-expanded="false"></button>
+                                <a class="profile-guest-link" href="#works/depth-diary">DEPTH DIARY<span>作品を見る →</span></a>
+                                <div class="profile-depth-player-facing">
+                                  <img src="Images/profile-character/depth-player1.png" alt="" width="16" height="16" style="--frame-index: 0">
+                                  <img src="Images/profile-character/depth-player2.png" alt="" width="16" height="16" style="--frame-index: 1">
+                                  <img src="Images/profile-character/depth-player3.png" alt="" width="16" height="16" style="--frame-index: 2">
+                                  <img src="Images/profile-character/depth-player4.png" alt="" width="16" height="16" style="--frame-index: 3">
                                 </div>
-                                <div class="experience-detail-content">
-                                    <p class="experience-details">
-                                        商業ゲーム開発にプログラマーとして参画しています。自己解決のためのリサーチ力と、迅速なトライアンドエラーによる開発スキルを実践で体得しました。</p>
-                                    <a href="https://www.shift.gr.jp/" target="_blank" rel="noopener noreferrer"
-                                        class="experience-project-link">会社の公式サイト ↗</a>
-                                </div>
+                              </div>
+                            </div>`;
+            // ---- プロフィールの版（確認用：URL に ?profile=intro|numbers|history。付けなければ今の形） ----
+            const PROFILE_STYLE = new URLSearchParams(location.search).get('profile') || SKIN.profile || '';
+            // ボタンと数字の見た目の案（確認用：URL に ?ui=a|b|c）。html[data-ui] に書き、CSS が見た目を変える。
+            document.documentElement.dataset.ui = new URLSearchParams(location.search).get('ui') || SKIN.ui || '';
+            // 「大学：〜」「所属：〜」「目標：〜」の行を、見出しと中身に分けて使う。
+            const profileFacts = Object.fromEntries(data.profile.aboutHtml.split(/<br\s*\/?>/).map(line => {
+                const t = line.replace(/<[^>]+>/g, '').trim();
+                const i = t.indexOf('：');
+                return i < 0 ? null : [t.slice(0, i), t.slice(i + 1).replace(/^「|」$/g, '')];
+            }).filter(Boolean));
+            const portraitHTML = () => `
+                            <div class="portrait">
+                                <img src="${esc(data.profile.photo)}" alt="顔写真" width="600" height="600" loading="eager" fetchpriority="high" decoding="async">
+                                ${data.profile.pixel ? `<img class="pixel" src="${esc(data.profile.pixel)}" alt="">` : ''}
+                            </div>`;
+            const contactsHTML = () => `
+                                <div class="contacts">
+                                    <div class="contacts-social">${data.profile.socials.map(s => `<a class="social" href="${esc(s.href)}" target="_blank" rel="noopener noreferrer">${s.icon ? `<img src="${esc(iconUrl(s.icon))}" alt="">` : ''}${esc(s.label)}</a>`).join('')}</div>
+                                    <div class="contacts-mail">${data.profile.emails.map(m => MAIL_AS_TEXT ? `<span class="mail">${mailIcon}<span>${esc(m)}</span></span>` : `<a class="mail-button" href="mailto:${esc(m)}">${mailIcon}<span>${esc(m)}</span></a>`).join('')}</div>
+                                </div>`;
+            // 大学・所属・目標を、見出しと中身の同じ形の行で並べる。目標の中身だけ色を変える（goal = true のとき目標も出す）。
+            const profileRole = (goal = false) => `
+                                <dl class="profile-facts">${['大学', '所属', ...(goal ? ['目標'] : [])].filter(k => profileFacts[k]).map(k => `
+                                    <div${k === '目標' ? ' class="profile-goal"' : ''}><dt>${k}</dt><dd>${esc(profileFacts[k])}</dd></div>`).join('')}
+                                </dl>`;
+            // 受賞歴・インターン・メディア掲載から、年月の分かるできごとを新しい順に拾う（プロフィールには新しい6件）。
+            const profileHistory = () => [
+                ...data.awards.map(a => ({ text: a.text.replace(/^\d{4}年\s*/, ''), when: a.text.match(/(\d{4})/) })),
+                ...data.internships.map(i => ({ text: `${i.org} ${i.role || ''}`.trim() + (i.period.includes('予定') ? '（予定）' : ''), when: i.period.match(/(\d{4})年(\d{1,2})月/) })),
+                ...data.media.map(a => ({ text: `${a.text.replace(/^[\d年月日]+\s*/, '')} に掲載`, when: a.text.match(/(\d{4})年(\d{1,2})月/) })),
+            ].filter(e => e.when).map(e => ({ ...e, y: +e.when[1], m: +(e.when[2] || 0) }))
+                .sort((a, b) => b.y - a.y || b.m - a.m);
+            const PROFILE_VERSIONS = {
+                // 今の形：「大学：〜」などの3行
+                '': () => `
+                        <div class="profile">${portraitHTML()}
+                            <div>
+                                <p class="profile-name">${esc(data.profile.name)}</p>
+                                <p class="profile-text">${data.profile.aboutHtml}</p>${contactsHTML()}
                             </div>
-                            <!-- 枠3 -->
-                            <div class="experience-item internship-experience">
-                                <div class="experience-header experience-detail-toggle" role="button" tabindex="0"
-                                    aria-expanded="false">
-                                    <span class="experience-heading">
-                                        <span class="experience-role">プロトスプリントリーグ</span>
-                                        <span class="experience-separator" aria-hidden="true">/</span>
-                                        <span class="company-name">株式会社サイバーエージェント</span>
-                                    </span>
-                                    <span class="experience-header-meta"><span class="period">2026年8月</span><span
-                                            class="detail-arrow"></span></span>
-                                </div>
-                                <div class="experience-detail-content">
-                                    <p class="experience-details">
-                                        2日間のゲーム開発型インターン「プロトスプリントリーグ」に、3人チームのUnityエンジニアとして参加しました。事前準備期間から企画、アセット選定、タスク分割、スケジュール作成を行い、当日は実装やビルド確認、ゲームの手触り調整を担当しました。短期間の開発を通して、進捗が遅れた際に実装の優先度を見直し、完成に向けてスケジュールを調整する重要性を学びました。
-                                    </p>
-                                    <a href="https://www.cyberagent.co.jp/" target="_blank"
-                                        rel="noopener noreferrer" class="experience-project-link">会社の公式サイト ↗</a><br>
-                                    <a href="#project-frying-pan"
-                                        class="experience-project-link">制作作品：フライパン返し</a>
-                                </div>
+                        </div>`,
+                // ひとことと紹介文：大きなひとこと → 名前 → 紹介文 → 所属の札
+                intro: () => `
+                        <div class="profile profile--intro">${portraitHTML()}
+                            <div>
+                                <p class="profile-lead">${esc(data.hero.tagline)}</p>
+                                <p class="profile-name">${esc(data.profile.name)}</p>
+                                ${profileRole()}
+                                <p class="profile-bio">Unity を中心に、VR やハンドトラッキング、2D アクションなど、いろいろな遊び方のゲームを作っています。目標は「${esc(profileFacts['目標'] || '')}」ことです。</p>${contactsHTML()}
                             </div>
-                            <!-- 枠4 -->
-                            <div class="experience-item internship-experience">
-                                <div class="experience-header experience-detail-toggle" role="button" tabindex="0"
-                                    aria-expanded="false">
-                                    <span class="experience-heading">
-                                        <span class="experience-role">Casual Game JAM</span>
-                                        <span class="experience-separator" aria-hidden="true">/</span>
-                                        <span class="company-name">株式会社サイバーエージェント</span>
-                                    </span>
-                                    <span class="experience-header-meta"><span class="period">2026年10月</span><span
-                                            class="detail-arrow"></span></span>
-                                </div>
-                                <div class="experience-detail-content">
-                                    <p class="experience-details">
-                                        カジュアルゲーム開発部門が主催する2日間の個人参加型インターン「Casual Game JAM」に参加し、カジュアルゲーム「ZELLY SWIPE」を一人で企画・開発して、Google Playでの配信とMeta広告での広告出稿まで経験しました。ヒット作の分析を通して売れるゲームの見た目や手触りを学び、AIを活用した短期間での開発と広告映像の制作にも取り組みました。また社員の方から、プロの現場でのステージデータ管理の手法を学びました。現在は配信後のデータを集計中で、11月20日に結果のフィードバックを受ける予定です。
-                                    </p>
-                                    <a href="https://www.cyberagent.co.jp/careers/students/event/detail/id=33809"
-                                        target="_blank" rel="noopener noreferrer"
-                                        class="experience-project-link">インターンの詳細 ↗</a><br>
-                                    <a href="#project-zelly-swipe"
-                                        class="experience-project-link">制作作品：ZELLY SWIPE</a>
-                                </div>
-                            </div>
-                            <!-- 枠5 -->
-                            <div class="experience-item internship-experience">
-                                <div class="experience-header experience-detail-toggle" role="button" tabindex="0"
-                                    aria-expanded="false">
-                                    <span class="experience-heading">
-                                        <span class="experience-role">新規IPクライアントエンジニア</span>
-                                        <span class="experience-separator" aria-hidden="true">/</span>
-                                        <span class="company-name">株式会社Colorful Palette</span>
-                                    </span>
-                                    <span class="experience-header-meta"><span class="period">2026年11月~（予定）</span><span
-                                            class="detail-arrow"></span></span>
-                                </div>
-                                <div class="experience-detail-content">
-                                    <p class="experience-details">
-                                        11月18日から、「プロジェクトセカイ カラフルステージ！ feat. 初音ミク」を開発・運営するサイバーエージェントグループの株式会社Colorful Paletteで、新規プロジェクトのクライアントエンジニアとしてインターンに参加予定です。
-                                    </p>
-                                    <a href="https://colorfulpalette.co.jp/" target="_blank" rel="noopener noreferrer"
-                                        class="experience-project-link">会社の公式サイト ↗</a>
-                                </div>
+                        </div>`,
+                // 数字で見る：作品・受賞・インターン・メディア掲載・研究の数。押すとそのページへ。
+                numbers: () => `
+                        <div class="profile profile--numbers">${portraitHTML()}
+                            <div>
+                                <p class="profile-name">${esc(data.profile.name)}</p>
+                                ${profileRole(true)}${contactsHTML()}
                             </div>
                         </div>
-                    </div>
-                    </div>
-                    <div class="accordion-hover-shell">
-                    <div class="accordion">
-                        <div class="accordion-toggle">
-                            <h3>研究</h3>
-                            <span class="icon-arrow"></span>
-                        </div>
-                        <div class="accordion-content">
-                            <!-- 枠1 -->
-                            <div class="experience-item" data-video="Images/research/enemy-ai.mp4" data-tech="Unity、Unity ML-Agents（強化学習・模倣学習・カリキュラム学習）">
-                                <div class="experience-header experience-detail-toggle" role="button" tabindex="0"
-                                    aria-expanded="false">
-                                    <span class="company-name">【服部研】Unityで敵AIの制作</span>
-                                    <span class="experience-header-meta"><span class="period">2025年9月~2026年1月</span><span
-                                            class="detail-arrow"></span></span>
-                                </div>
-                                <div class="experience-detail-content">
-                                    <p class="experience-details">慶應SFCのウェブアプリケーションの研究会「服部研」に2025年9月から所属しています。Unity
-                                    ML-Agentsを用いたCPUの制作を行っています。強化学習を用いて、道を学習するAIを制作しました。その後、PONGゲームのCPUを模倣学習を用いて作成、完成させました。最終的に、鬼ごっこゲームの鬼AIを段階学習（Curriculum
-                                    Learning）を用いて開発し、リリースしました。<br><br>
-                                    <strong>関連リンク:</strong><br>
-                                    ・<a href="https://github.com/Youkin06/PongGame" target="_blank">PONG
-                                        ゲームリポジトリ</a><br>
-                                    ・<a href="https://github.com/Youkin06/OniGokkoGame_ML"
-                                        target="_blank">鬼ごっこゲームリポジトリ</a><br>
-                                    ・<a href="https://unityroom.com/games/mlonigokko" target="_blank">鬼ごっこゲーム
-                                        Unityroom</a>
-                                    </p>
-                                </div>
-                            </div>
-                            <!-- 枠2 -->
-                            <div class="experience-item" data-video="Images/research/useless-machine.mp4" data-tech="C++（Arduino）、サーボモーター、AT42QT1010静電容量式タッチセンサー、Illustrator、レーザーカッター" data-video-audio>
-                                <div class="experience-header experience-detail-toggle" role="button" tabindex="0"
-                                    aria-expanded="false">
-                                    <span class="company-name">【中西泰人研究会】Useless Machineの開発</span>
-                                    <span class="experience-header-meta"><span class="period">2026年4月~6月</span><span
-                                            class="detail-arrow"></span></span>
-                                </div>
-                                <div class="experience-detail-content">
-                                    <p class="experience-details">
-                                    Arduinoとサーボモーターを用いて、スイッチを押すと機械自身が押し戻す「Useless Machine」を制作しました。単に押し戻すだけでなく、動作から人間らしさや意思を感じられるよう、押し返す速度や蓋の開閉タイミングを変えて複数の振る舞いを試作しました。最終的にはAT42QT1010静電容量式タッチセンサーと銅箔テープを導入し、スイッチ付近に触れている間は待機し、指を離すとすぐに押し返す仕組みを実装しました。MDFの筐体もIllustratorで図面を作成し、レーザーカッターで加工しています。「機械に見張られている」ように感じるインタラクションを目指して調整を重ねました。<br><br>
-                                    <strong>関連リンク:</strong><br>
-                                    ・<a href="https://scrapbox.io/yohei/useless_machine"
-                                        target="_blank">制作記録</a>
-                                    </p>
-                                </div>
-                            </div>
-                            <!-- 枠3 -->
-                            <div class="experience-item" data-video="Images/research/toio-vr.mp4" data-tech="Unity、toio SDK for Unity、Digital Twin、Meta Quest 3">
-                                <div class="experience-header experience-detail-toggle" role="button" tabindex="0"
-                                    aria-expanded="false">
-                                    <span class="company-name">【中西泰人研究会】toio・VRを用いたゲームの開発</span>
-                                    <span class="experience-header-meta"><span class="period">2026年6月~7月</span><span
-                                            class="detail-arrow"></span></span>
-                                </div>
-                                <div class="experience-detail-content">
-                                    <p class="experience-details">
-                                    小型ロボットtoioを用いて、現実世界とデジタルゲームを組み合わせた体験を研究しています。Unityとtoio SDK for Unityで接続、移動、座標・角度取得、スマートフォン操作を検証し、鬼ごっこ、シューティング、スネークゲームを試作しました。その後、Digital Twinによる実機とUnity上のシミュレーションの連携や、複数のtoioマットをまたぐ座標処理を実装しました。さらに、身の回りの物を障害物として配置し、スマートフォンで撮影した情報をステージへ反映する方法を検討しました。最終的にはMeta Quest 3を導入し、VRからは見えない現実の障害物と、現実世界を移動するtoioを組み合わせたゲームへ発展させました。<br><br>
-                                    <strong>関連リンク:</strong><br>
-                                    ・<a href="https://scrapbox.io/yohei/toio_project"
-                                        target="_blank">制作・研究記録</a><br>
-                                    ・<a href="https://scrapbox.io/yohei/%E3%83%88%E3%83%A9%E3%83%83%E3%83%97%E5%AF%BE%E6%88%A6%E3%82%B2%E3%83%BC%E3%83%A0"
-                                        target="_blank">トラップ対戦ゲーム</a>
-                                    </p>
-                                </div>
+                        <ul class="profile-stats">${[
+                            [data.projects.length, '作品', '#works', 'works'],
+                            [data.awards.length, '受賞・入選', '#about/awards', 'about'],
+                            [data.internships.length, 'インターン・バイト', '#about/internships', 'about'],
+                            [data.media.length, 'メディア掲載', '#about/media', 'about'],
+                            [data.research.length, '研究', '#research', 'research'],
+                        ].map(([n, label, href, section]) => `<li data-to="${section}"><a href="${href}"><strong>${n}</strong><span>${esc(label)}</span></a></li>`).join('')}</ul>`,
+                // これまで：受賞歴・インターン・メディア掲載を、新しい順の年表にする。
+                history: () => `
+                        <div class="profile profile--history">${portraitHTML()}
+                            <div>
+                                <p class="profile-name">${esc(data.profile.name)}</p>
+                                ${profileRole(true)}${contactsHTML()}
                             </div>
                         </div>
-                    </div>
-                    </div>
-
-                    <!-- メディア掲載アコーディオン -->
-                    <div class="accordion-hover-shell">
-                    <div class="accordion">
-                        <div class="accordion-toggle">
-                            <h3>メディア掲載</h3>
-                            <span class="icon-arrow"></span>
+                        <ol class="profile-history">${profileHistory().slice(0, 6).map(e => `<li><time>${e.y}${e.m ? `.${String(e.m).padStart(2, '0')}` : ''}</time><span>${esc(e.text)}</span></li>`).join('')}</ol>`,
+            };
+            // 技術スタックのアイコンを押すと、アイコンの下に出る説明
+            const techWorks = tech => [
+                ...projects.filter(p => p.tech.split('、').some(name => tech.word.test(name.trim()))).map(p => [`#works/${p.id}`, p.title]),
+                ...research.filter(r => r.tech.split('、').some(name => tech.word.test(name.trim()))).map(r => [`#research/${r.id}`, r.theme]),
+            ];
+            const techDetailHTML = tech => {
+                const works = techWorks(tech);
+                const rest = works.length - TECH_WORKS_MAX;
+                return `
+                    <div class="tech-detail" id="tech-detail-${esc(tech.id)}" data-tech="${esc(tech.id)}" hidden>
+                        <div>
+                            <p class="tech-detail-head"><strong>${esc(tech.name)}</strong>${tech.since ? `<span>${esc(tech.since)}</span>` : ''}</p>
+                            <ul class="tech-detail-points">${tech.points.map(t => `<li>${esc(t)}</li>`).join('')}</ul>
                         </div>
-                        <div class="accordion-content award-list">
-                            <p class="award-item">
-                                <span>2026年8月19日 データサイエンス百景</span>
-                                <a href="https://ds100.jp/future/s-035/" target="_blank" rel="noopener noreferrer"
-                                    class="award-project-link">【慶應義塾大学SFC】ソフトとハードの両面から新しいゲーム体験を追求する！</a>
-                            </p>
-                            <p class="award-item">
-                                <span>2025年11月14日 KamoTalk（カモトーク）</span>
-                                <a href="https://note.com/kamotalk/n/nd6fc58c5cccb" target="_blank"
-                                    rel="noopener noreferrer"
-                                    class="award-project-link">高校でゲームをリリース、SFCで世界を目指す。クリエイター矢追陽平が「ものづくりで世界と繋がる」物語</a>
-                            </p>
+                        ${works.length ? `<div><p class="tech-detail-label">使った作品</p><ul class="tech-detail-works">${works.slice(0, TECH_WORKS_MAX).map(([href, title]) => `<li><a href="${esc(href)}">${esc(title)}</a></li>`).join('')}${rest > 0 ? `<li class="tech-detail-more">ほか${rest}作品</li>` : ''}</ul></div>` : ''}
+                    </div>`;
+            };
+            const aboutBlocks = {
+                '': (single = false) => block('profile', single ? null : TEXT.profile, (PROFILE_VERSIONS[PROFILE_STYLE] || PROFILE_VERSIONS[''])()) +
+                    block('skills', TEXT.skills, `<ul class="tech-stack-list">${TECH_STACK.map(tech => `
+                        <li class="tech" data-tech="${esc(tech.id)}"><button type="button" title="${esc(tech.name)}" aria-expanded="false" aria-controls="tech-detail-${esc(tech.id)}"><img src="${tech.src || `${DEVICON}${tech.id}.svg`}" alt="${esc(tech.name)}" width="44" height="44" loading="eager" decoding="async"></button></li>`).join('')}
+                    </ul>${TECH_STACK.map(techDetailHTML).join('')}`),
+                internships: (single = false) => block('internships', single ? null : TEXT.internships, `<ol class="exp-list timeline">${data.internships.map(expHTML).join('')}</ol>`),
+                awards: (single = false) => block('awards', single ? null : TEXT.awards, `<ul class="item-list awards">${data.awards.map(itemHTML).join('')}</ul>`),
+                media: (single = false) => block('media', single ? null : TEXT.media, `<ul class="item-list media">${data.media.map(itemHTML).join('')}</ul>`),
+            };
+            // About は1ページにまとめる（プロフィール → 受賞歴 → インターン・バイト経験 → メディア掲載）。
+            // サイドバーの中の項目は、このページの中の場所へのリンクになる。
+            // About の中の項目は1つずつのページ（プロフィール／受賞歴／インターン・バイト経験／メディア掲載）
+            const aboutPage = sub => {
+                const id = ABOUT_SECTIONS.includes(sub) ? sub : '';
+                return `
+                    <article class="page page--narrow about">
+                        ${pageHead(TEXT.about, aboutLabel(id))}
+                        <div class="stack" data-single>${aboutBlocks[id](true)}</div>
+                        ${profileCharacter}
+                    </article>`;
+            };
+
+            // ---- Works ----
+            // 作品一覧のカードのタイトル。「じいや！巨大ロボで…」のように途中に「！」があるときは、そこで改行して読みやすくする。
+            const cardTitle = title => esc(title).replace(/^(.+?！)(?=.)/, '$1<br>');
+            const clipHTML = p => p.videoId ? `
+                <video muted loop playsinline preload="none" data-src="${CLIP_BASE}${esc(p.videoId)}.mp4"
+                    poster="${CLIP_BASE}${esc(p.videoId)}.jpg" aria-hidden="true"
+                    onerror="this.outerHTML='<img src=&quot;${thumbUrl(p.videoId, 'mqdefault')}&quot; alt=&quot;&quot;>'"></video>` : '';
+            const cardHTML = p => {
+                const i = projects.indexOf(p);
+                return `
+                    <article class="card window work" ${tone(i)}${FEATURED.includes(p.id) ? ' data-featured' : ''}>
+                        <div class="thumb">${clipHTML(p)}</div>
+                        <div class="body">
+                            <h3><a class="card-link" href="#works/${esc(p.id)}">${cardTitle(p.title)}</a><small>${yearOf(p)}</small></h3>
+                            <p>${esc(p.summary)}</p>${tagsHTML(p.tags)}
                         </div>
+                    </article>`;
+            };
+            const worksPage = () => `
+                <article class="page">
+                    ${pageHead(TEXT.works, TEXT.worksList, TEXT.worksLead)}
+                    <div class="works">
+                        <div class="featured big">${projects.filter(p => FEATURED.includes(p.id)).map(cardHTML).join('')}</div>
+                        <div class="grid">${projects.filter(p => !FEATURED.includes(p.id)).map(cardHTML).join('')}</div>
                     </div>
+                </article>`;
+
+            const soundIcon = muted => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4 6 8H3v8h3l5 4V4Z"/>${muted ? '<path d="m16 9 6 6m0-6-6 6"/>' : '<path d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/>'}</svg>`;
+            const playerHTML = (id, title) => id ? `
+                <div class="vplayer" data-player>
+                    <video src="${MEDIA_BASE}${esc(id)}.mp4" poster="${CLIP_BASE}${esc(id)}.jpg"
+                        autoplay muted loop playsinline preload="metadata" aria-label="${esc(title)} のプレイ動画"></video>
+                    <button class="vsound" type="button" data-act="mute" aria-label="${esc(TEXT.soundLabel)}" aria-pressed="false" title="${esc(TEXT.unmute)}">${soundIcon(true)}</button>
+                </div>` : '';
+
+            // 作品情報は4項目に固定。使用技術は技術説明の末尾にテキストで表示する。
+            const FACT_LABELS = ['ジャンル', '開発期間', '開発体制', '担当'];
+            const gamePage = id => {
+                const index = projects.findIndex(p => p.id === id);
+                if (index < 0) return worksPage();
+                const p = projects[index];
+                const facts = FACT_LABELS.map(label => p.fields.find(f => f.label === label) || { label, html: '—' });
+                const sections = p.fields.filter(f => !FACT_LABELS.includes(f.label) && !['使用技術', 'GitHubリポジトリ'].includes(f.label));
+                const technologies = [...new Set(p.tech.split('、').map(name => name.trim()).filter(Boolean))];
+                const techListHTML = technologies.length ? `<p class="tech-list">${esc(technologies.join('、'))}</p>` : '';
+                const techHTML = techListHTML ? `<div class="tech-stack"><h3 class="label">使用技術</h3>${techListHTML}</div>` : '';
+                const repositoryNote = p.fields.find(f => f.label === 'GitHubリポジトリ');
+                return `
+                    <article class="page game" ${tone(index)} data-game="${esc(p.id)}">
+                        <a class="back" href="#works">${esc(TEXT.back)}</a>
+                        ${pageHead(TEXT.works, p.title, p.summary)}
+                        ${playerHTML(p.videoId, p.title)}
+                        <div class="detail">
+                            <aside class="stack data workdata">
+                                ${block('data', TEXT.data, `<dl>${facts.map(f => `<div><dt>${esc(f.label)}</dt><dd>${fixProjectLinks(f.html)}</dd></div>`).join('')}</dl>`)}
+                                ${p.links.length || repositoryNote ? block('links', TEXT.links, `${p.links.length ? `<ul class="link-list">${p.links.map(l => `<li>${link(l)}</li>`).join('')}</ul>` : ''}${repositoryNote ? `<p class="repository-note">${esc(repositoryNote.label)}：${esc(repositoryNote.plain)}</p>` : ''}`) : ''}
+                            </aside>
+                            <div class="stack detail-main">
+                                ${sections.map((f, i) => `
+                                    <section class="window block" data-block="${esc(f.label)}" ${tone(index + i)}>
+                                        <h2 class="window-title label">${esc(f.label)}</h2>
+                                        <div class="window-body prose">${paragraphs(fixProjectLinks(f.html))}${f.label === '技術説明' ? techHTML : ''}</div>
+                                    </section>`).join('')}
+                                ${!sections.some(f => f.label === '技術説明') && techListHTML ? block('technology', '使用技術', techListHTML) : ''}
+                            </div>
+                        </div>
+                    </article>`;
+            };
+
+            // ---- 研究 ----
+            const researchItemHTML = (r, i, headingTag) => `
+                <article class="research-item" id="research-${r.id}" ${tone(i)}>
+                    ${headingTag === 'h2' ? `<h2 class="research-title">${esc(r.theme)}</h2>` : ''}
+                    <div class="detail">
+                        <div class="stack detail-main">
+                            ${block(`research-body-${r.id}`, TEXT.researchBody, `<div class="prose">${paragraphs(r.body)}</div>${r.tech ? `<div class="tech-stack"><h3 class="label">使用技術</h3><p class="tech-list">${esc(r.tech)}</p></div>` : ''}`)}
+                        </div>
+                        <aside class="stack data">
+                            ${block(`research-data-${r.id}`, TEXT.researchData, `<dl>${r.lab ? `<div><dt>${esc(TEXT.researchLab)}</dt><dd>${esc(r.lab)}</dd></div>` : ''}<div><dt>${esc(TEXT.researchPeriod)}</dt><dd>${esc(r.period)}</dd></div></dl>`)}
+                            ${r.links.length ? block(`research-links-${r.id}`, TEXT.links, `<ul class="link-list">${r.links.map(l => `<li>${link(l)}</li>`).join('')}</ul>`) : ''}
+                        </aside>
                     </div>
+                </article>`;
+            // 研究は1件ずつのページ
+            // 研究の紹介動画。音のある動画だけ、作品ページと同じ音の切り替えボタンを付ける。縦長の動画は縦長の枠で出す。
+            const researchVideoHTML = r => r.video ? `
+                <div class="vplayer research-video" data-player>
+                    <video src="${esc(r.video.src)}" poster="${esc(r.video.src.replace(/\.mp4$/, '.jpg'))}"
+                        autoplay muted loop playsinline preload="metadata" aria-label="${esc(r.theme)} の動画"
+                        onloadedmetadata="this.parentElement.toggleAttribute('data-portrait', this.videoHeight > this.videoWidth)"></video>
+                    ${r.video.audio ? `<button class="vsound" type="button" data-act="mute" aria-label="${esc(TEXT.soundLabel)}" aria-pressed="false" title="${esc(TEXT.unmute)}">${soundIcon(true)}</button>` : ''}
+                </div>` : '';
+            // 研究一覧：作品一覧と同じカード。画像は研究の動画の静止画、札は使用技術の先頭3つ。
+            const researchYear = r => (r.period.match(/\d{4}/g) || []).pop() || '';
+            const researchCardHTML = (r, i) => `
+                    <article class="card window work research-card" ${tone(i)}>
+                        <div class="thumb">${r.video ? `<img src="${esc(r.video.src.replace(/\.mp4$/, '.jpg'))}" alt="" loading="lazy" decoding="async">` : ''}</div>
+                        <div class="body">
+                            <h3><a class="card-link" href="#research/${r.id}">${esc(r.theme)}</a><small>${researchYear(r)}</small></h3>
+                            <p>${esc(r.lab)}</p>${tagsHTML(r.tech.split('、').map(t => t.replace(/（.*$/, '').trim()).filter(Boolean).slice(0, 3).map(label => ({ key: 'tech', label })))}
+                        </div>
+                    </article>`;
+            const researchListPage = () => `
+                <article class="page">
+                    ${pageHead(TEXT.research, TEXT.researchList)}
+                    <div class="works"><div class="grid">${research.map(researchCardHTML).join('')}</div></div>
+                </article>`;
+            const researchPage = id => {
+                const index = research.findIndex(r => r.id === id);
+                if (index < 0) return researchListPage();
+                const r = research[index];
+                return `
+                    <!-- 作品ページ（.game）と同じ並べ方：左に枠なしの研究内容、右に研究情報と Link -->
+                    <article class="page research game">
+                        ${pageHead(TEXT.research, r.theme)}
+                        ${researchVideoHTML(r)}
+                        ${researchItemHTML(r, index, 'none')}
+                    </article>`;
+            };
 
-                </div>
-            </div>
-        </section>
+            // 見えている動く見本だけ再生し、画面外に出たら止める。
+            const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const clipObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+                const video = entry.target;
+                if (entry.isIntersecting) {
+                    if (!video.src) video.src = video.dataset.src;
+                    if (!reduceMotion) video.play().catch(() => {});
+                } else {
+                    video.pause();
+                }
+            }), { rootMargin: '100px 0px' });
 
-        <!-- ===== 4. 作品 ===== -->
-        <section id="projects" class="section-container">
-            <div id="projects-background" class="section-background-canvas"></div>
-            <h2 class="scroll-animate from-down">PROJECTS</h2>
+            // ---- スマホのメニュー ----
+            const menuButton = document.getElementById('menu-button');
+            const closeMenu = () => {
+                document.body.classList.remove('menu-open');
+                menuButton.setAttribute('aria-expanded', 'false');
+            };
+            menuButton.addEventListener('click', () => {
+                const open = document.body.classList.toggle('menu-open');
+                menuButton.setAttribute('aria-expanded', String(open));
+            });
 
-            <!-- トップ作品 -->
-            <div class="project-top scroll-animate from-down">
-                <div id="project-sausage-smash" class="project-item" data-modal-target="modal-project-sausage-smash">
-                    <div class="video-container">
-                        <iframe
-                            data-video-src="https://www.youtube.com/embed/YkrrAr-tfY4?autoplay=1&mute=1&loop=1&playlist=YkrrAr-tfY4&controls=0&rel=0" loading="lazy"
-                            referrerpolicy="strict-origin-when-cross-origin"
-                            title="Sausage Smash プレイ動画"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen></iframe>
-                    </div>
-                    <div class="project-description">
-                        <h3>Sausage Smash</h3>
-                        <p>ソーセージをスマッシュして、迫り来る野菜を迎え撃つVRアクションゲーム。<br><span
-                                class="click-for-details">▶︎ クリックして詳細を見る</span></p>
-                        <ul class="tags">
-                            <li class="tag unity">Unity</li>
-                            <li class="tag vr">VR</li>
-                            <li class="tag hackathon">ハッカソン</li>
-                            <li class="tag winner">優勝</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+            // ---- スマホ：About me（上から順に）→ 作品一覧 → 研究一覧 を1本のスクロールで見せる ----
+            // 作品と研究の1件ずつのページは、スマホでもパソコンと同じ別のページ。
+            const mobile = matchMedia('(max-width: 960px)');
+            const homePage = () => `
+                <article class="page page--narrow about home-part" data-section="about" id="part-about">
+                    ${pageHead(TEXT.about, aboutLabel(''))}
+                    <div class="stack">${aboutBlocks[''](true)}${aboutBlocks.awards()}${aboutBlocks.internships()}${aboutBlocks.media()}</div>
+                </article>
+                <div class="home-part" data-section="works" id="part-works">${worksPage()}</div>
+                <div class="home-part" data-section="research" id="part-research">${researchListPage()}</div>`;
+            // スクロールで今読んでいる場所を目次で選ぶための、場所の一覧
+            const anchorsOf = view => view === 'home' ? [
+                ...ABOUT_SECTIONS.map(id => ({ section: 'about', key: id, el: document.getElementById(`block-${id || 'profile'}`) })),
+                { section: 'works', key: '', el: document.getElementById('part-works') },
+                { section: 'research', key: '', el: document.getElementById('part-research') },
+            ] : [];
 
-            <!-- 作品グリッド (2列) -->
-            <div class="project-grid">
-                <div id="project-pintch-witch" class="project-item" data-modal-target="modal-project-5">
-                    <div class="video-container">
-                        <iframe
-                            data-video-src="https://www.youtube.com/embed/MQZcKngi_ns?autoplay=1&mute=1&loop=1&playlist=MQZcKngi_ns&controls=0&rel=0" loading="lazy"
-                            referrerpolicy="strict-origin-when-cross-origin"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen></iframe>
-                    </div>
-                    <div class="project-description">
-                        <h3>PiNTCH WiTCH // Shadow play</h3>
-                        <p>影を使って2D世界の少女を救う、ハンドトラッキング対応ゲーム。<br><span class="click-for-details">▶︎ クリックして詳細を見る</span></p>
-                        <ul class="tags">
-                            <li class="tag unity">Unity</li>
-                            <li class="tag blender">Blender</li>
-                            <li class="tag team-dev">チーム開発</li>
-                            <li class="tag game-jam">Game Jam</li>
-                        </ul>
-                    </div>
-                </div>
+            // サイドバーの選択と、body の目印を今いる場所に合わせる
+            const markActive = (section, subKey) => {
+                document.body.dataset.section = section;
+                document.body.dataset.page = `${section}/${subKey}`;
+                document.querySelectorAll('.menu-group').forEach(group => {
+                    const active = group.dataset.section === section;
+                    active ? group.setAttribute('data-active', '') : group.removeAttribute('data-active');
+                    const label = group.querySelector('.menu-label');
+                    if (label.tagName === 'A') active ? label.setAttribute('aria-current', 'page') : label.removeAttribute('aria-current');
+                });
+                document.querySelectorAll('[data-key]').forEach(a => {
+                    const active = a.dataset.key === `${section}/${subKey}`;
+                    a.classList.toggle('active', active);
+                    active ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current');
+                });
+                document.querySelector('.menu .active')?.scrollIntoView({ block: 'nearest' });
+            };
 
-                <div id="project-jiya-robot-tea" class="project-item" data-modal-target="modal-project-jiya-robot-tea">
-                    <div class="video-container">
-                        <iframe
-                            data-video-src="https://www.youtube.com/embed/aGIQZD2Nkak?autoplay=1&mute=1&loop=1&playlist=aGIQZD2Nkak&controls=0&rel=0" loading="lazy"
-                            referrerpolicy="strict-origin-when-cross-origin"
-                            title="じいや！巨大ロボで紅茶を注ぎなさい！ プレイ動画"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen></iframe>
-                    </div>
-                    <div class="project-description">
-                        <h3>じいや！巨大ロボで紅茶を注ぎなさい！</h3>
-                        <p>巨大ロボを操作し、小さなティーカップに紅茶を注ぐVRゲーム。<br><span
-                                class="click-for-details">▶︎ クリックして詳細を見る</span></p>
-                        <ul class="tags">
-                            <li class="tag unity">Unity</li>
-                            <li class="tag vr">VR</li>
-                            <li class="tag team-dev">チーム開発</li>
-                            <li class="tag nomaps">NoMaps</li>
-                            <li class="tag exhibition">出展</li>
-                        </ul>
-                    </div>
-                </div>
+            // スクロールして読み進めたら、今読んでいる項目をサイドバーで選ぶ（ページは切り替えない）
+            let renderedSection = null;
+            let scrollTicking = false;
+            // サイドバーで選んで移動した直後は、その選択を保つ（短いページの最後の方の項目でも、選んだものが選ばれたままになる）
+            let keepChoice = false;
+            ['wheel', 'touchmove', 'keydown'].forEach(type => window.addEventListener(type, () => { keepChoice = false; }, { passive: true }));
+            const followScroll = () => {
+                scrollTicking = false;
+                if (keepChoice) return;
+                const anchors = anchorsOf(renderedSection).filter(a => a.el);
+                if (!anchors.length) return;
+                const line = window.innerHeight * .3;
+                const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+                let current = anchors[0];
+                anchors.forEach(a => { if (a.el.getBoundingClientRect().top <= line) current = a; });
+                if (atBottom) current = anchors[anchors.length - 1];
+                if (document.body.dataset.page === `${current.section}/${current.key}`) return;
+                markActive(current.section, current.key);
+                history.replaceState(null, '', current.key ? `#${current.section}/${current.key}` : `#${current.section}`);
+            };
+            window.addEventListener('scroll', () => {
+                if (scrollTicking) return;
+                scrollTicking = true;
+                requestAnimationFrame(followScroll);
+            }, { passive: true });
 
-                <!-- 作品アイテム 1 -->
-                <div id="project-boku-no-nikki" class="project-item" data-modal-target="modal-project-1">
-                    <div class="video-container">
-                        <iframe
-                            data-video-src="https://www.youtube.com/embed/g1A0z3bnu78?autoplay=1&mute=1&loop=1&playlist=g1A0z3bnu78&controls=0&rel=0" loading="lazy"
-                            referrerpolicy="strict-origin-when-cross-origin"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen></iframe>
-                    </div>
-                    <div class="project-description">
-                        <h3>ぼくのにっき</h3>
-                        <p>ノートに書き込んで進む2Dアクションホラーゲーム。<br><span class="click-for-details">▶︎ クリックして詳細を見る</span></p>
-                        <ul class="tags">
-                            <li class="tag unity">Unity</li>
-                            <li class="tag illust">イラスト</li>
-                            <li class="tag two-d">2D</li>
-                            <li class="tag gc-koshien">GC甲子園ノミネート</li>
-                        </ul>
-                    </div>
-                </div>
+            // ---- 表示の切り替え（最初は About） ----
+            const render = () => {
+                // 以前のサイトの作品へのリンク（#project-〇〇）は、新しい作品ページ（#works/〇〇）へ
+                if (/^#project-/.test(location.hash)) { location.replace(`#works/${location.hash.slice('#project-'.length)}`); return; }
+                const [route, rawSub] = location.hash.slice(1).split('/');
+                const sub = rawSub ? decodeURIComponent(rawSub) : '';
+                const section = ['about', 'works', 'research'].includes(route) ? route : 'about';
+                // スマホでは About・作品一覧・研究一覧を1ページにまとめる（view = 'home'）
+                const view = mobile.matches && (section === 'about' || !sub) ? 'home' : section;
 
-                <!-- 新規作品 -->
-                <div class="project-item" data-modal-target="modal-project-siro">
-                    <div class="video-container">
-                        <iframe
-                            data-video-src="https://www.youtube.com/embed/TWyRMdgAO90?autoplay=1&mute=1&loop=1&playlist=TWyRMdgAO90&controls=0&rel=0" loading="lazy"
-                            referrerpolicy="strict-origin-when-cross-origin"
-                            title="あなたはシロです。 プレイ動画"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen></iframe>
-                    </div>
-                    <div class="project-description">
-                        <h3>あなたはシロです。</h3>
-                        <p>白と黒の状態を切り替え、警察の動きを利用して進む3Dアクションパズルゲーム。<br><span
-                                class="click-for-details">▶︎ クリックして詳細を見る</span></p>
-                        <ul class="tags">
-                            <li class="tag unity1week">unity1week</li>
-                            <li class="tag unity">Unity</li>
-                            <li class="tag three-d">3D</li>
-                        </ul>
-                    </div>
-                </div>
+                // 同じ1ページの中の移動なら、作り直さずにその場所までスクロールするだけ
+                if (!(view === 'home' && renderedSection === 'home')) {
+                    main.innerHTML =
+                        view === 'home' ? homePage() :
+                        section === 'about' ? aboutPage(sub) :
+                        section === 'research' ? researchPage(sub) :
+                        sub ? gamePage(sub) : worksPage();
+                    renderedSection = view;
+                    clipObserver.disconnect();
+                    main.querySelectorAll('video[data-src]').forEach(v => clipObserver.observe(v));
+                    // 折りたたみ内の写真も先にデコードし、開いた瞬間の表示待ちを減らす。
+                    main.querySelectorAll('.exp-detail img').forEach(img => img.decode?.().catch(() => {}));
+                }
 
-                <div id="project-zelly-swipe" class="project-item" data-modal-target="modal-project-zelly-swipe">
-                    <div class="video-container">
-                        <iframe
-                            data-video-src="https://www.youtube.com/embed/NrzPRwNogDc?autoplay=1&mute=1&loop=1&playlist=NrzPRwNogDc&controls=0&rel=0" loading="lazy"
-                            referrerpolicy="strict-origin-when-cross-origin"
-                            title="ZELLY SWIPE プレイ動画"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen></iframe>
-                    </div>
-                    <div class="project-description">
-                        <h3>ZELLY SWIPE</h3>
-                        <p>スワイプですべてのゼリーを一斉に滑らせ、同じ色のゴールへ脱出させるパズルゲーム。<br><span
-                                class="click-for-details">▶︎ クリックして詳細を見る</span></p>
-                        <ul class="tags">
-                            <li class="tag unity">Unity</li>
-                            <li class="tag internship">インターン</li>
-                            <li class="tag google-play">ストアリリース</li>
-                            <li class="tag solo-dev">個人開発</li>
-                        </ul>
-                    </div>
-                </div>
+                markActive(section, sub);
 
-                <div id="project-frying-pan" class="project-item" data-modal-target="modal-project-frying-pan">
-                    <div class="video-container">
-                        <iframe
-                            data-video-src="https://www.youtube.com/embed/A58K6AprXpU?autoplay=1&mute=1&loop=1&playlist=A58K6AprXpU&controls=0&rel=0" loading="lazy"
-                            referrerpolicy="strict-origin-when-cross-origin"
-                            title="フライパン返し プレイ動画"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen></iframe>
-                    </div>
-                    <div class="project-description">
-                        <h3>フライパン返し</h3>
-                        <p>スマホをフライパンに見立てて振り、パンケーキをひっくり返す体感アクションゲーム。<br><span
-                                class="click-for-details">▶︎ クリックして詳細を見る</span></p>
-                        <ul class="tags">
-                            <li class="tag unity">Unity</li>
-                            <li class="tag android">Android</li>
-                            <li class="tag team-dev">チーム開発</li>
-                            <li class="tag internship">インターン</li>
-                        </ul>
-                    </div>
-                </div>
+                const target = view === 'home' && (section !== 'about' || sub)
+                    ? document.getElementById(section === 'about' ? `block-${sub}` : `part-${section}`)
+                    : null;
+                keepChoice = Boolean(target);
+                target ? target.scrollIntoView({ block: 'start' }) : window.scrollTo(0, 0);
+                closeMenu();
+            };
 
-                <!-- 作品アイテム 2 -->
-                <div id="project-depth-diary" class="project-item" data-modal-target="modal-project-2">
-                    <div class="video-container">
-                        <iframe
-                            data-video-src="https://www.youtube.com/embed/k5BV3rlGCUc?autoplay=1&mute=1&loop=1&playlist=k5BV3rlGCUc&controls=0&rel=0" loading="lazy"
-                            referrerpolicy="strict-origin-when-cross-origin"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen></iframe>
-                    </div>
-                    <div class="project-description">
-                        <h3>DEPTH DIARY</h3>
-                        <p>スマホで簡単操作！2Dドットアドベンチャーゲーム<br><span class="click-for-details">▶︎ クリックして詳細を見る</span></p>
-                        <ul class="tags">
-                            <li class="tag unity">Unity</li>
-                            <li class="tag dot-e">ドット絵</li>
-                            <li class="tag two-d">2D</li>
-                            <li class="tag gc-koshien">GC甲子園U18セミファイナル</li>
-                        </ul>
-                    </div>
-                </div>
-                <!-- 作品アイテム 4 -->
-                <div class="project-item" data-modal-target="modal-project-4">
-                    <div class="video-container">
-                        <iframe
-                            data-video-src="https://www.youtube.com/embed/4Kb0cGfee5Q?autoplay=1&mute=1&loop=1&playlist=4Kb0cGfee5Q&controls=0&rel=0" loading="lazy"
-                            referrerpolicy="strict-origin-when-cross-origin"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen></iframe>
-                    </div>
-                    <div class="project-description">
-                        <h3>CIRCUSAL</h3>
-                        <p>Googleストアにリリース！2Dカジュアルゲーム<br><span class="click-for-details">▶︎ クリックして詳細を見る</span></p>
-                        <ul class="tags">
-                            <li class="tag unity">Unity</li>
-                            <li class="tag illust">イラスト</li>
-                            <li class="tag two-d">2D</li>
-                            <li class="tag google-play">Google Playリリース</li>
-                        </ul>
-                    </div>
-                </div>
-                <!-- 作品アイテム 5 -->
-                <div class="project-item" data-modal-target="modal-project-6">
-                    <div class="video-container">
-                        <iframe
-                            data-video-src="https://www.youtube.com/embed/NgFxASIIjKs?autoplay=1&mute=1&loop=1&playlist=NgFxASIIjKs&controls=0&rel=0" loading="lazy"
-                            referrerpolicy="strict-origin-when-cross-origin"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen></iframe>
-                    </div>
-                    <div class="project-description">
-                        <h3>KamoRogue</h3>
-                        <p>カモが地下ダンジョンを進む2Dローグライクアクションゲーム。<br><span class="click-for-details">▶︎ クリックして詳細を見る</span></p>
-                        <ul class="tags">
-                            <li class="tag python">Python</li>
-                            <li class="tag pyxel">Pyxel</li>
-                            <li class="tag dot-e">ドット絵</li>
-                        </ul>
-                    </div>
-                </div>
+            // ---- 動画は自動ループ。操作は右上の音声切り替えだけ ----
+            const syncPlayer = player => {
+                const video = player.querySelector('video');
+                const button = player.querySelector('[data-act=mute]');
+                button.innerHTML = soundIcon(video.muted);
+                button.setAttribute('aria-pressed', String(!video.muted));
+                button.title = video.muted ? TEXT.unmute : TEXT.mute;
+            };
+            main.addEventListener('click', event => {
+                const button = event.target.closest('[data-player] [data-act=mute]');
+                if (!button) return;
+                const player = button.closest('[data-player]');
+                const video = player.querySelector('video');
+                video.muted = !video.muted;
+                if (video.paused) video.play().catch(() => {});
+                syncPlayer(player);
+            });
+            // 技術スタック：押すと説明を開き、もう一度押すと閉じる。開くのは1つだけ。
+            main.addEventListener('click', event => {
+                const button = event.target.closest('.tech > button');
+                if (!button) return;
+                const open = button.getAttribute('aria-expanded') !== 'true';
+                const list = button.closest('[data-block="skills"]');
+                list.querySelectorAll('.tech > button').forEach(b => b.setAttribute('aria-expanded', String(b === button && open)));
+                list.querySelectorAll('.tech-detail').forEach(d => { d.hidden = !(open && d.id === button.getAttribute('aria-controls')); });
+            });
+            main.addEventListener('volumechange', event => {
+                const player = event.target.closest?.('[data-player]');
+                if (player) syncPlayer(player);
+            }, true);
 
-                <!-- 作品アイテム 3 -->
-                <div class="project-item" data-modal-target="modal-project-3">
-                    <div class="video-container">
-                        <iframe
-                            data-video-src="https://www.youtube.com/embed/b3qK5eTwYUs?autoplay=1&mute=1&loop=1&playlist=b3qK5eTwYUs&controls=0&rel=0" loading="lazy"
-                            referrerpolicy="strict-origin-when-cross-origin"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen></iframe>
-                    </div>
-                    <div class="project-description">
-                        <h3>スライムスライス</h3>
-                        <p>スライムを切り裂け！3Dカジュアルゲーム<br><span class="click-for-details">▶︎ クリックして詳細を見る</span></p>
-                        <ul class="tags">
-                            <li class="tag unity">Unity</li>
-                            <li class="tag modeling">モデリング</li>
-                            <li class="tag three-d">3D</li>
-                            <li class="tag blender">Blender</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===== 5. 経験 ===== -->
-        <section id="experience" class="section-container">
-            <div id="experience-background" class="section-background-canvas"></div>
-            <h2 class="scroll-animate from-down">EXPERIENCE</h2>
-            <div class="experience-list scroll-animate from-down">
-                <!-- 経験 1 (アコーディオン) -->
-                <div class="accordion">
-                    <div class="accordion-toggle">
-                        <h3>ゲーム開発への情熱と挑戦 (小・中・高時代)</h3>
-                        <span class="icon-arrow"></span>
-                    </div>
-                    <div class="accordion-content">
-                        <p>様々なコンシューマーゲームやPCオンラインゲームに熱中した経験から、中学3年生でプログラミングとUnityに出会い、ゲーム開発の道に進みました。<br>
-
-                            [挑戦] 高校1年: Google Playに初リリース まずは「完成させる」ことを目標に、初の自作ゲームをGoogle Playにリリースしました。<br>
-
-                            [挫折と学び] 高校2年: 長期開発の失敗
-                            次に長期開発に挑戦しましたが、計画不足により挫折しました。この経験から、アイデアの言語化、タスク管理、そして実現可能なスケジュールを立てる重要性を痛感しました。<br>
-
-                            [成果] 高校3年: 挫折からの再起 失敗の反省を活かし、7ヶ月の制作期間を設けてゲームを開発しました。「ゲームクリエイター甲子園
-                            U18」にて、セミファイナルに進出することができました。
-                        </p>
-                    </div>
-                </div>
-                <!-- 経験 2 (アコーディオン) -->
-                <div class="accordion">
-                    <div class="accordion-toggle">
-                        <h3>株式会社ライフイズテック/ Unityメンター （インターン）(2025年7月〜)</h3>
-                        <span class="icon-arrow"></span>
-                    </div>
-                    <div class="accordion-content">
-                        <p>中高生にUnityの指導、エラー対応、環境構築など「作りたいゲーム」を実現するための技術サポートを担当しています。基礎から応用まで幅広いレベルの生徒に対応しており、この経験を通じて、Unityのバージョン差や未知のエラーにも即時対応する「柔軟な問題解決能力」と、技術を分かりやすく伝える「指導力」が身につきました。
-                        </p>
-                    </div>
-                </div>
-                <!-- 経験 3 (アコーディオン) -->
-                <div class="accordion">
-                    <div class="accordion-toggle">
-                        <h3>株式会社シフト / プログラマー (アルバイト) (2025年10月〜)</h3>
-                        <span class="icon-arrow"></span>
-                    </div>
-                    <div class="accordion-content">
-                        <p>プログラマーとして、UnityおよびJavaを用いたゲーム開発業務に携わっています。開発においては、未知の仕様や機能の実装に直面することも多々ありますが、インターネットでのリサーチと迅速なトライアンドエラーを繰り返すことで、自己解決する能力を養っています。
-                        </p>
-                    </div>
-                </div>
-                <!-- 経験 4 (アコーディオン) -->
-                <div class="accordion">
-                    <div class="accordion-toggle">
-                        <h3>10人規模のチーム開発リーダー (2025年11月〜)</h3>
-                        <span class="icon-arrow"></span>
-                    </div>
-                    <div class="accordion-content">
-                        <p>インターン先で知り合った仲間に声をかけ、10人規模のゲーム開発プロジェクトを立ち上げ、リーダーとして全体を統括しています。<br><br>
-
-                            <strong>担当業務:</strong><br>
-                            ・コーディングタスクとデザインタスクの割り振り<br>
-                            ・コーディングレビューの実施<br>
-                            ・Gitコンフリクトの解消<br>
-                            ・UIデザインの設計と実装<br><br>
-
-                            <strong>習得したスキル:</strong><br>
-                            この経験を通じて、チーム開発における実践的なGitHub運用（ブランチ管理、Pull
-                            Requestレビュー）、コンフリクトを防ぐためのタスク設計、ゲーム全体の進捗管理と次に必要なタスクの見極め、そしてチームをまとめるリーダーシップを学びました。NotionとDiscordを駆使して、円滑なコミュニケーションと効率的な開発フローを実現しています。<br><br>
-
-                            <strong>目標:</strong><br>
-                            中間目標として「神ゲー創造主エボリューション2026」への出展、最終目標としてApple Store & Google Playへのリリースを掲げています。
-                        </p>
-                    </div>
-                </div>
-                <!-- 経験 5 (アコーディオン) -->
-                <div class="accordion">
-                    <div class="accordion-toggle">
-                        <h3>BitSummit Game Jam 2026 / Unityプログラマー (2026年2月14日〜)</h3>
-                        <span class="icon-arrow"></span>
-                    </div>
-                    <div class="accordion-content">
-                        <p>日本最大級のインディーゲームイベント「BitSummit」が主催するゲームジャムに、Unityプログラマーとして参加します。2026年2月14日からスタートし、3ヶ月間という限られた期間内でゲーム開発に挑戦します。短期間での集中的な開発を通じて、限られた時間の中での優先順位付け、効率的な実装、そしてチームでの高速開発スキルを磨くことを目指しています。
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ===== 6. スキル ===== -->
-        <section id="skills" class="section-container">
-            <div id="skills-background" class="section-background-canvas"></div>
-            <h2 class="scroll-animate from-down">SKILLS</h2>
-            <div class="skills-grid scroll-animate from-down">
-                <!-- カテゴリ 1: Languages -->
-                <div class="skill-category">
-                    <h3>Languages</h3>
-                    <ul>
-                        <li>
-                            <span class="skill-name">C# (Unity)</span>
-                            <div class="stars" data-rating="5"></div>
-                        </li>
-                        <li>
-                            <span class="skill-name">JavaScript</span>
-                            <div class="stars" data-rating="3"></div>
-                        </li>
-                        <li>
-                            <span class="skill-name">HTML/CSS</span>
-                            <div class="stars" data-rating="3"></div>
-                        </li>
-                        <li>
-                            <span class="skill-name">Python</span>
-                            <div class="stars" data-rating="2"></div>
-                        </li>
-
-                    </ul>
-                </div>
-                <!-- カテゴリ 2: Tools & Engines -->
-                <div class="skill-category">
-                    <h3>Tools</h3>
-                    <ul>
-                        <li>
-                            <span class="skill-name">Unity</span>
-                            <div class="stars" data-rating="5"></div>
-                        </li>
-                        <li>
-                            <span class="skill-name">Git/Github</span>
-                            <div class="stars" data-rating="4"></div>
-                        </li>
-                        <li>
-                            <span class="skill-name">Blender</span>
-                            <div class="stars" data-rating="3"></div>
-                        </li>
-                        <li>
-                            <span class="skill-name">Figma</span>
-                            <div class="stars" data-rating="4"></div>
-                        </li>
-                    </ul>
-                </div>
-                <!-- カテゴリ 4: Others -->
-                <div class="skill-category">
-                    <h3>Others</h3>
-                    <ul>
-                        <li>
-                            <span class="skill-name">ゲームアイデア</span>
-                            <div class="stars" data-rating="3"></div>
-                        </li>
-                        <li>
-                            <span class="skill-name">企画書作成</span>
-                            <div class="stars" data-rating="3"></div>
-                        </li>
-                        <li>
-                            <span class="skill-name">書道</span>
-                            <div class="stars" data-rating="5"></div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- ===== 7. フッター ===== -->
-    <footer class="footer">
-        <p>&copy; 2025 矢追陽平（ようきん）. All Rights Reserved.</p>
-    </footer>
-
-    <!-- ===== 作品詳細モーダル (ポップアップ) ===== -->
-    <!-- (初期状態では非表示) -->
-    <div id="modal-project-jiya-robot-tea" class="modal">
-        <div class="modal-content">
-            <span class="modal-close">&times;</span>
-            <h2>じいや！巨大ロボで紅茶を注ぎなさい！</h2>
-            <p><strong>ジャンル:</strong> VRゲーム</p>
-            <p><strong>開発期間:</strong> 2026年8月末〜9月（1カ月間）</p>
-            <p><strong>開発体制:</strong> Iwaken Lab. のメンバー4人によるチーム制作</p>
-            <p><strong>担当:</strong> Unityエンジニア（ロボットの腕の挙動、つかみ判定、ティーポットの状態に応じたビジュアルの遷移）</p>
-            <p><strong>使用技術:</strong> Unity、C#、IK（逆運動学）、アニメーション制御、enumによる状態管理</p>
-            <p><strong>出展:</strong> DIVE INTO XR（NoMaps2026）／2026年9月26日<br>
-                会場：Deep Tech Core Sapporo（北海道札幌市）</p>
-            <p><strong>詳しい説明:</strong><br>
-                執事となって巨大ロボを操作し、お嬢様のお茶会のために小さなティーカップへ紅茶を注ぐVRゲームです。
-                巨大なロボットで繊細な作業に挑む、スケールのギャップを楽しめる作品です。
-                所属するIwaken Lab. のメンバーと共同で開発し、Unityエンジニアとして参加しました。
-                <br><br>
-                北海道・札幌を舞台に、テクノロジーやエンターテインメント、クリエイティブを通じて新しい価値を生み出すフェスティバル「NoMaps2026」の連携事業として開催された、XR体験イベント「DIVE INTO XR」に出展しました。
-            </p>
-            <p><strong>技術説明:</strong><br>
-                <strong>ロボットの腕の制御</strong><br>
-                UnityのIK（逆運動学）を用いて、ロボットの腕の姿勢を計算する処理を実装しました。主に腕の挙動の作成を担当しています。
-                <br><br>
-                <strong>つかみ判定とアニメーションの連動</strong><br>
-                ロボットが掴む動作のアニメーションを作成し、プログラムによるつかみ判定と連動させました。腕の見た目の動作と、ゲーム内でオブジェクトを掴む処理を組み合わせています。
-                <br><br>
-                <strong>ティーポットの状態管理とビジュアルの遷移</strong><br>
-                enum型でティーポットの状態を管理し、それぞれの状態に対応する見た目を適用する処理を実装しました。状態の変化に合わせてビジュアルを切り替える部分を担当しました。
-            </p>
-            <p><strong>リンク:</strong></p>
-            <ul>
-                <li><a href="https://www.youtube.com/watch?v=aGIQZD2Nkak" target="_blank"
-                        rel="noopener noreferrer">動画を見る</a></li>
-                <li><a href="https://no-maps.jp/program/program-channel-deep-tech-core-sapporo/2609261100/" target="_blank"
-                        rel="noopener noreferrer">DIVE INTO XR（NoMaps2026）公式出展情報</a></li>
-                <li><a href="https://no-maps.jp/about_nomaps" target="_blank"
-                        rel="noopener noreferrer">NoMapsについて</a></li>
-            </ul>
-        </div>
-    </div>
-
-    <div id="modal-project-zelly-swipe" class="modal">
-        <div class="modal-content">
-            <span class="modal-close">&times;</span>
-            <h2>ZELLY SWIPE</h2>
-            <p><strong>ジャンル:</strong> ハイパーカジュアルパズル</p>
-            <p><strong>開発期間:</strong> 2日間（素材準備・コード設計などの事前準備期間：約1週間）</p>
-            <p><strong>開発体制:</strong> 個人開発</p>
-            <p><strong>担当:</strong> 企画、Unityプログラミング、ステージ制作、演出、広告動画制作</p>
-            <p><strong>使用技術:</strong> Unity、C#、DOTween、UniTask、Input System、Android（Google Play）、Codex、Figma、Git / GitHub</p>
-            <p><strong>操作説明:</strong> 上下左右にスワイプして、盤面のゼリーをすべて同時に動かす</p>
-            <p><strong>詳しい説明:</strong><br>
-                サイバーエージェントのインターン「Casual Game JAM」で、一人で企画から開発まで行い、Google Playで配信したパズルゲームです。
-                スワイプすると盤面のゼリーがすべて同じ方向へ、壁やほかのゼリーにぶつかるまで滑ります。同じ色のゴールにすべてのゼリーを入れるとクリアです。
-                ゲームオーバーはなく、失敗してもすぐにリトライできます。ステージは全130面で、進むにつれてゼリーの色が増えていきます。
-                <br><br>
-                企画では、App Storeのランキング上位のカジュアルゲームを数多く遊び、操作感や見た目を分析しました。
-                その結果から、スワイプだけのシンプルな操作、ひと目で何をするか分かる画面、彩度の高いカラフルな配色を軸に決め、Figmaでトンマナも作成しました。
-                特に「Block Out!」を参考に、ゴールした瞬間のエフェクトや振動、色合いを研究し、遊んでいて気持ちのいい手触りを目指しました。
-                配信後はMeta広告で広告を出稿しています。
-            </p>
-            <p><strong>技術説明:</strong><br>
-                最初に設計を固めました。盤面の状態（BoardState）とゼリーの移動計算（ZellyMoveCalculate）はMonoBehaviourを継承しない純粋なC#クラスにし、GameObjectを増やさずにロジックだけで動くようにしています。
-                ゼリー・ゴール・ステージはScriptableObjectで管理し、置くゼリーとその位置、置くゴールとその位置を設定するだけでステージを作れるようにしました。
-                <br><br>
-                開発ではAI（Codex）を活用しました。事前に決めた設計に沿ってAIに実装させ、タイトル画面などはworktreeを分けて別のAIに並行で開発させることで、短期間で完成度を高めました。
-                ステージはJSONで作成してScriptableObjectへ変換できるようにし、全130面について解けることと最短手数を自動で検証しています。
-                <br><br>
-                最も時間をかけたのは、ゲームの気持ちよさの調整です。ゼリーの移動速度、壁に当たったときに潰れる動き、ゴールでの発光やゼリーがちぎれる演出、それに合わせた振動を、何度も遊びながら調整しました。
-                メンターの方からのフィードバックも取り入れ、気持ちよくなるまで改善を重ねました。社員の方からは、人気タイトルを分析できていた点や、周りの人を巻き込みながらフィードバックを取り入れて開発を進めていた点を評価していただきました。
-            </p>
-            <p><strong>リンク:</strong></p>
-            <ul>
-                <li><a href="https://youtu.be/NrzPRwNogDc" target="_blank" rel="noopener noreferrer">プレイ動画を見る</a></li>
-            </ul>
-        </div>
-    </div>
-
-    <div id="modal-project-frying-pan" class="modal">
-        <div class="modal-content">
-            <span class="modal-close">&times;</span>
-            <h2>フライパン返し</h2>
-            <p><strong>ジャンル:</strong> 体感アクション</p>
-            <p><strong>開発期間:</strong> 2日間（企画・アセット準備などの事前準備期間：約1週間）</p>
-            <p><strong>開発体制:</strong> 3人チーム</p>
-            <p><strong>担当:</strong> 企画、Unityプログラミング</p>
-            <p><strong>使用技術:</strong> Unity、C#、Android、Unity Input System（Accelerometer / AttitudeSensor /
-                LinearAccelerationSensor）、Git / GitHub</p>
-            <p><strong>詳しい説明:</strong><br>
-                サイバーエージェントのゲームエンジニア向けインターン「プロトスプリントリーグ」で制作した、スマートフォンをフライパンに見立ててパンケーキをひっくり返すゲームです。Android端末のセンサーを利用し、実際にスマートフォンを傾けたり振ったりする動きをゲーム内のフライパン操作に反映しています。
-                <br><br>
-                主にスマートフォンの傾き取得、フライパンの操作、パンケーキの物理挙動、飛ぶ方向の補正、回転制御、キャリブレーションを担当しました。
-            </p>
-            <p><strong>技術説明:</strong><br>
-                特に苦戦したのは、パンケーキを自然に飛ばしながら、プレイヤーの意図した方向へ返せるようにする調整です。プログラム側で動きを強く制御すると不自然になり、反対に物理挙動だけに任せると意図しない方向へ飛んでしまう問題がありました。
-                <br><br>
-                そこで、奥行き方向への不要な移動を抑えながら、回転をプログラム側で制御することで、物理的な動きを残しつつ遊びやすい挙動になるよう調整しました。
-                <br><br>
-                Unity Input SystemのAttitudeSensorで端末の傾きを取得し、LinearAccelerationSensorとAccelerometerで振る動きを検出しています。開発中は実装だけでなく、GitHub運用、タスク分割、スケジュール作成、実機ビルド、ゲームの手触り確認にも取り組みました。社員メンターからは、細かな部分まで手触りを逐一確認し、改善を重ねていた点を評価していただきました。
-            </p>
-        </div>
-    </div>
-
-    <div id="modal-project-siro" class="modal">
-        <div class="modal-content">
-            <span class="modal-close">&times;</span>
-            <h2>あなたはシロです。</h2>
-            <p><strong>ジャンル:</strong> 3Dアクションパズル</p>
-            <p><strong>開発期間:</strong> 2日間</p>
-            <p><strong>開発体制:</strong> 個人制作</p>
-            <p><strong>担当:</strong> 企画、プログラム、モデリング、レベルデザイン、アニメーション</p>
-            <p><strong>使用技術:</strong> Unity、フルスクリーンシェーダー、Git worktree</p>
-            <p><strong>操作説明:</strong> プレイヤーを操作し、白と黒の状態を切り替えながらステージを進む</p>
-            <p><strong>詳しい説明:</strong><br>
-                刑事ドラマなどで使われる「あなたは黒です」という表現から着想を得た、白と黒の状態を切り替えて進むアクションパズルゲームです。
-                白の状態では警察は反応しませんが、黒の状態になるとプレイヤーを追いかけます。
-                あえて黒になって警察を誘導し、その動きを利用して仕掛けを突破していきます。
-                <br><br>
-                ただし、黒の状態を使うたびに「黒ゲージ」が蓄積し、プレイヤーの見た目も少しずつ黒く変化します。
-                タイトルのとおり、最終ステージは白の状態でクリアしなければなりません。
-                1回目は黒の力を多用して進み、2回目には黒になる回数を抑える必要に気づくという、プレイヤーの理解によって攻略方法が変わる二段構成を目指しました。
-            </p>
-            <p><strong>技術説明:</strong><br>
-                企画からプログラム、モデリング、レベルデザイン、アニメーションまで、すべての工程を担当しました。
-                フルスクリーンシェーダーを活用して画面全体の表現を整え、短期間でも統一感のある世界観になるよう工夫しています。
-                また、Git worktreeで作業を分割し、AIを活用しながら複数の実装を並行して進めることで、2日間という限られた開発期間でも完成まで持っていきました。
-                制作を通して、シェーダーによる画面表現と、並列開発を効率良く進める方法を学びました。
-            </p>
-            <p><strong>リンク:</strong></p>
-            <ul>
-                <li><a href="https://youtu.be/TWyRMdgAO90" target="_blank">動画を見る</a></li>
-                <li><a href="https://unityroom.com/games/anatahasirodesu" target="_blank">ゲームをプレイ</a></li>
-                <li><a href="https://github.com/Youkin06/SiroGame" target="_blank">GitHubリポジトリ</a></li>
-            </ul>
-        </div>
-    </div>
-
-    <div id="modal-project-sausage-smash" class="modal">
-        <div class="modal-content">
-            <span class="modal-close">&times;</span>
-            <h2>Sausage Smash</h2>
-            <p><strong>ジャンル:</strong> VRアクション</p>
-            <p><strong>開発期間:</strong> 3日間（ハッカソン時）、現在は開発3か月目</p>
-            <p><strong>開発体制:</strong> エンジニア3人によるチーム制作</p>
-            <p><strong>担当:</strong> プレイヤー操作、フライ返しの操作、トス、スマッシュ</p>
-            <p><strong>使用技術:</strong> Unity</p>
-            <p><strong>操作説明:</strong> VRコントローラーでフライ返しを動かし、鉄板で焼いたソーセージを打ち返す</p>
-            <p><strong>詳しい説明:</strong><br>
-                ハッカソンで制作した、ラケットスポーツのような感覚で遊べるVRアクションゲームです。
-                プレイヤーはフライ返しでソーセージを打ち、次々と迫ってくる野菜を迎え撃ちます。
-                ソーセージが当たった野菜はソーセージへ変化するため、コミカルな見た目と爽快なアクションを同時に楽しめます。
-                <br><br>
-                特にこだわったのは、ソーセージを高くトスし、上から叩きつける「スマッシュ」の気持ちよさです。
-                トスの最中は攻撃できず敵に接近される危険がありますが、スマッシュが決まると範囲攻撃で大きなダメージを与えられます。
-                大技を狙うタイミングにリスクとリターンが生まれるよう設計しました。
-            </p>
-            <p><strong>技術説明:</strong><br>
-                プレイヤーに関わる動作全般を担当し、VRでの移動、フライ返しの操作、トス、スマッシュを実装しました。
-                通常の物理挙動ではトスしたソーセージが必要以上に高く飛んでしまうため、トス中だけ加速度を抑える調整を加え、狙った高さへ自然に上げやすくしています。
-                <br><br>
-                ハッカソンでは、ラケットを振るように直感的に操作できる点と、音や手応えによるフィードバックの気持ちよさが評価され、優勝しました。
-                現在もリリースに向けて開発を続けています。
-            </p>
-            <p><strong>リンク:</strong></p>
-            <ul>
-                <li><a href="https://youtu.be/YkrrAr-tfY4" target="_blank">動画を見る（リリースに向けた開発版）</a></li>
-                <li><a href="https://youtu.be/0-91UJvYJCo" target="_blank">動画を見る（ハッカソン時点）</a></li>
-                <li><a href="https://note.com/gsmashxr/n/n11dd9dfd44c5" target="_blank"
-                        rel="noopener noreferrer">イベントレポート：Sausage XR ハッカソン2026</a></li>
-            </ul>
-        </div>
-    </div>
-
-    <div id="modal-project-5" class="modal">
-        <div class="modal-content">
-            <span class="modal-close">&times;</span>
-            <h2>PiNTCH WiTCH // Shadow play</h2>
-            <p><strong>ジャンル:</strong> 2D/3Dパズルアクション</p>
-            <p><strong>開発期間:</strong> 2026年2月〜5月（3カ月間）</p>
-            <p><strong>開発体制:</strong> 8人チーム（プランナー4人、エンジニア3人、イラストレーター1人）</p>
-            <p><strong>担当:</strong> リードプログラマー（手の認識、つかみ判定、影コライダー生成、カメラ制御、シーン制作、エンジニアタスクの割り振り）</p>
-            <p><strong>使用技術:</strong> Unity、Blender、MediaPipe</p>
-            <p><strong>操作説明:</strong> 手でオブジェクトを掴む、マウスで操作</p>
-            <p><strong>詳しい説明:</strong><br>
-                アリスという少女が悪夢の世界に迷い込んでしまったところから始まるゲームです。
-                3D空間にあるオブジェクトの影を使って、2D世界にいるアリスを救うことを目指します。
-                ハンドトラッキングを使ったゲームで、BitSummit Game Jamに参加し、8人（プランナー4人、エンジニア3人、イラストレーター1人）で開発しました。
-                この開発ではリードプログラマーを担当しました。
-            </p>
-            <p><strong>技術説明:</strong><br>
-                主に、MediaPipeを用いた手の認識、つかみ判定、影コライダー生成、オーバーレイを使ったカメラ制御を担当しました。
-                そのほか、3D空間で掴めるオブジェクト、セレクトシーン、スタートシーンの作成も行いました。
-                また、他職種とのミーティングや、エンジニアタスクの割り振りも担当しました。
-            </p>
-            <p><strong>GitHubリポジトリ:</strong> チーム開発物のため非公開です。</p>
-            <p><strong>リンク:</strong></p>
-            <ul>
-                <li><a href="https://youtu.be/MQZcKngi_ns" target="_blank">動画を見る</a></li>
-                <li><a href="https://bitsummit-gamejam.itch.io/pinchwitch-shadowplay" target="_blank">ゲームをプレイ</a></li>
-            </ul>
-        </div>
-    </div>
-
-    <div id="modal-project-1" class="modal">
-        <div class="modal-content">
-            <span class="modal-close">&times;</span>
-            <h2>ぼくのにっき</h2>
-            <p><strong>ジャンル:</strong> 2Dアクションホラー</p>
-            <p><strong>開発期間:</strong>2025年6月(1カ月間)</p>
-            <p><strong>開発体制:</strong> 個人制作</p>
-            <p><strong>担当:</strong> 音楽以外すべて</p>
-            <p><strong>使用技術:</strong> Unity、コルーチン、LineRenderer、TextMeshPro、Font Asset Creator</p>
-            <p><strong>操作説明:</strong> AD（or左右）キーで移動、SPACE(or上方向キー)でジャンプ、マウスで書き込み</p>
-            <p><strong>詳しい説明:</strong><br>
-                子供の日記の世界を探検するホラーゲームです。日記に直接線を書き込んでプレイヤーをゴールへ導くという、描画によるユニークな操作が特徴です。
-                イラストは全て自作で、手書き風の見た目にこだわりました。
-                Youtubeでホラーゲームの実況動画は見るが、実際にゲームはプレイしない層をターゲットにしており、彼らの初めてのホラーゲームとして提供したいと考えています。
-            </p>
-            <p><strong>技術説明:</strong><br>
-                コルーチンを使用してストーリー性のあるゲーム開発に挑戦しました。
-                画面のフェードインやフェードアウトといったプログラム処理もコルーチンを用いて実装しました。
-                プレイヤーが線を描く操作にはLineRendererを使い、表現にこだわりました。
-                また、Font Asset Creatorを利用し、TextMeshProで子供が書いたような手書き風のフォント表示を実現しました。
-                開発を通じてUnitaskという便利な非同期処理ツールを知ることができ、次回のストーリーゲーム制作ではぜひ活用したいと考えています。
-            </p>
-            <p><strong>リンク:</strong></p>
-            <ul>
-                <li><a href="https://github.com/LeadersUnity/ld17-original-youkin" target="_blank">GitHubリポジトリ</a></li>
-                <li><a href="https://unityroom.com/games/bokunonikki" target="_blank">ゲームをプレイ</a></li>
-            </ul>
-        </div>
-    </div>
-
-    <div id="modal-project-2" class="modal">
-        <div class="modal-content">
-            <span class="modal-close">&times;</span>
-            <h2>DEPTH DIARY</h2>
-            <p><strong>ジャンル:</strong> 2Dアドベンチャー</p>
-            <p><strong>開発期間:</strong> 2024年3月~10月(7カ月間)</p>
-            <p><strong>開発体制:</strong> 個人制作</p>
-            <p><strong>担当:</strong> 音楽以外すべて</p>
-            <p><strong>使用技術:</strong> Unity、タイルマップ</p>
-            <p><strong>操作説明:</strong> ジョイスティックで移動、BURSTボタンでバースト（敵を倒せる、壁を壊せる）</p>
-            <p><strong>詳しい説明:</strong><br>
-                紫色をベースカラーとしたアドベンチャーゲームです。
-                プレイヤーを飽きさせないように、死亡してもタップ一つですぐにリトライできるシステムにこだわりました。
-                ステージ構成は、横スクロールステージや敵に追いかけられるステージ、ボス戦など変化に富んだ内容で、敵の種類も多く設定することでプレイヤーを飽きさせない工夫をしています。
-                ドット絵はすべて手書きで作成し、敵の見た目から攻撃パターンを予測できるように設計しました。
-                また、あえて多くの色を使わず紫色ベースに統一することで、ビジュアルに一貫性を持たせています。
-            </p>
-            <p><strong>技術説明:</strong><br>
-                タイルマップ機能を使ってドット絵ゲームを制作しました。
-                特にジョイスティック操作の実装や、画面上のゲージを正確に制御するプログラムの作成に注力しました。
-                スマートフォン向けゲームのため、タップ感知や複数の指が同時に押されている場合の処理など、スマホ特有の操作プログラムも工夫しました。
-                開発を通してルールタイルという便利な機能を知ることができ、次回のドット絵ゲーム制作で活用したいと考えています。
-            </p>
-            <p><strong>リンク:</strong></p>
-            <ul>
-                <li><a href="https://play.unity.com/ja/games/962dd261-d374-4db9-83cf-7050148df431/depth-diary"
-                        target="_blank">ゲームをプレイ（スマホでのプレイのみです）</a></li>
-            </ul>
-        </div>
-    </div>
-
-    <div id="modal-project-3" class="modal">
-        <div class="modal-content">
-            <span class="modal-close">&times;</span>
-            <h2>スライムスライス</h2>
-            <p><strong>ジャンル:</strong>3Dカジュアル</p>
-            <p><strong>開発期間:</strong>2025年7月(2週間)</p>
-            <p><strong>開発体制:</strong> 2人チーム（サウンド担当1人、ゲーム開発担当1人）</p>
-            <p><strong>担当:</strong> サウンド以外すべて</p>
-            <p><strong>使用技術:</strong> Unity、Blender、LineRenderer</p>
-            <p><strong>操作説明:</strong> 指のスワイプで敵を斬る</p>
-            <p><strong>詳しい説明:</strong><br>
-                スマートフォンでユーザーがいかに簡単に爽快感を得られるかを追求してこのゲームを制作しました。
-                スライムを切断した際の効果音やエフェクトには特にこだわり、心地よさを高めています。
-                ユーザーインターフェースは分かりやすさと統一感を持たせることに注力しました。
-                また、ただスライムを斬り続ける単純作業にならないよう、攻撃力アップや一撃必殺などの戦略的な要素となるボタンを追加し、ゲームプレイに変化をつけています。
-            </p>
-            <p><strong>技術説明:</strong><br>
-                スマートフォンのスワイプ操作で敵を切るアクションの実装に注力しました。
-                敵を斬るエフェクトはLineRendererを用いて視覚的な表現にこだわっています。
-                敵はウェーブ式で出現し、ウェーブが進むごとに敵の量やHPが増加するように設定しました。
-                キャラクターモデルとしてBlenderでスライムやボススライム、雲を作成し、Unityに取り込んで使用しています。
-                現状はウェーブごとの敵の強化に対してプレイヤーの攻撃力の伸びが追いつかず、最大ウェーブが22程度で止まってしまうため、今後はレベルデザインをより精密に調整してゲームが無限に続くように改善したいと考えています。
-                また、敵を切断した際のエフェクトをParticle SystemやShaderを活用してさらに高品質にしたいと考えています。
-            </p>
-            <p><strong>リンク:</strong></p>
-            <ul>
-                <li><a href="https://unityroom.com/games/slimeslice" target="_blank">ゲームをプレイ</a></li>
-            </ul>
-        </div>
-    </div>
-
-    <div id="modal-project-4" class="modal">
-        <div class="modal-content">
-            <span class="modal-close">&times;</span>
-            <h2>CIRCUSAL</h2>
-            <p><strong>ジャンル:</strong>2Dカジュアル</p>
-            <p><strong>開発期間:</strong>2023年1月~3月(2カ月間)</p>
-            <p><strong>開発体制:</strong> 個人制作</p>
-            <p><strong>担当:</strong> 音楽以外すべて</p>
-            <p><strong>使用技術:</strong> Unity、Unity Ads、PlayerPrefs、ScriptableObject、Particle System、Shader Graph</p>
-            <p><strong>操作説明:</strong> タップで方向転換</p>
-            <p><strong>詳しい説明:</strong><br>
-                スマートフォンでリリースしたいという目標から、スコアアタック形式の二次元カジュアルゲームを制作しました。
-                このゲームはバスケットボールのドリブルから着想を得ており、プレイヤーは黄色の板に着地した瞬間にタップすることで跳ね上がり、速度が加速する設計にしています。
-                ユーザーに爽快感を与えるため、エフェクトやビジュアルにこだわりました。
-                ゲーム内で獲得できるコインを集めることで、新しいスキンを入手できる要素も搭載しています。
-                ステージは上下左右に広がる無限ステージを採用しています。
-            </p>
-            <p><strong>技術説明:</strong><br>
-                UnityAdsを導入して広告機能を実装しました。
-                データ記憶と管理にはPlayerPrefsとScriptableObjectを使用しました。
-                Particle Systemを使って黄色の板が割れるエフェクトや、コインで手に入るスキンを魅力的に見せる工夫をしました。
-                Shader Graphを用いて速度が上昇する板に動きを加えています。
-                このゲームはGoogle Playにリリースしましたが、現在はストアでは公開していません。
-            </p>
-            <p><strong>リンク:</strong></p>
-            <ul>
-                <li><a href="https://applion.jp/CIRCUSAL/android-com.YOUKINCOMPANY.CIRCUSAL/" target="_blank">Google
-                        Playに載せ、APPLIONに掲載された</a></li>
-            </ul>
-        </div>
-    </div>
-
-    <div id="modal-project-6" class="modal">
-        <div class="modal-content">
-            <span class="modal-close">&times;</span>
-            <h2>KamoRogue</h2>
-            <p><strong>ジャンル:</strong> 2Dローグライクアクション</p>
-            <p><strong>開発期間:</strong> 2025年10月〜2026年2月（4カ月間）</p>
-            <p><strong>担当:</strong> グラフィック、プログラム、ボス戦以外の音楽</p>
-            <p><strong>使用技術:</strong> Python、Pyxel</p>
-            <p><strong>操作説明:</strong> A/Dキーで左右移動、Wキーでジャンプ、Jキーで攻撃、Kキーで盾を発動</p>
-            <p><strong>詳しい説明:</strong><br>
-                カモが地下に進み、敵を倒しながらダンジョンを攻略するローグライクアクションゲームです。
-                大学の情報の授業で開発しました。
-                私の大学には鴨池という場所があり、その地下にダンジョンがあるという設定でこのゲームを制作しました。
-                ローグライクゲームのため、ステージを進むごとに能力を1つ獲得できます。
-                盾、ダッシュ、ダブルジャンプ、HP増加といった能力を駆使し、ボスに挑むゲームです。
-            </p>
-            <p><strong>技術説明:</strong><br>
-                PyxelというPython用ゲーム開発ライブラリを用いて、ボス戦の音楽を除き、グラフィック、プログラム、ボス戦以外の音楽を作成しました。
-                Pythonのオブジェクト指向を活用し、継承などを使って効率的に制作しました。
-                特にEnemyのスクリプトで継承を使用しています。
-                Unityとは描画方法なども異なり、ゲームエンジンに頼らない形での初めてのゲーム開発でした。
-            </p>
-            <p><strong>リンク:</strong></p>
-            <ul>
-                <li><a href="https://github.com/Youkin06/KamoRogue" target="_blank">GitHubリポジトリ</a></li>
-                <li><a href="https://youkin06.github.io/KamoRogue/" target="_blank">ゲームをプレイ</a></li>
-            </ul>
-        </div>
-    </div>
-
-    <!-- 目次表示切り替えボタン -->
-    <div id="navbar-toggle-button">
-        <img src="Images/Controller_smh.png" alt="目次表示切替">
-        <span>目次</span>
-    </div>
-
-    <!-- 外部JavaScriptファイルの読み込み (必ず </body> の直前に) -->
-    <!-- p5.jsライブラリ -->
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
-    <script defer src="background-performance.js?v=1"></script>
-    <script defer src="sketch.js?v=2"></script>
-    <script defer src="section-sketch.js?v=2"></script>
-    <script defer src="video-performance.js?v=1"></script>
-    <script defer src="script.js"></script>
+            window.addEventListener('hashchange', render);
+            // パソコンとスマホの幅をまたいだら、1ページにまとめるかどうかを切り替える
+            mobile.addEventListener('change', () => { renderedSection = null; render(); });
+            render();
+            document.addEventListener('open-project', event => { location.hash = `works/${event.detail}`; });
+        });
+    </script>
 </body>
-
 </html>

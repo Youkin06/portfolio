@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A-白・線で区切る案 | 矢追陽平 Portfolio</title>
-    <!-- 中身（本番の index.html）は、フォントや CSS を待たずにすぐ読み込み始める（shared/content.js がこれを使う） -->
-    <script>window.portfolioSource = fetch('../index.html', { cache: 'no-cache' }).then(response => response.text());</script>
+    <link rel="icon" href="../Images/Rocket.png" type="image/png">
+    <!-- 中身（content.html）は、フォントや CSS を待たずにすぐ読み込み始める（shared/content.js がこれを使う）。
+         公開用のトップページ（リポジトリ直下の index.html）は build.sh がこのファイルから作り、置き場所に合わせて '../' を外す。 -->
+    <script>
+        window.PORTFOLIO_SOURCE = '../content.html';
+        window.portfolioSource = fetch(window.PORTFOLIO_SOURCE, { cache: 'no-cache' }).then(response => response.text());
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="shared/base.css">
@@ -999,6 +1004,8 @@
 
             // ---- 表示の切り替え（最初は About） ----
             const render = () => {
+                // 以前のサイトの作品へのリンク（#project-〇〇）は、新しい作品ページ（#works/〇〇）へ
+                if (/^#project-/.test(location.hash)) { location.replace(`#works/${location.hash.slice('#project-'.length)}`); return; }
                 const [route, rawSub] = location.hash.slice(1).split('/');
                 const sub = rawSub ? decodeURIComponent(rawSub) : '';
                 const section = ['about', 'works', 'research'].includes(route) ? route : 'about';
