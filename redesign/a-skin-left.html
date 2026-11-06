@@ -1258,28 +1258,36 @@
             window.addEventListener('resize', () => requestAnimationFrame(sizeTechDetails));
             document.fonts?.ready.then(sizeTechDetails);
             // 技術スタック：押すと説明を開き、もう一度押すと閉じる。開くのは1つだけ。
-            // 説明が重ならずに下へ伸びる表示（全部スクロール版・スマホ）では、「詳しく見る」と同じ動きで高さを変える。
+            // 説明が重ならずに下へ伸びる表示（全部スクロール版・スマホ）では、「詳しく見る」と同じ速さで説明の窓そのものを伸び縮みさせる。
+            // 窓の線（下の線も）は動いている間もずっと見せ、中身だけを窓の中で切る（外側で切ると、下の線が見えず白い余白に見えるため）。
+            const TECH_BOX = ['height', 'minHeight', 'marginTop', 'paddingTop', 'paddingBottom', 'borderTopWidth', 'borderBottomWidth'];
+            const techBoxNow = el => { const cs = getComputedStyle(el); return Object.fromEntries(TECH_BOX.map(k => [k, k === 'height' ? `${el.getBoundingClientRect().height}px` : cs[k]])); };
+            const techBoxZero = Object.fromEntries(TECH_BOX.map(k => [k, '0px']));
             main.addEventListener('click', event => {
                 const button = event.target.closest('.tech > button');
                 if (!button) return;
                 const open = button.getAttribute('aria-expanded') !== 'true';
                 const list = button.closest('[data-block="skills"]');
-                const wrap = list.querySelector('.tech-details');
-                const inFlow = [...wrap.children].some(d => getComputedStyle(d).position !== 'absolute');
-                wrap.getAnimations().forEach(a => a.cancel());
-                const from = wrap.getBoundingClientRect().height;
+                const details = [...list.querySelectorAll('.tech-detail')];
+                const target = list.querySelector(`#${button.getAttribute('aria-controls')}`);
+                const shown = details.find(d => !d.hidden);
+                // 動いている途中なら、その時点の大きさから続ける
+                const moving = details.find(d => d.getAnimations().length);
+                const from = moving ? techBoxNow(moving) : null;
+                details.forEach(d => d.getAnimations().forEach(a => a.cancel()));
                 list.querySelectorAll('.tech > button').forEach(b => b.setAttribute('aria-expanded', String(b === button && open)));
-                const showOnly = id => list.querySelectorAll('.tech-detail').forEach(d => { d.hidden = d.id !== id; });
-                // 閉じるときは、縮み終わるまで説明を見せたままにする（先に消すと、空の枠が縮むだけで動きが見えない）
-                if (open) showOnly(button.getAttribute('aria-controls'));
-                const closeAll = () => showOnly(null);
-                if (!inFlow || reduceMotion) { if (!open) closeAll(); return; }
-                const to = open ? wrap.getBoundingClientRect().height : 0;
-                if (from === to) { if (!open) closeAll(); return; }
-                wrap.style.overflow = 'hidden';
-                // インターンの「詳しく見る」（details-motion.js）と同じ速さ・同じ動き。閉じるときも同じ速さで縮む
-                wrap.animate([{ height: `${from}px` }, { height: `${to}px` }], { duration: 400, easing: 'cubic-bezier(.2, .8, .2, 1)' })
-                    .finished.then(() => { wrap.style.overflow = ''; if (!open) closeAll(); }, () => {});
+                const showOnly = el => details.forEach(d => { d.hidden = d !== el; });
+                const inFlow = getComputedStyle(target).position !== 'absolute';
+                // 開いている説明を別の技術に切り替えるだけなら、窓の大きさは同じなので動かさない
+                if (open && shown && shown !== target && !moving) { showOnly(target); return; }
+                if (!inFlow || reduceMotion) { showOnly(open ? target : null); return; }
+                const box = open ? target : (moving || shown);
+                if (!box) { showOnly(null); return; }
+                showOnly(box);
+                const full = techBoxNow(box);
+                box.style.overflow = 'hidden';
+                const animation = box.animate(open ? [from || techBoxZero, full] : [from || full, techBoxZero], { duration: 400, easing: 'cubic-bezier(.2, .8, .2, 1)' });
+                animation.finished.then(() => { box.style.overflow = ''; if (!open) showOnly(null); }, () => { box.style.overflow = ''; });
             });
             main.addEventListener('volumechange', event => {
                 const player = event.target.closest?.('[data-player]');
