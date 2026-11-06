@@ -768,7 +768,7 @@
                             </div>
                         </div>
                         <ol class="profile-history">${profileHistory().slice(0, 6).map(e => `<li><time>${e.y}${e.m ? `.${String(e.m).padStart(2, '0')}` : ''}</time><span>${esc(e.text)}</span></li>`).join('')}</ol>`,
-                // すっきり：名前 → 目標 → 「大学」「所属」「メール」（Gmail だけ）の3行。数字のタイルは出さず、その下に SNS をアイコンだけで並べる。
+                // すっきり：名前 → 目標 → 「大学」「所属」「メール」（大学のアドレスだけ）の3行。数字のタイルは出さず、その下に SNS をアイコンだけで並べる。
                 simple: () => `
                         <div class="profile profile--simple">${portraitHTML()}
                             <div>
@@ -776,7 +776,7 @@
                                 ${profileFacts['目標'] ? `<p class="profile-catch">${esc(profileFacts['目標'])}</p>` : ''}
                                 <dl class="profile-facts">${[
                                     ...['大学', '所属'].filter(k => profileFacts[k]).map(k => [k, profileFacts[k]]),
-                                    ['メール', data.profile.emails.find(m => /@gmail\.com$/.test(m)) || data.profile.emails[0]],
+                                    ['メール', data.profile.emails.find(m => /@keio\.jp$/.test(m)) || data.profile.emails[0]],
                                 ].filter(([, v]) => v).map(([k, v]) => `
                                     <div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('')}
                                 </dl>
