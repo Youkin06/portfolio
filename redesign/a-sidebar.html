@@ -156,6 +156,14 @@
         .menu-list a.active { background: var(--navy-2); color: #fff; font-weight: 700; }
         .menu-list a.active::before { opacity: 1; }
 
+        /* 目次の開け閉めできるまとまり（全部スクロール版の「作品ページ」「研究ページ」）。左の「＞」が開くと下を向く */
+        .menu-fold summary { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 4px; font-size: 14px; cursor: pointer; list-style: none; }
+        .menu-fold summary::-webkit-details-marker { display: none; }
+        .menu-fold summary::before { content: ""; width: 6px; height: 6px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg); transition: transform .16s ease; }
+        .menu-fold details[open] > summary::before { transform: rotate(45deg); }
+        .menu-fold summary:hover { color: var(--section-fg, var(--accent)); }
+        .menu-sub { padding-left: 16px; }
+
         /* layout: 'tabs' は選んだ大項目の中だけ、'flat' は中の項目を出さない */
         [data-layout="tabs"] .menu-group:not([data-active]) .menu-list { display: none; }
         [data-layout="flat"] .menu-list { display: none; }
@@ -495,6 +503,8 @@
             // ページ上部のラベル
             worksList: '作品一覧',
             researchList: '研究一覧',
+            worksPages: '作品ページ',
+            researchPages: '研究ページ',
             worksLead: '',
             researchNo: 'Research No.',
             researchLab: '研究会',
@@ -588,6 +598,14 @@
             document.getElementById('topbar-name').replaceChildren(document.querySelector('.sidebar .sidebar-banner').cloneNode(true));
             document.getElementById('menu-button').textContent = TEXT.menu;
 
+            // 全部スクロール版（確認用：URL に ?view=scroll）。パソコンでもスマホと同じ1本のスクロールにし、
+            // 草原の代わりに、キャラクターを箱の上で歩かせる（ぼくのにっき：受賞歴の神ゲー創造主エボリューション、カモ：インターンの Unity メンター）。
+            // 目次の作品・研究は1件ずつ並べず、「作品ページ」「研究ページ」の中に畳んでおく（押すと開く）。
+            const ONE_SCROLL = new URLSearchParams(location.search).get('view') === 'scroll' || SKIN.view === 'scroll';
+            if (ONE_SCROLL) document.body.dataset.view = 'scroll';
+            // 目次の中の、開け閉めできるまとまり（全部スクロール版の「作品ページ」「研究ページ」）
+            const foldHTML = (label, items) => `
+                    <li class="menu-fold"><details><summary>${esc(label)}</summary><ul class="menu-list menu-sub">${items}</ul></details></li>`;
             const groupHTML = (section, href, items) => `
                 <div class="menu-group" data-section="${section}">
                     ${SKIN.menuHeadings ? `<h2 class="menu-label label">${esc(TEXT[section])}</h2>` : `<a class="menu-label label" href="${href}">${esc(TEXT[section])}</a>`}
@@ -598,10 +616,12 @@
                     `<li><a href="${id ? `#about/${id}` : '#about'}" data-key="about/${id}">${esc(aboutLabel(id))}</a></li>`).join('')) +
                 groupHTML('works', '#works',
                     `<li><a href="#works" data-key="works/">${esc(TEXT.worksList)}</a></li>` +
-                    projects.map(p => `<li><a href="#works/${esc(p.id)}" data-key="works/${esc(p.id)}">${esc(p.title)}<span class="year">${yearOf(p)}</span></a></li>`).join('')) +
+                    (ONE_SCROLL ? foldHTML : (label, items) => items)(TEXT.worksPages,
+                        projects.map(p => `<li><a href="#works/${esc(p.id)}" data-key="works/${esc(p.id)}">${esc(p.title)}<span class="year">${yearOf(p)}</span></a></li>`).join(''))) +
                 groupHTML('research', '#research',
                     `<li><a href="#research" data-key="research/">${esc(TEXT.researchList)}</a></li>` +
-                    research.map(r => `<li><a href="#research/${r.id}" data-key="research/${r.id}">${esc(r.theme)}</a></li>`).join(''));
+                    (ONE_SCROLL ? foldHTML : (label, items) => items)(TEXT.researchPages,
+                        research.map(r => `<li><a href="#research/${r.id}" data-key="research/${r.id}">${esc(r.theme)}</a></li>`).join('')));
 
             // ---- 部品 ----
             // 本文中の「制作作品：〇〇」（#project-〇〇）は、そのゲームのページへ。
@@ -1042,10 +1062,6 @@
             // ---- スマホ：About me（上から順に）→ 作品一覧 → 研究一覧 を1本のスクロールで見せる ----
             // 作品と研究の1件ずつのページは、スマホでもパソコンと同じ別のページ。
             const mobile = matchMedia('(max-width: 960px)');
-            // 全部スクロール版（確認用：URL に ?view=scroll）。パソコンでもスマホと同じ1本のスクロールにし、
-            // 草原の代わりに、キャラクターを箱の上で歩かせる（ぼくのにっき：受賞歴の神ゲー創造主エボリューション、カモ：インターンの Unity メンター）。
-            const ONE_SCROLL = new URLSearchParams(location.search).get('view') === 'scroll' || SKIN.view === 'scroll';
-            if (ONE_SCROLL) document.body.dataset.view = 'scroll';
             const PERCHES = [
                 { guest: () => bokuGuest, list: '[data-block="awards"] .item', text: '神ゲー創造主エボリューション' },
                 { guest: () => kamoGuest, list: '[data-block="internships"] .exp', text: 'Unityメンター' },
@@ -1083,6 +1099,8 @@
                     a.classList.toggle('active', active);
                     active ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current');
                 });
+                // 畳んだ「作品ページ」などの中を見ているときは、そのまとまりを開いておく
+                document.querySelector('.menu .active')?.closest('.menu-fold details')?.setAttribute('open', '');
                 document.querySelector('.menu .active')?.scrollIntoView({ block: 'nearest' });
             };
 
