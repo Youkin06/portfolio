@@ -107,3 +107,20 @@
 /* スクロールバーはどのページ・どの場所でも出さない（スクロール自体はできる） */
 html, body, * { scrollbar-width: none; }
 ::-webkit-scrollbar { display: none; }
+
+/* ---- スマホの目次 ---- */
+@media (max-width: 960px) {
+    /* 「目次」ボタンも、ほかのボタンと同じ形（2px の黒い線・角 6px・白地）。押すと沈み、目次を開いている間は浮いて影が出る */
+    [data-ui] .topbar #menu-button {
+        border: 2px solid var(--u-line); border-radius: var(--u-radius); background: #ffffff; color: var(--fg);
+        font-size: 13px; font-weight: 700; line-height: 1.5; padding: 5px 12px; box-shadow: var(--btn-shadow);
+        transition: transform .08s ease, box-shadow .08s ease;
+    }
+    [data-ui] .topbar #menu-button[aria-expanded="true"] { box-shadow: var(--btn-shadow-hover); transform: var(--btn-hover-move, translate(-1px, -1px)); }
+    [data-ui] .topbar #menu-button:active { box-shadow: none; transform: var(--btn-press-move, translate(2px, 2px)); }
+    /* 開いた目次は枠線で囲まない */
+    [data-ui] .sidebar { border: 0; outline: 0; }
+}
+@media (max-width: 960px) and (hover: hover) and (pointer: fine) {
+    [data-ui] .topbar #menu-button:hover { box-shadow: var(--btn-shadow-hover); transform: var(--btn-hover-move, translate(-1px, -1px)); }
+}
