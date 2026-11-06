@@ -376,6 +376,11 @@
             .detail, .game .detail { grid-template-columns: 1fr; }
             .detail .data { order: -1; }
         }
+        /* 全部スクロール版（?view=scroll）：パソコンでも About me → 作品一覧 → 研究一覧 を続けて見せる。区切りを広めにあける */
+        @media (min-width: 961px) {
+            body[data-view="scroll"] .home-part + .home-part { margin-top: 96px; }
+            body[data-view="scroll"] main :is([id^="block-"], .home-part) { scroll-margin-top: 24px; }
+        }
         @media (max-width: 960px) {
             .sidebar { inset: 64px 10px 10px 10px; width: auto; z-index: 30; transform: translateY(-120%); transition: transform .25s ease; }
             .menu-open .sidebar { transform: none; }
@@ -645,17 +650,8 @@
                 </nav>`;
 
             // ---- About ----
-            const profileCharacter = `
-                            <div class="profile-meadow">
-                              <div class="profile-sky" aria-hidden="true">
-                                <span class="profile-stars"></span>
-                                <span class="profile-sun"></span>
-                                <span class="profile-moon"></span>
-                                <span class="profile-cloud" style="--cloud-y: 60%; --cloud-time: 140s; --cloud-delay: -40s; --cloud-rest: 12%"></span>
-                                <span class="profile-cloud" style="--cloud-y: 74%; --cloud-scale: .7; --cloud-time: 190s; --cloud-delay: -130s; --cloud-rest: 58%"></span>
-                                <span class="profile-cloud" style="--cloud-y: 66%; --cloud-scale: .85; --cloud-time: 165s; --cloud-delay: -95s; --cloud-rest: 80%"></span>
-                              </div>
-                              <div class="profile-walkway">
+            // 草原や箱の上を歩くキャラクター（ぼくのにっき・KamoRogue のカモ）。押すと頭の上に作品へのリンクが出る。
+            const bokuGuest = `
                                 <div class="profile-character" data-profile-guest>
                                   <button class="profile-guest-trigger" type="button" aria-label="ぼくのにっきのキャラクター：作品リンクを表示" aria-expanded="false"></button>
                                   <a class="profile-guest-link" href="#works/boku-no-nikki">ぼくのにっき<span>作品を見る →</span></a>
@@ -669,7 +665,8 @@
                                       <img src="../Images/profile-character/walk2.png" alt="" width="256" height="256">
                                     </div>
                                   </div>
-                                </div>
+                                </div>`;
+            const kamoGuest = `
                                 <div class="profile-kamo" data-profile-guest>
                                   <button class="profile-guest-trigger" type="button" aria-label="KamoRogueのキャラクター：作品リンクを表示" aria-expanded="false"></button>
                                   <a class="profile-guest-link" href="#works/project-6">KamoRogue<span>作品を見る →</span></a>
@@ -677,7 +674,19 @@
                                     <span class="profile-kamo-frame"><img src="../Images/profile-character/kamo-run1.png" alt="" width="16" height="16"></span>
                                     <span class="profile-kamo-frame"><img src="../Images/profile-character/kamo-run2.png" alt="" width="16" height="16"></span>
                                   </div>
-                                </div>
+                                </div>`;
+            const profileCharacter = `
+                            <div class="profile-meadow">
+                              <div class="profile-sky" aria-hidden="true">
+                                <span class="profile-stars"></span>
+                                <span class="profile-sun"></span>
+                                <span class="profile-moon"></span>
+                                <span class="profile-cloud" style="--cloud-y: 60%; --cloud-time: 140s; --cloud-delay: -40s; --cloud-rest: 12%"></span>
+                                <span class="profile-cloud" style="--cloud-y: 74%; --cloud-scale: .7; --cloud-time: 190s; --cloud-delay: -130s; --cloud-rest: 58%"></span>
+                                <span class="profile-cloud" style="--cloud-y: 66%; --cloud-scale: .85; --cloud-time: 165s; --cloud-delay: -95s; --cloud-rest: 80%"></span>
+                              </div>
+                              <div class="profile-walkway">
+                                ${bokuGuest}${kamoGuest}
                               </div>
                               <div class="profile-ground"></div>
                             </div>
@@ -1028,6 +1037,18 @@
             // ---- スマホ：About me（上から順に）→ 作品一覧 → 研究一覧 を1本のスクロールで見せる ----
             // 作品と研究の1件ずつのページは、スマホでもパソコンと同じ別のページ。
             const mobile = matchMedia('(max-width: 960px)');
+            // 全部スクロール版（確認用：URL に ?view=scroll）。パソコンでもスマホと同じ1本のスクロールにし、
+            // 草原の代わりに、キャラクターを箱の上で歩かせる（ぼくのにっき：受賞歴の神ゲー創造主エボリューション、カモ：インターンの Unity メンター）。
+            const ONE_SCROLL = new URLSearchParams(location.search).get('view') === 'scroll' || SKIN.view === 'scroll';
+            if (ONE_SCROLL) document.body.dataset.view = 'scroll';
+            const PERCHES = [
+                { guest: () => bokuGuest, list: '[data-block="awards"] .item', text: '神ゲー創造主エボリューション' },
+                { guest: () => kamoGuest, list: '[data-block="internships"] .exp', text: 'Unityメンター' },
+            ];
+            const placePerches = () => PERCHES.forEach(({ guest, list, text }) => {
+                const box = [...main.querySelectorAll(list)].find(el => el.textContent.includes(text));
+                if (box) box.insertAdjacentHTML('afterbegin', `<div class="perch-walkway" data-perch>${guest()}</div>`), box.classList.add('has-perch');
+            });
             const homePage = () => `
                 <article class="page page--narrow about home-part" data-section="about" id="part-about">
                     ${pageHead(TEXT.about, aboutLabel(''))}
@@ -1094,7 +1115,7 @@
                 const sub = rawSub ? decodeURIComponent(rawSub) : '';
                 const section = ['about', 'works', 'research'].includes(route) ? route : 'about';
                 // スマホでは About・作品一覧・研究一覧を1ページにまとめる（view = 'home'）
-                const view = mobile.matches && (section === 'about' || !sub) ? 'home' : section;
+                const view = (mobile.matches || ONE_SCROLL) && (section === 'about' || !sub) ? 'home' : section;
 
                 // 同じ1ページの中の移動なら、作り直さずにその場所までスクロールするだけ
                 if (!(view === 'home' && renderedSection === 'home')) {
@@ -1104,6 +1125,7 @@
                         section === 'research' ? researchPage(sub) :
                         sub ? gamePage(sub) : worksPage();
                     renderedSection = view;
+                    if (view === 'home' && ONE_SCROLL) placePerches();
                     clipObserver.disconnect();
                     main.querySelectorAll('.card video[data-src]').forEach(v => clipObserver.observe(v));
                     startFullVideosLater();

@@ -3,8 +3,8 @@
 /* About me の各ページは、サイドバーの右側すべてを空と草原にする。キャラクターはこの中で暮らす。
    空は画面に固定し、草原は画面の下端にそろえる。内容はその上に重ねて流す。
    プロフィールは1画面に収まるのでスクロールバーを出さない。長いページは最後の項目が草原より上まで来るよう下をあける。 */
-html:has(body[data-page="about/"]) { scrollbar-width: none; }
-html:has(body[data-page="about/"])::-webkit-scrollbar { display: none; }
+html:has(body[data-page="about/"]:not([data-view="scroll"])) { scrollbar-width: none; }
+html:has(body[data-page="about/"]:not([data-view="scroll"]))::-webkit-scrollbar { display: none; }
 .profile-meadow {
     position: fixed;
     inset: 0 0 0 var(--sidebar-w);
@@ -12,7 +12,7 @@ html:has(body[data-page="about/"])::-webkit-scrollbar { display: none; }
 }
 .page.about > :not(.profile-meadow, .profile-flight) { position: relative; z-index: 1; }
 @media (min-width: 961px) {
-    body[data-section="about"]:not([data-page="about/"]) main { padding-bottom: 220px; }
+    body[data-section="about"]:not([data-page="about/"], [data-view="scroll"]) main { padding-bottom: 220px; }
 }
 /* 空の上で読めるように、About me の本文の色を時間帯で変える。スマホでは空を出さないので、白地のまま。
    明け方と昼：リンクを濃い赤に。夕方と夜：文字と線を白に、リンクを薄い赤に、ボタンは半透明の白に。空を出さないスキン（none）はスキンの色のまま。
@@ -312,4 +312,24 @@ main a.profile-guest-link {
     visibility: visible;
     opacity: 1;
     pointer-events: auto;
+}
+
+/* 全部スクロール版（?view=scroll）：草原の代わりに、箱（受賞歴・インターンの1件）の上の線に立って歩く。
+   箱の上をキャラクターの背の高さぶんあけ、前の箱と重ならないようにする。 */
+.perch-walkway {
+    --profile-pixel-size: 4px;
+    --character-size: 96px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 100%;
+    height: var(--character-size);
+    pointer-events: none;
+}
+.perch-walkway .profile-character { bottom: -7px; }
+.has-perch { position: relative; margin-top: calc(var(--character-size, 96px) + 4px); }
+@media (max-width: 960px) {
+    .perch-walkway { --profile-pixel-size: 3px; --character-size: 72px; }
+    .perch-walkway .profile-character { bottom: -5px; }
+    .has-perch { margin-top: 76px; }
 }

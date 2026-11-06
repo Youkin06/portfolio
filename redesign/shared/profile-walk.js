@@ -4,6 +4,7 @@
 // 受賞歴などほかのページへ移ると、自分の側の画面の端へ歩いて出ていく。プロフィールに戻ると、同じ端から歩いて戻ってくる。
 // 状態は data-state="idle|walk" に書き、どの画像を見せるかは CSS が決める。元画像はどちらも右向き。
 // ページを移ると草原は描き直されるが、位置はここで覚えているので、続きから動く。
+// 全部スクロール版では、箱の上（data-perch の中）を端から端まで歩く。どのページを読んでいても出ていかない。
 // 触れて止まっている間（data-paused）と、動きを減らす設定のときは動かさない。
 (function () {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -14,13 +15,16 @@
         { selector: '.profile-kamo', speed: 140, idle: [0.3, 1.2], zone: [0.55, 1], exit: 'right' },
     ].map(w => ({ ...w, x: null, goal: null, idleLeft: 1, facing: 1 }));
 
-    const step = (w, dt, home) => {
+    const step = (w, dt, onProfile) => {
         const el = document.querySelector(w.selector);
         if (!el || !el.parentElement) return;
+        const perched = Boolean(el.closest('[data-perch]'));
+        const home = perched || onProfile;
+        const zone = perched ? [0, 1] : w.zone;
         const size = el.offsetWidth;
         const width = el.parentElement.clientWidth;
         // 自分の側で、体ごと収まる左端の範囲。
-        const lo = width * w.zone[0], hi = width * w.zone[1] - size;
+        const lo = width * zone[0], hi = width * zone[1] - size;
         const room = hi - lo;
         if (room <= 0) return;
         const offLeft = -size - 30, offRight = width + 30;
