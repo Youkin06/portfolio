@@ -2,8 +2,8 @@
 window.SKIN = {
     iconColor: '1f1f22',
     sky: 'none',
-    // プロフィールは「数字で見る」版（ほかの版は ?profile=intro|history で確認できる）
-    profile: 'numbers',
+    // プロフィールは「すっきり」版（ほかの版は ?profile=numbers|intro|history で確認できる）
+    profile: 'simple',
     // リンクボタンと数字は「ゲームのボタン」案（黒い線とずらした影）
     ui: 'b',
     detailsMotion: true,

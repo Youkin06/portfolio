@@ -218,6 +218,14 @@
         .contacts .mail { display: inline-flex; align-items: center; gap: 8px; padding: 6px 4px; font-size: 13px; }
         .contacts .mail > span { user-select: all; overflow-wrap: anywhere; min-width: 0; }
         .contacts .mail-icon { flex-shrink: 0; }
+        /* すっきり版（?profile=simple）：目標を一言で出し、大学・所属・メールは見出し付きの3行。SNS はアイコンだけ */
+        .profile--simple .profile-catch { margin: 0 0 6px; color: var(--section-fg, var(--accent)); font-size: 17px; font-weight: 700; line-height: 1.6; }
+        .profile--simple .profile-facts { margin: 0; }
+        .profile--simple .profile-facts > div { grid-template-columns: 3.5em minmax(0, 1fr); }
+        .profile--simple .profile-facts dd { overflow-wrap: anywhere; }
+        .profile--simple .contacts { margin-top: 12px; }
+        .profile--simple .contacts-social a { width: 40px; height: 40px; padding: 0; justify-content: center; }
+        .profile--simple .contacts-social img { width: 20px; height: 20px; }
 
         /* 技術スタック */
         /* アイコンだけを並べる（名前はマウスを乗せたときと読み上げで出る） */
@@ -684,7 +692,7 @@
                                 </div>
                               </div>
                             </div>`;
-            // ---- プロフィールの版（確認用：URL に ?profile=intro|numbers|history。付けなければ今の形） ----
+            // ---- プロフィールの版（確認用：URL に ?profile=intro|numbers|history|simple。付けなければ今の形） ----
             const PROFILE_STYLE = new URLSearchParams(location.search).get('profile') || SKIN.profile || '';
             // ボタンと数字の見た目の案（確認用：URL に ?ui=a|b|c）。html[data-ui] に書き、CSS が見た目を変える。
             document.documentElement.dataset.ui = new URLSearchParams(location.search).get('ui') || SKIN.ui || '';
@@ -759,6 +767,23 @@
                             </div>
                         </div>
                         <ol class="profile-history">${profileHistory().slice(0, 6).map(e => `<li><time>${e.y}${e.m ? `.${String(e.m).padStart(2, '0')}` : ''}</time><span>${esc(e.text)}</span></li>`).join('')}</ol>`,
+                // すっきり：名前 → 目標 → 「大学」「所属」「メール」（大学のアドレスだけ）の3行。数字のタイルは出さず、その下に SNS をアイコンだけで並べる。
+                simple: () => `
+                        <div class="profile profile--simple">${portraitHTML()}
+                            <div>
+                                <p class="profile-name">${esc(data.profile.name)}</p>
+                                ${profileFacts['目標'] ? `<p class="profile-catch">${esc(profileFacts['目標'])}</p>` : ''}
+                                <dl class="profile-facts">${[
+                                    ...['大学', '所属'].filter(k => profileFacts[k]).map(k => [k, profileFacts[k]]),
+                                    ['メール', data.profile.emails.find(m => /@keio\.jp$/.test(m)) || data.profile.emails[0]],
+                                ].filter(([, v]) => v).map(([k, v]) => `
+                                    <div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('')}
+                                </dl>
+                                <div class="contacts">
+                                    <div class="contacts-social">${data.profile.socials.map(s => `<a class="social" href="${esc(s.href)}" target="_blank" rel="noopener noreferrer" title="${esc(s.label)}" aria-label="${esc(s.label)}">${s.icon ? `<img src="${esc(iconUrl(s.icon))}" alt="">` : esc(s.label)}</a>`).join('')}</div>
+                                </div>
+                            </div>
+                        </div>`,
             };
             // 技術スタックのアイコンを押すと、アイコンの下に出る説明
             const techWorks = tech => [
