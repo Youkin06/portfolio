@@ -247,6 +247,8 @@
         .tech-detail[hidden] { display: none; }
         /* 説明の上の余白を、外へはみ出させずにこの中に含める（伸びる動きの最後に、余白のぶんだけ急に伸びないように） */
         .tech-details { display: flow-root; }
+        /* 説明の窓はどの技術でも同じ高さ（C# の説明の高さ。押したときの処理で測って --tech-detail-h に書く） */
+        .tech-detail { box-sizing: border-box; min-height: var(--tech-detail-h, 0); align-content: start; }
         .tech-detail > div:only-child { grid-column: 1 / -1; }
         .tech-detail-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin: 0 0 4px; }
         .tech-detail-head strong { font-size: 15px; }
@@ -1153,6 +1155,7 @@
                         sub ? gamePage(sub) : worksPage();
                     renderedSection = view;
                     if (view === 'home' && ONE_SCROLL) placePerches();
+                    sizeTechDetails();
                     clipObserver.disconnect();
                     main.querySelectorAll('.card video[data-src]').forEach(v => clipObserver.observe(v));
                     startFullVideosLater();
@@ -1187,6 +1190,21 @@
                 if (video.paused) video.play().catch(() => {});
                 syncPlayer(player);
             });
+            // 技術スタックの説明の窓を、すべて C# の説明と同じ高さにそろえる（幅が変わると高さも変わるので、そのたびに測り直す）
+            const sizeTechDetails = () => main.querySelectorAll('.tech-details').forEach(wrap => {
+                const base = wrap.querySelector('#tech-detail-csharp');
+                if (!base) return;
+                const hidden = base.hidden;
+                wrap.style.removeProperty('--tech-detail-h');
+                base.hidden = false;
+                base.style.visibility = hidden ? 'hidden' : '';
+                const h = base.getBoundingClientRect().height;
+                base.hidden = hidden;
+                base.style.visibility = '';
+                if (h) wrap.style.setProperty('--tech-detail-h', `${h}px`);
+            });
+            window.addEventListener('resize', () => requestAnimationFrame(sizeTechDetails));
+            document.fonts?.ready.then(sizeTechDetails);
             // 技術スタック：押すと説明を開き、もう一度押すと閉じる。開くのは1つだけ。
             // 説明が重ならずに下へ伸びる表示（全部スクロール版・スマホ）では、「詳しく見る」と同じ動きで高さを変える。
             main.addEventListener('click', event => {
@@ -1204,7 +1222,8 @@
                 const to = wrap.getBoundingClientRect().height;
                 if (from === to) return;
                 wrap.style.overflow = 'hidden';
-                wrap.animate([{ height: `${from}px` }, { height: `${to}px` }], { duration: 240, easing: 'cubic-bezier(.2, .8, .2, 1)' })
+                // 途中で速さを落とさず、出始めたらそのまま一気に開く
+                wrap.animate([{ height: `${from}px` }, { height: `${to}px` }], { duration: 200, easing: 'linear' })
                     .finished.then(() => { wrap.style.overflow = ''; }, () => {});
             });
             main.addEventListener('volumechange', event => {
