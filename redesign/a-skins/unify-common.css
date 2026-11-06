@@ -16,7 +16,8 @@
     box-shadow: var(--box-shadow);
 }
 [data-ui] main .card .thumb { border-bottom: 2px solid var(--u-line); }
-[data-ui] main :is(.vplayer, .research-video) { border: 2px solid var(--u-line); border-radius: var(--u-radius); box-shadow: var(--box-shadow); overflow: hidden; }
+/* 作品ページ・研究ページの動画は、線で囲まない（角の丸みだけそろえる） */
+[data-ui] main :is(.vplayer, .research-video) { border: 0; border-radius: var(--u-radius); box-shadow: none; overflow: hidden; }
 /* 顔写真には影を付けない（黒い線の丸だけ） */
 [data-ui] main .portrait { box-shadow: none; }
 [data-ui] main .profile-stats a { border: 2px solid var(--u-line); border-radius: var(--u-radius); box-shadow: var(--box-shadow); }

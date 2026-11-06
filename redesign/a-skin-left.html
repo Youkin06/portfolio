@@ -298,6 +298,9 @@
         /* 作品・研究のページ：本文と、右のデータ欄 */
         .vplayer { position: relative; aspect-ratio: 16 / 9; border: 3px solid var(--navy); border-radius: var(--radius); overflow: hidden; background: #000; margin-bottom: 20px; }
         .vplayer video { width: 100%; height: 100%; display: block; object-fit: contain; background: #000; }
+        /* 全編の準備ができるまで、作品一覧で読み込み済みの6秒ループを上に重ねて流し、全編が動き出したらふっと消す */
+        .vplayer .vclip { position: absolute; inset: 0; transition: opacity .35s ease; }
+        .vplayer .vclip[data-done] { opacity: 0; pointer-events: none; }
         /* 縦長の研究動画（Useless Machine など）は、横幅いっぱいにせず縦長の枠で出す。 */
         .vplayer[data-portrait] { aspect-ratio: 9 / 16; width: min(100%, calc(70vh * 9 / 16)); }
         .vsound {
@@ -827,8 +830,12 @@
             const soundIcon = muted => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4 6 8H3v8h3l5 4V4Z"/>${muted ? '<path d="m16 9 6 6m0-6-6 6"/>' : '<path d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/>'}</svg>`;
             const playerHTML = (id, title) => id ? `
                 <div class="vplayer" data-player>
-                    <video src="${MEDIA_BASE}${esc(id)}.mp4" poster="${CLIP_BASE}${esc(id)}.jpg"
-                        autoplay muted loop playsinline preload="metadata" aria-label="${esc(title)} のプレイ動画"></video>
+                    <video data-src="${MEDIA_BASE}${esc(id)}.mp4" poster="${CLIP_BASE}${esc(id)}.jpg"
+                        autoplay muted loop playsinline preload="metadata" aria-label="${esc(title)} のプレイ動画"
+                        onplaying="this.parentElement.querySelector('.vclip')?.setAttribute('data-done', '')"></video>
+                    <video class="vclip" src="${CLIP_BASE}${esc(id)}.mp4" poster="${CLIP_BASE}${esc(id)}.jpg"
+                        autoplay muted loop playsinline preload="auto" aria-hidden="true"
+                        onplaying="startFullVideo(this.parentElement)" onerror="startFullVideo(this.parentElement); this.remove()" ontransitionend="this.remove()"></video>
                     <button class="vsound" type="button" data-act="mute" aria-label="${esc(TEXT.soundLabel)}" aria-pressed="false" title="${esc(TEXT.unmute)}">${soundIcon(true)}</button>
                 </div>` : '';
 
@@ -927,9 +934,62 @@
                 } else {
                     video.pause();
                 }
-            }), { rootMargin: '100px 0px' });
+            }), { rootMargin: '800px 0px' });  // 画面に入る少し前から読み込み、見えたときには動いているようにする
 
-            // ---- スマホのメニュー ----
+            // ---- 作品ページの動画：先に6秒ループを流し、動き出してから全編を読み込み始める ----
+            // 遅い回線で、6秒ループと全編が回線を取り合って両方止まるのを防ぐ。6秒ループが来なくても、少し待てば全編を読み込む。
+            window.startFullVideo = player => {
+                const full = player?.querySelector('video[data-src]');
+                if (!full || full.src) return;
+                full.src = full.dataset.src;
+                full.play().catch(() => {});
+            };
+            const startFullVideosLater = () => main.querySelectorAll('[data-player]').forEach(player => setTimeout(() => startFullVideo(player), 2500));
+
+            // ---- 動画の先読み ----
+            // データ節約の設定や遅い回線では、先読みしない。
+            const connection = navigator.connection || {};
+            const canPrefetch = !connection.saveData && !/(^|-)2g$|^3g$/.test(connection.effectiveType || '');
+            const prefetch = href => {
+                const link = document.createElement('link');
+                link.rel = 'prefetch';
+                link.href = href;
+                document.head.append(link);
+            };
+            // 1. ページを開いて一段落したら、作品一覧の6秒ループ（全部で約1.3MB）と静止画をまとめて先読みする。
+            const prefetchClips = () => projects.forEach(p => {
+                if (!p.videoId) return;
+                prefetch(`${CLIP_BASE}${p.videoId}.jpg`);
+                prefetch(`${CLIP_BASE}${p.videoId}.mp4`);
+            });
+            if (canPrefetch) {
+                const later = window.requestIdleCallback || (fn => setTimeout(fn, 1500));
+                const start = () => later(prefetchClips, { timeout: 4000 });
+                document.readyState === 'complete' ? start() : window.addEventListener('load', start, { once: true });
+            }
+            // 3. 作品・研究へのリンクに触れたら（マウスを乗せる・指が触れる・キーで選ぶ）、その全編動画の最初の部分だけ読み込み始める。
+            //    押すまでの間に始めの数秒分が届くので、ページを開いてから動き出すまでが短くなる。
+            const warmed = new Set();
+            const warmVideo = href => {
+                if (!canPrefetch || warmed.has(href)) return;
+                warmed.add(href);
+                fetch(href, { headers: { Range: 'bytes=0-1499999' }, priority: 'low' }).then(r => r.arrayBuffer()).catch(() => {});
+            };
+            const videoOfLink = a => {
+                const [route, id] = (a.getAttribute('href') || '').slice(1).split('/');
+                if (route === 'works' && id) {
+                    const p = projects.find(x => x.id === decodeURIComponent(id));
+                    return p?.videoId ? `${MEDIA_BASE}${p.videoId}.mp4` : null;
+                }
+                if (route === 'research' && id) return research.find(r => r.id === id)?.video?.src || null;
+                return null;
+            };
+            ['pointerover', 'touchstart', 'focusin'].forEach(type => document.addEventListener(type, event => {
+                const a = event.target.closest?.('a[href^="#works/"], a[href^="#research/"]');
+                const href = a && videoOfLink(a);
+                if (href) warmVideo(href);
+            }, { passive: true }));
+
             const menuButton = document.getElementById('menu-button');
             const closeMenu = () => {
                 document.body.classList.remove('menu-open');
@@ -1020,7 +1080,8 @@
                         sub ? gamePage(sub) : worksPage();
                     renderedSection = view;
                     clipObserver.disconnect();
-                    main.querySelectorAll('video[data-src]').forEach(v => clipObserver.observe(v));
+                    main.querySelectorAll('.card video[data-src]').forEach(v => clipObserver.observe(v));
+                    startFullVideosLater();
                     // 折りたたみ内の写真も先にデコードし、開いた瞬間の表示待ちを減らす。
                     main.querySelectorAll('.exp-detail img').forEach(img => img.decode?.().catch(() => {}));
                 }
