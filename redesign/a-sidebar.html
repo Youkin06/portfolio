@@ -223,9 +223,6 @@
         .tech > button img { width: 36px; height: 36px; }
         .tech > button:hover, .tech > button[aria-expanded="true"] { border-color: var(--fg); }
         .tech-stack-list { gap: 10px; }
-        /* 下を歩くキャラクターと重なっても読めるよう、地の色を敷く */
-        .tech-hint { width: fit-content; margin: 8px 0 0 -4px; padding: 0 4px; border-radius: 4px; background: var(--surface); color: var(--muted); font-size: 12px; }
-        .tech-hint[hidden] { display: none; }
         .tech-detail { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px 24px; margin-top: 12px; padding: 10px 16px; border: 2px solid var(--line); border-radius: 8px; background: var(--surface); font-size: 13px; line-height: 1.6; }
         .tech-detail[hidden] { display: none; }
         .tech-detail > div:only-child { grid-column: 1 / -1; }
@@ -776,7 +773,7 @@
                 '': (single = false) => block('profile', single ? null : TEXT.profile, (PROFILE_VERSIONS[PROFILE_STYLE] || PROFILE_VERSIONS[''])()) +
                     block('skills', TEXT.skills, `<ul class="tech-stack-list">${TECH_STACK.map(tech => `
                         <li class="tech" data-tech="${esc(tech.id)}"><button type="button" title="${esc(tech.name)}" aria-expanded="false" aria-controls="tech-detail-${esc(tech.id)}"><img src="${tech.src || `${DEVICON}${tech.id}.svg`}" alt="${esc(tech.name)}" width="44" height="44" loading="eager" decoding="async"></button></li>`).join('')}
-                    </ul><p class="tech-hint">アイコンを押すと、経験と得意なことが出ます</p>${TECH_STACK.map(techDetailHTML).join('')}`),
+                    </ul>${TECH_STACK.map(techDetailHTML).join('')}`),
                 internships: (single = false) => block('internships', single ? null : TEXT.internships, `<ol class="exp-list timeline">${data.internships.map(expHTML).join('')}</ol>`),
                 awards: (single = false) => block('awards', single ? null : TEXT.awards, `<ul class="item-list awards">${data.awards.map(itemHTML).join('')}</ul>`),
                 media: (single = false) => block('media', single ? null : TEXT.media, `<ul class="item-list media">${data.media.map(itemHTML).join('')}</ul>`),
@@ -1055,7 +1052,6 @@
                 const list = button.closest('[data-block="skills"]');
                 list.querySelectorAll('.tech > button').forEach(b => b.setAttribute('aria-expanded', String(b === button && open)));
                 list.querySelectorAll('.tech-detail').forEach(d => { d.hidden = !(open && d.id === button.getAttribute('aria-controls')); });
-                list.querySelector('.tech-hint').hidden = open;
             });
             main.addEventListener('volumechange', event => {
                 const player = event.target.closest?.('[data-player]');

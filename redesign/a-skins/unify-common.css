@@ -54,7 +54,7 @@
 /* 開いたあとも、ほかのボタンと同じ白地のまま（向きの変わる矢印で開いていることを示す） */
 [data-ui] main .exp-more:is([open], [data-expanded]) summary { background: #ffffff; }
 [data-ui] main .tech > button { border: 2px solid var(--u-line); border-radius: var(--u-radius); background: #ffffff; box-shadow: var(--btn-shadow); }
-[data-ui] main .tech > button[aria-expanded="true"] { background: var(--section-bg); box-shadow: var(--btn-shadow-hover); transform: var(--btn-hover-move, translate(-1px, -1px)); }
+[data-ui] main .tech > button[aria-expanded="true"] { background: #ffffff; box-shadow: var(--btn-shadow-hover); transform: var(--btn-hover-move, translate(-1px, -1px)); }
 
 /* 札（タグ）は押せないので、線も影もない淡い色の札のまま。角だけそろえる */
 [data-ui] main .tag { border-radius: 4px; }
@@ -97,3 +97,6 @@
 /* スクロールバーはどのページ・どの場所でも出さない（スクロール自体はできる） */
 html, body, * { scrollbar-width: none; }
 ::-webkit-scrollbar { display: none; }
+
+/* 技術スタックのアイコンだけ、触れたとき・開いているときの影を赤（About の色）にする */
+[data-ui] main .tech > button:is(:hover, [aria-expanded="true"]) { box-shadow: 3px 3px 0 #d23340; }
