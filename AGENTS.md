@@ -25,8 +25,23 @@
 ## ブランチ
 
 - `main` … 公開中のサイト。`main` に push すると GitHub Actions（`.github/workflows/pages.yml`）が `tools/collect-site.sh` で公開するファイルだけを集め、https://youkin06.github.io/portfolio/ に出すので、**`main` への push は公開になる**。試作のページ（`redesign/` の中の HTML）・白案以外のスキン・テスト・道具・メモ（`.md`）は公開しない。公開される中身は `sh tools/collect-site.sh <フォルダ>` で手元に集めて確かめられる。
-- `develop` … 全体改修の作業場所。push しても公開されない。完成したら `main` に取り込んで公開する。
-- `visual-skins` … デザイン担当の作業場所（worktree `../portfolio-skins`）。`develop` を取り込み、`develop` に戻す。
+- `develop` … 作業をまとめる場所。push しても公開されない。**`develop` に直接コミットしない**（下の「作業の進め方」）。
+- `visual-skins` … デザイン担当の作業場所（worktree `../portfolio-skins`）。`develop` を取り込み、`develop` に PR で戻す。
+
+### 作業の進め方（複数のセッションで同時に開発しているため、必ず守る）
+
+1. **作業を始めるたびに、`develop` から新しいブランチを切る。** ほかのセッションの作業中のファイルを巻き込まないよう、できるだけ worktree で別のフォルダに分ける。
+   ```sh
+   git fetch origin
+   git worktree add ../portfolio-wt-<作業名> -b <種類>/<作業名> origin/develop
+   cd ../portfolio-wt-<作業名>
+   ```
+   - ブランチ名は `feat/research-list`、`fix/hover-jitter`、`docs/branch-workflow`、`perf/video-prefetch` のように、コミットの接頭辞と同じ種類＋作業の名前にする。
+   - 確認用のサーバーは、worktree ごとに別のポートで起動する（例：`python3 tools/serve.py 8002`）。
+2. そのブランチでコミットし、push して、**`develop` に PR を出す**（`gh pr create --base develop`）。PR には、やったこと・確かめたこと・確認用リンクを書く。
+3. `develop` にマージしたら、使い終わった worktree とブランチを片付ける（`git worktree remove ../portfolio-wt-<作業名>`、`git branch -d <ブランチ名>`）。
+4. **公開するときは、`develop` から `main` への PR を出す。** ほかのセッションの、まだ公開しない変更が `develop` に入っているときは、`main` から公開用のブランチ（`release/<名前>`）を切り、公開するコミットだけを入れて `main` に PR を出す。
+5. `main` への PR のマージ（＝公開）と push は、ユーザーに確かめてから行う。
 
 ## 改修の方針
 
@@ -39,9 +54,9 @@
 
 ## 改修の分担（複数の Claude セッションで作業するとき）
 
-- **機能**（構造・JS・内容の読み込み・動画・本番への反映）：`develop` ブランチで作業する。`redesign/a-sidebar.html` と `redesign/shared/` はこちらだけが編集する。
+- **機能**（構造・JS・内容の読み込み・動画・本番への反映）：`develop` から切った作業用のブランチ（worktree）で作業し、`develop` に PR を出す。`redesign/a-sidebar.html` と `redesign/shared/` はこちらだけが編集する。
 - **デザイン**（色・フォント・余白・飾り）：`visual-skins` で `redesign/a-skins/` だけを編集する。構造や動きを変えたいときは機能側に頼む。
-- 機能側の変更は `develop` にコミットし、デザイン側は `develop` を取り込んでから `build.sh` でスキンを作り直す。
+- デザイン側は `develop` を取り込んでから `build.sh` でスキンを作り直し、`develop` に PR を出す。
 
 ## 作業ルール
 
@@ -59,9 +74,9 @@
   - インターン・バイト経験は `experience-item internship-experience` の枠を追加する（役割 / 会社名 / 期間）。
   - 作品は `project-item` のカードとモーダルを追加し、経験欄から `#project-...` でリンクする。
 - 文章は日本語。です・ます調で、やったこと → 工夫 → 学びの順に書く。
-- 変更後は確認・必要なテストを行い、自動でコミットする。ユーザーが「コミットしないで」などと指定した場合は、その指示を優先する。
+- 変更後は確認・必要なテストを行い、作業用のブランチに自動でコミットする（`develop` や `main` に直接コミットしない）。ユーザーが「コミットしないで」などと指定した場合は、その指示を優先する。
 - コミットメッセージは `feat: 作品動画を音声切り替えだけの表示に変更`、`fix: 音アイコンがカーソルを外しても残る問題を修正`、`docs: 自動コミットの運用ルールを追記` のように、変更の種類を表す接頭辞と、内容が分かる日本語で書く。
-- pushはユーザーに頼まれたときだけ行う。`main` への push は公開になるので、特に確認してから行う。
+- 作業用のブランチの push と、`develop` への PR 作成は、作業が終わったら行ってよい。`main` への push・マージは公開になるので、ユーザーに確かめてから行う。
 - **大事なことは、頼まれなくても自動でこの AGENTS.md にメモする。** 次の作業者（別の Claude セッションを含む）が会話を読まなくても分かるようにするため。
   - メモするもの：ユーザーが決めたデザインや仕様（例：影の色、ボタンの形）、やめたこと・やらないと決めたこと、ファイルの置き場所や仕組みの変更、公開の手順、保留中のこと。
   - 仕組みや決まりは、関係する節（構成・ブランチ・改修の方針・作業ルール）に書き足す。保留中のことは下の「保留中のこと」に書き、片付いたら消す。
