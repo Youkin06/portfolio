@@ -218,14 +218,14 @@
         .contacts .mail { display: inline-flex; align-items: center; gap: 8px; padding: 6px 4px; font-size: 13px; }
         .contacts .mail > span { user-select: all; overflow-wrap: anywhere; min-width: 0; }
         .contacts .mail-icon { flex-shrink: 0; }
-        /* すっきり版（?profile=simple）：目標を一言で出し、大学・所属は小さく1行。SNS はアイコンだけ、メールは文字だけ */
+        /* すっきり版（?profile=simple）：目標を一言で出し、大学・所属・メールは見出し付きの3行。SNS はアイコンだけ */
         .profile--simple .profile-catch { margin: 0 0 6px; color: var(--section-fg, var(--accent)); font-size: 17px; font-weight: 700; line-height: 1.6; }
-        .profile--simple .profile-where { margin: 0; font-size: 13px; color: var(--muted); }
-        .profile--simple .contacts { margin-top: 18px; }
+        .profile--simple .profile-facts { margin: 0; }
+        .profile--simple .profile-facts > div { grid-template-columns: 3.5em minmax(0, 1fr); }
+        .profile--simple .profile-facts dd { overflow-wrap: anywhere; }
+        .profile--simple .contacts { margin-top: 12px; }
         .profile--simple .contacts-social a { width: 40px; height: 40px; padding: 0; justify-content: center; }
         .profile--simple .contacts-social img { width: 20px; height: 20px; }
-        .profile--simple .contacts-mail-text { margin: 0; font-size: 13px; overflow-wrap: anywhere; }
-        .tech-more { margin: 12px 0 0; font-size: 13px; color: var(--muted); }
 
         /* 技術スタック */
         /* アイコンだけを並べる（名前はマウスを乗せたときと読み上げで出る） */
@@ -770,24 +770,24 @@
                             </div>
                         </div>
                         <ol class="profile-history">${profileHistory().slice(0, 6).map(e => `<li><time>${e.y}${e.m ? `.${String(e.m).padStart(2, '0')}` : ''}</time><span>${esc(e.text)}</span></li>`).join('')}</ol>`,
-                // すっきり：名前 → 目標 → 大学・所属を1行。数字のタイルは出さず、SNS はアイコンだけ、メールは文字だけ。
+                // すっきり：名前 → 目標 → 「大学」「所属」「メール」（大学のアドレスだけ）の3行。数字のタイルは出さず、その下に SNS をアイコンだけで並べる。
                 simple: () => `
                         <div class="profile profile--simple">${portraitHTML()}
                             <div>
                                 <p class="profile-name">${esc(data.profile.name)}</p>
                                 ${profileFacts['目標'] ? `<p class="profile-catch">${esc(profileFacts['目標'])}</p>` : ''}
-                                <p class="profile-where">${['大学', '所属'].filter(k => profileFacts[k]).map(k => esc(profileFacts[k])).join('　／　')}</p>
+                                <dl class="profile-facts">${[
+                                    ...['大学', '所属'].filter(k => profileFacts[k]).map(k => [k, profileFacts[k]]),
+                                    ['メール', data.profile.emails.find(m => /@keio\.jp$/.test(m)) || data.profile.emails[0]],
+                                ].filter(([, v]) => v).map(([k, v]) => `
+                                    <div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('')}
+                                </dl>
                                 <div class="contacts">
                                     <div class="contacts-social">${data.profile.socials.map(s => `<a class="social" href="${esc(s.href)}" target="_blank" rel="noopener noreferrer" title="${esc(s.label)}" aria-label="${esc(s.label)}">${s.icon ? `<img src="${esc(iconUrl(s.icon))}" alt="">` : esc(s.label)}</a>`).join('')}</div>
-                                    <p class="contacts-mail-text">${data.profile.emails.map(esc).join('　／　')}</p>
                                 </div>
                             </div>
                         </div>`,
             };
-            // すっきり版の技術スタックは、よく使うものだけアイコンで出し、ほかは名前を1行で添える。
-            const TECH_MAIN = ['unity', 'csharp', 'blender', 'figma', 'python'];
-            const techShown = PROFILE_STYLE === 'simple' ? TECH_STACK.filter(t => TECH_MAIN.includes(t.id)) : TECH_STACK;
-            const techRest = TECH_STACK.filter(t => !techShown.includes(t));
             // 技術スタックのアイコンを押すと、アイコンの下に出る説明
             const techWorks = tech => [
                 ...projects.filter(p => p.tech.split('、').some(name => tech.word.test(name.trim()))).map(p => [`#works/${p.id}`, p.title]),
@@ -807,9 +807,9 @@
             };
             const aboutBlocks = {
                 '': (single = false) => block('profile', single ? null : TEXT.profile, (PROFILE_VERSIONS[PROFILE_STYLE] || PROFILE_VERSIONS[''])()) +
-                    block('skills', TEXT.skills, `<ul class="tech-stack-list">${techShown.map(tech => `
+                    block('skills', TEXT.skills, `<ul class="tech-stack-list">${TECH_STACK.map(tech => `
                         <li class="tech" data-tech="${esc(tech.id)}"><button type="button" title="${esc(tech.name)}" aria-expanded="false" aria-controls="tech-detail-${esc(tech.id)}"><img src="${tech.src || `${DEVICON}${tech.id}.svg`}" alt="${esc(tech.name)}" width="44" height="44" loading="eager" decoding="async"></button></li>`).join('')}
-                    </ul>${techRest.length ? `<p class="tech-more">ほかに：${techRest.map(t => esc(t.name)).join(' / ')}</p>` : ''}${techShown.map(techDetailHTML).join('')}`),
+                    </ul>${TECH_STACK.map(techDetailHTML).join('')}`),
                 internships: (single = false) => block('internships', single ? null : TEXT.internships, `<ol class="exp-list timeline">${data.internships.map(expHTML).join('')}</ol>`),
                 awards: (single = false) => block('awards', single ? null : TEXT.awards, `<ul class="item-list awards">${data.awards.map(itemHTML).join('')}</ul>`),
                 media: (single = false) => block('media', single ? null : TEXT.media, `<ul class="item-list media">${data.media.map(itemHTML).join('')}</ul>`),
