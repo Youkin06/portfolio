@@ -520,6 +520,7 @@
             researchLab: '研究会',
             researchPeriod: '期間',
             back: '← 作品一覧へ戻る',
+            backResearch: '← 研究一覧へ戻る',
             prev: '◀ Prev',
             next: 'Next ▶',
             more: '詳しく見る',
@@ -987,6 +988,7 @@
                 return `
                     <!-- 作品ページ（.game）と同じ並べ方：左に枠なしの研究内容、右に研究情報と Link -->
                     <article class="page research game">
+                        <a class="back" href="#research">${esc(TEXT.backResearch)}</a>
                         ${pageHead(TEXT.research, r.theme)}
                         ${researchVideoHTML(r)}
                         ${researchItemHTML(r, index, 'none')}

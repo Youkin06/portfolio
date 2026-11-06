@@ -7,7 +7,7 @@
         if (event.defaultPrevented || event.isComposing || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
         if (!['ArrowUp', 'ArrowDown'].includes(event.key)) return;
         // 入力欄・開閉ボタン・動画などのキー操作はそのまま使えるようにする。
-        if (event.target.closest('input, textarea, select, button, summary, video, audio, [contenteditable]:not([contenteditable="false"]), [role="slider"], [role="textbox"]')) return;
+        if (event.target.closest?.('input, textarea, select, button, summary, video, audio, [contenteditable]:not([contenteditable="false"]), [role="slider"], [role="textbox"]')) return;
 
         const links = [...menu.querySelectorAll('.menu-list a[data-key]')]
             .filter(link => link.getClientRects().length);

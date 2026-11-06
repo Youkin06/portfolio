@@ -42,6 +42,8 @@
         const exitX = w.exit === 'left' ? offLeft : offRight;
         const outside = x => x <= offLeft || x >= offRight;
         const inside = x => x >= lo && x <= hi;
+        // 箱の上では、幅が変わるなどして歩ける範囲の外にいたら、歩いて入ってこずにその場で範囲の中へ置き直す。
+        if (perched && w.x !== null && !inside(w.x)) w.x = Math.min(Math.max(w.x, lo), hi);
         const somewhere = (a, b) => lo + room * (a + Math.random() * (b - a));
 
         if (w.x === null) w.x = home ? somewhere(0.1, 0.9) : exitX;
