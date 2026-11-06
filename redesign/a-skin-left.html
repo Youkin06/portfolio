@@ -1163,7 +1163,8 @@
                 const view = (mobile.matches || ONE_SCROLL) && (section === 'about' || !sub) ? 'home' : section;
 
                 // 同じ1ページの中の移動なら、作り直さずにその場所までスクロールするだけ
-                if (!(view === 'home' && renderedSection === 'home')) {
+                const rebuilt = !(view === 'home' && renderedSection === 'home');
+                if (rebuilt) {
                     main.innerHTML =
                         view === 'home' ? homePage() :
                         section === 'about' ? aboutPage(sub) :
@@ -1185,7 +1186,17 @@
                     ? document.getElementById(section === 'about' ? `block-${sub}` : `part-${section}`)
                     : null;
                 keepChoice = Boolean(target);
-                target ? target.scrollIntoView({ block: 'start' }) : window.scrollTo(0, 0);
+                // 別のページから来たとき（作品ページから作品一覧へ戻るなど）は、上から流さずにその場所へ一度で移る。
+                // 同じ1ページの中の移動は、今までどおりなめらかに流す。
+                const behavior = rebuilt ? 'instant' : 'smooth';
+                target ? target.scrollIntoView({ block: 'start', behavior }) : window.scrollTo({ top: 0, behavior });
+                // 移ったあとで上の画像が読み込まれて場所がずれたら、まだ自分でスクロールしていなければ合わせ直す。
+                if (rebuilt && target) {
+                    const above = [...main.querySelectorAll('img')].filter(img => !img.complete && img.compareDocumentPosition(target) & Node.DOCUMENT_POSITION_FOLLOWING);
+                    Promise.allSettled(above.map(img => img.decode())).then(() => {
+                        if (keepChoice && target.isConnected) target.scrollIntoView({ block: 'start', behavior: 'instant' });
+                    });
+                }
                 closeMenu();
             };
 
