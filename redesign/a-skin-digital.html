@@ -283,7 +283,9 @@
         .exp:last-child, .item:last-child { border-bottom: 0; padding-bottom: 0; }
         .exp-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; }
         .exp-role { margin: 0; font-size: 15px; }
-        .exp-org { color: var(--muted); font-size: 13px; }
+        /* 「役割 / 会社名」を同じ大きさ・太さで1つの見出しのように並べる */
+        .exp-org { color: var(--fg); font-size: 15px; font-weight: 700; }
+        .exp-role + .exp-org::before { content: "/" / ""; margin-right: 8px; }
         .exp-period { margin-left: auto; color: var(--muted); font-size: 13px; }
         .exp-more summary { cursor: pointer; font-size: 13px; color: var(--accent); margin-top: 4px; font-weight: 700; -webkit-user-select: none; user-select: none; }
         .exp-content { display: flow-root; }
