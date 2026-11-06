@@ -218,13 +218,13 @@
         .contacts .mail { display: inline-flex; align-items: center; gap: 8px; padding: 6px 4px; font-size: 13px; }
         .contacts .mail > span { user-select: all; overflow-wrap: anywhere; min-width: 0; }
         .contacts .mail-icon { flex-shrink: 0; }
-        /* すっきり版（?profile=simple）：目標を一言で出し、大学・所属は小さく1行。SNS はアイコンだけ、メールは文字だけ */
+        /* すっきり版（?profile=simple）：目標を一言で出し、大学・所属は小さく2行。SNS はアイコンだけ、メールは文字だけ */
         .profile--simple .profile-catch { margin: 0 0 6px; color: var(--section-fg, var(--accent)); font-size: 17px; font-weight: 700; line-height: 1.6; }
-        .profile--simple .profile-where { margin: 0; font-size: 13px; color: var(--muted); }
-        .profile--simple .contacts { margin-top: 18px; }
+        .profile--simple .profile-where { margin: 0; font-size: 13px; line-height: 1.8; color: var(--muted); }
+        .profile--simple .contacts { margin-top: 0; }  /* メールは大学・所属のすぐ下に続ける */
         .profile--simple .contacts-social a { width: 40px; height: 40px; padding: 0; justify-content: center; }
         .profile--simple .contacts-social img { width: 20px; height: 20px; }
-        .profile--simple .contacts-mail-text { margin: 0; font-size: 13px; overflow-wrap: anywhere; }
+        .profile--simple .contacts-mail-text { margin: 0 0 6px; font-size: 13px; line-height: 1.8; overflow-wrap: anywhere; }
 
         /* 技術スタック */
         /* アイコンだけを並べる（名前はマウスを乗せたときと読み上げで出る） */
@@ -769,13 +769,13 @@
                             </div>
                         </div>
                         <ol class="profile-history">${profileHistory().slice(0, 6).map(e => `<li><time>${e.y}${e.m ? `.${String(e.m).padStart(2, '0')}` : ''}</time><span>${esc(e.text)}</span></li>`).join('')}</ol>`,
-                // すっきり：名前 → 目標 → 大学・所属を1行。数字のタイルは出さず、メールは文字だけ、その下に SNS をアイコンだけで並べる。
+                // すっきり：名前 → 目標 → 大学・所属を小さく2行。数字のタイルは出さず、メールは文字だけ、その下に SNS をアイコンだけで並べる。
                 simple: () => `
                         <div class="profile profile--simple">${portraitHTML()}
                             <div>
                                 <p class="profile-name">${esc(data.profile.name)}</p>
                                 ${profileFacts['目標'] ? `<p class="profile-catch">${esc(profileFacts['目標'])}</p>` : ''}
-                                <p class="profile-where">${['大学', '所属'].filter(k => profileFacts[k]).map(k => esc(profileFacts[k])).join('　／　')}</p>
+                                ${['大学', '所属'].filter(k => profileFacts[k]).map(k => `<p class="profile-where">${esc(profileFacts[k])}</p>`).join('')}
                                 <div class="contacts">
                                     <p class="contacts-mail-text">${data.profile.emails.map(esc).join('　／　')}</p>
                                     <div class="contacts-social">${data.profile.socials.map(s => `<a class="social" href="${esc(s.href)}" target="_blank" rel="noopener noreferrer" title="${esc(s.label)}" aria-label="${esc(s.label)}">${s.icon ? `<img src="${esc(iconUrl(s.icon))}" alt="">` : esc(s.label)}</a>`).join('')}</div>
