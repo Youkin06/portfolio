@@ -952,7 +952,15 @@
 
             // 見えている動く見本だけ再生し、画面外に出たら止める。
             const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-            const clipObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+            // 読み込みは画面に入る少し前（800px 手前）から始め、見えたときにはすぐ動けるようにしておく。
+            const clipLoader = new IntersectionObserver(entries => entries.forEach(entry => {
+                const video = entry.target;
+                if (!entry.isIntersecting || video.src) return;
+                video.preload = 'auto';
+                video.src = video.dataset.src;
+            }), { rootMargin: '800px 0px' });
+            // 再生は、画面に見えている間だけ。見えなくなったら止める（画面の外で何本も動かして、電池と処理を使わないように）。
+            const clipPlayer = new IntersectionObserver(entries => entries.forEach(entry => {
                 const video = entry.target;
                 if (entry.isIntersecting) {
                     if (!video.src) video.src = video.dataset.src;
@@ -960,7 +968,11 @@
                 } else {
                     video.pause();
                 }
-            }), { rootMargin: '800px 0px' });  // 画面に入る少し前から読み込み、見えたときには動いているようにする
+            }));
+            const clipObserver = {
+                observe: video => { clipLoader.observe(video); clipPlayer.observe(video); },
+                disconnect: () => { clipLoader.disconnect(); clipPlayer.disconnect(); },
+            };
 
             // ---- 作品ページの動画：先に6秒ループを流し、動き出してから全編を読み込み始める ----
             // 遅い回線で、6秒ループと全編が回線を取り合って両方止まるのを防ぐ。6秒ループが来なくても、少し待てば全編を読み込む。
