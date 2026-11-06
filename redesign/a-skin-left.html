@@ -1263,6 +1263,9 @@
             const TECH_BOX = ['height', 'minHeight', 'marginTop', 'paddingTop', 'paddingBottom', 'borderTopWidth', 'borderBottomWidth'];
             const techBoxNow = el => { const cs = getComputedStyle(el); return Object.fromEntries(TECH_BOX.map(k => [k, k === 'height' ? `${el.getBoundingClientRect().height}px` : cs[k]])); };
             const techBoxZero = Object.fromEntries(TECH_BOX.map(k => [k, '0px']));
+            // 窓は、細い線のようになる前に見えなくする（開くときは最初に、閉じるときは最後に、うすくする）
+            const TECH_MOTION = { duration: 400, easing: 'cubic-bezier(.2, .8, .2, 1)' };
+            let techMotion = null;
             main.addEventListener('click', event => {
                 const button = event.target.closest('.tech > button');
                 if (!button) return;
@@ -1284,10 +1287,22 @@
                 const box = open ? target : (moving || shown);
                 if (!box) { showOnly(null); return; }
                 showOnly(box);
+                const fromOpacity = moving ? getComputedStyle(moving).opacity : (open ? '0' : '1');
                 const full = techBoxNow(box);
                 box.style.overflow = 'hidden';
-                const animation = box.animate(open ? [from || techBoxZero, full] : [from || full, techBoxZero], { duration: 400, easing: 'cubic-bezier(.2, .8, .2, 1)' });
-                animation.finished.then(() => { box.style.overflow = ''; if (!open) showOnly(null); }, () => { box.style.overflow = ''; });
+                const size = box.animate(open ? [from || techBoxZero, full] : [from || full, techBoxZero], TECH_MOTION);
+                // うすさは別の動きにして、大きさの動きとは別の時間の配分にする
+                box.animate(open
+                    ? [{ opacity: fromOpacity }, { opacity: 1, offset: 0.25 }, { opacity: 1 }]
+                    : [{ opacity: fromOpacity }, { opacity: fromOpacity, offset: 0.15 }, { opacity: 0, offset: 0.55 }, { opacity: 0 }],
+                    { duration: TECH_MOTION.duration, easing: 'linear' });
+                // 速く何度も押したときは、最後に押した動きだけが後片付けをする（前の動きの後片付けが、今の動きの途中で中身を出してしまわないように）
+                techMotion = size;
+                size.finished.then(() => {
+                    if (techMotion !== size) return;
+                    box.style.overflow = '';
+                    if (!open) showOnly(null);
+                }, () => {});
             });
             main.addEventListener('volumechange', event => {
                 const player = event.target.closest?.('[data-player]');
