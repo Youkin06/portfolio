@@ -1293,8 +1293,8 @@
                 const size = box.animate(open ? [from || techBoxZero, full] : [from || full, techBoxZero], TECH_MOTION);
                 // うすさは別の動きにして、大きさの動きとは別の時間の配分にする
                 box.animate(open
-                    ? [{ opacity: fromOpacity }, { opacity: 1, offset: 0.25 }, { opacity: 1 }]
-                    : [{ opacity: fromOpacity }, { opacity: fromOpacity, offset: 0.15 }, { opacity: 0, offset: 0.55 }, { opacity: 0 }],
+                    ? [{ opacity: fromOpacity }, { opacity: 0.25, offset: 0.2 }, { opacity: 1, offset: 0.5 }, { opacity: 1 }]
+                    : [{ opacity: fromOpacity }, { opacity: 0, offset: 0.35 }, { opacity: 0 }],
                     { duration: TECH_MOTION.duration, easing: 'linear' });
                 // 速く何度も押したときは、最後に押した動きだけが後片付けをする（前の動きの後片付けが、今の動きの途中で中身を出してしまわないように）
                 techMotion = size;
