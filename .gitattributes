@@ -1,0 +1,4 @@
+# このパソコンの Git は改行を CRLF に変えて取り出す設定（core.autocrlf=true）。
+# シェルスクリプトと Python は CRLF だと動かないので、いつも LF で取り出す。
+*.sh text eol=lf
+*.py text eol=lf
