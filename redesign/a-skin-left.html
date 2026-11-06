@@ -160,7 +160,7 @@
         .menu-fold summary { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 4px; font-size: 14px; cursor: pointer; list-style: none; }
         .menu-fold summary::-webkit-details-marker { display: none; }
         .menu-fold summary::before { content: ""; width: 6px; height: 6px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-45deg); transition: transform .16s ease; }
-        .menu-fold details[open] > summary::before { transform: rotate(45deg); }
+        .menu-fold details[open]:not([data-closing]) > summary::before { transform: rotate(45deg); }
         .menu-fold summary:hover { color: var(--section-fg, var(--accent)); }
         .menu-sub { padding-left: 16px; }
 
@@ -622,6 +622,29 @@
                     ${SKIN.menuHeadings ? `<h2 class="menu-label label">${esc(TEXT[section])}</h2>` : `<a class="menu-label label" href="${href}">${esc(TEXT[section])}</a>`}
                     ${LAYOUT === 'flat' ? '' : `<ul class="menu-list">${items}</ul>`}
                 </div>`;
+            // 「作品ページ」などのまとまりは、開くときも閉じるときも中の高さをなめらかに変える。
+            // 目次を下までスクロールしてから閉じても、ガッと戻らず、縮むのに合わせて少しずつ上へ戻る。
+            document.getElementById('menu').addEventListener('click', event => {
+                const summary = event.target.closest('.menu-fold summary');
+                if (!summary) return;
+                event.preventDefault();
+                const details = summary.parentElement;
+                const list = details.querySelector('.menu-sub');
+                const opening = details.hasAttribute('data-closing') || !details.open;
+                const from = details.open ? list.getBoundingClientRect().height : 0;
+                list.getAnimations().forEach(a => a.cancel());
+                details.toggleAttribute('data-closing', !opening);
+                details.open = true;
+                const done = () => {
+                    list.style.overflow = '';
+                    if (!opening) { details.open = false; details.removeAttribute('data-closing'); }
+                };
+                if (matchMedia('(prefers-reduced-motion: reduce)').matches) { done(); return; }
+                const to = opening ? list.getBoundingClientRect().height : 0;
+                list.style.overflow = 'hidden';
+                const animation = list.animate([{ height: `${from}px` }, { height: `${to}px` }], { duration: 240, easing: 'ease-in-out' });
+                animation.onfinish = done;
+            });
             document.getElementById('menu').innerHTML =
                 groupHTML('about', '#about', ABOUT_SECTIONS.map(id =>
                     `<li><a href="${id ? `#about/${id}` : '#about'}" data-key="about/${id}">${esc(aboutLabel(id))}</a></li>`).join('')) +
