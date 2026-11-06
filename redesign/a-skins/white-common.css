@@ -173,3 +173,8 @@ main a:not(.card-link, .contacts a, .profile-stats a, .tech-detail-works a):acti
 @media (prefers-reduced-motion: reduce) {
     [data-ui="b"] .card:is(:hover, :focus-within), [data-ui="b"] .card:has(.card-link:active) { transform: none; }
 }
+
+/* ---- 目次の上の「Youkin」の見出しと About me の間 ----
+   見出しのすぐ下から目次を始める（間は 10px。大項目どうしの間 22px より狭くして、見出しと目次がひと続きに見えるように）。 */
+.sidebar .menu { padding-top: 10px; }
+.menu-group:first-child { margin-top: 0; }
