@@ -127,7 +127,7 @@ main a:not(.card-link, .contacts a, .profile-stats a, .tech-detail-works a):acti
     border: 2px solid #1f1f22; border-radius: 6px; background: #ffffff;
     box-shadow: 3px 3px 0 #1f1f22; transition: transform .08s ease, box-shadow .08s ease;
 }
-[data-ui="b"] .contacts a:hover { color: var(--fg); transform: translate(-1px, -1px); box-shadow: 4px 4px 0 #1f1f22; }
+@media (hover: hover) and (pointer: fine) { [data-ui="b"] .contacts a:hover { color: var(--fg); transform: translate(-1px, -1px); box-shadow: 4px 4px 0 #1f1f22; } }
 [data-ui="b"] .contacts a:active { transform: translate(3px, 3px); box-shadow: 0 0 0 #1f1f22; }
 [data-ui="b"] .profile-stats a {
     border: 2px solid #1f1f22; border-radius: 6px; box-shadow: 4px 4px 0 var(--to);
@@ -140,13 +140,13 @@ main a:not(.card-link, .contacts a, .profile-stats a, .tech-detail-works a):acti
 [data-ui="b"] .profile-stats li { --to: #d23340; }
 /* B の技術スタック：アイコンはほかのボタンと同じ黒い線とずらした影の札。押した札は赤い影になり、下の説明は同じ形の窓。 */
 [data-ui="b"] .tech > button { border-color: #1f1f22; border-radius: 6px; background: #ffffff; box-shadow: 3px 3px 0 #1f1f22; transition: transform .08s ease, box-shadow .08s ease; }
-[data-ui="b"] .tech > button:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 #1f1f22; }
+@media (hover: hover) and (pointer: fine) { [data-ui="b"] .tech > button:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 #1f1f22; } }
 [data-ui="b"] .tech > button:active { transform: translate(3px, 3px); box-shadow: 0 0 0 #1f1f22; }
 [data-ui="b"] .tech > button[aria-expanded="true"] { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 #d23340; }
 [data-ui="b"] .tech-detail { border-color: #1f1f22; border-radius: 6px; background: #ffffff; box-shadow: 4px 4px 0 #d23340; }
 [data-ui="b"] .tech-detail-head span { color: #d23340; font-weight: 700; }
 [data-ui="b"] .tech-detail-works a { border: 2px solid #1f1f22; border-radius: 6px; box-shadow: 2px 2px 0 #1f1f22; font-weight: 700; transition: transform .08s ease, box-shadow .08s ease; }
-[data-ui="b"] .tech-detail-works a:hover { color: var(--fg); transform: translate(-1px, -1px); box-shadow: 3px 3px 0 #1f1f22; }
+@media (hover: hover) and (pointer: fine) { [data-ui="b"] .tech-detail-works a:hover { color: var(--fg); transform: translate(-1px, -1px); box-shadow: 3px 3px 0 #1f1f22; } }
 [data-ui="b"] .tech-detail-works a:active { transform: translate(2px, 2px); box-shadow: 0 0 0 #1f1f22; }
 
 /* C：色のタイル。SNS とメールは灰色の丸い札、数字は行き先の色の淡いタイル。線を使わない。 */

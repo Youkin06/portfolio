@@ -332,3 +332,25 @@ main a.profile-guest-link {
     .perch-walkway { --profile-pixel-size: 3px; --character-size: 72px; }
     .perch-walkway .profile-character { bottom: -5px; }
 }
+
+/* スマホ・タブレット（指で触る画面）では、絵のコマ送りを透明度ではなく切り抜き（clip-path）で隠す。
+   iPhone は、タップした直後に「透明（opacity: 0）だったものが見えるようになった」のを見つけると、そのタップを
+   「触れた」だけにして押したことにしない。キャラクターは 0.16〜0.4 秒ごとにコマを切り替えているので、
+   タイミングが重なると「詳しく見る」などを何回か押さないと開かなかった。切り抜きなら見た目は同じで、この判定に入らない。
+   パソコン（マウス）は今までどおり透明度で切り替える。 */
+@media (hover: none), (pointer: coarse) {
+    .profile-character-walk,
+    .profile-character[data-state="walk"] .profile-character-idle { opacity: 1; clip-path: inset(50%); }
+    .profile-character-idle,
+    .profile-character[data-state="walk"] .profile-character-walk { opacity: 1; clip-path: inset(0); }
+    .profile-character-pose img, .profile-kamo-frame { animation-name: profile-clip-first; }
+    .profile-character-pose img + img, .profile-kamo-frame + .profile-kamo-frame { animation-name: profile-clip; }
+    .profile-depth-player img { opacity: 1; clip-path: inset(50%); animation-name: profile-depth-player-clip; }
+    @keyframes profile-clip { 0%, 100% { clip-path: inset(50%); } 50% { clip-path: inset(0); } }
+    @keyframes profile-clip-first { 0%, 100% { clip-path: inset(0); } 50% { clip-path: inset(50%); } }
+    @keyframes profile-depth-player-clip { 0% { clip-path: inset(0); } 25%, 100% { clip-path: inset(50%); } }
+}
+@media (hover: none) and (prefers-reduced-motion: reduce), (pointer: coarse) and (prefers-reduced-motion: reduce) {
+    .profile-character-pose img, .profile-kamo-frame { animation: none; clip-path: inset(0); }
+    .profile-character-idle img + img, .profile-kamo-frame + .profile-kamo-frame { clip-path: inset(50%); }
+}

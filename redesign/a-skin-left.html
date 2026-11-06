@@ -152,7 +152,8 @@
         .menu-list .year { margin-left: auto; }
         .menu-list a::before { content: "▶"; position: absolute; left: 10px; top: 9px; font-size: 10px; color: var(--cursor); opacity: 0; }
         .menu-list a:hover { background: var(--navy-2); color: #fff; }
-        .menu-list a:hover::before { opacity: .5; }
+        /* マウスのときだけ。スマホ（iPhone）では触れた見た目が変わると1回目のタップが「触れた」だけになり、2回押さないと開かないため */
+        @media (hover: hover) and (pointer: fine) { .menu-list a:hover::before { opacity: .5; } }
         .menu-list a.active { background: var(--navy-2); color: #fff; font-weight: 700; }
         .menu-list a.active::before { opacity: 1; }
 
@@ -203,7 +204,7 @@
         .portrait { position: relative; aspect-ratio: 1; border: 3px solid var(--navy); border-radius: var(--radius); overflow: hidden; background: #fff; }
         .portrait img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity .2s ease; }
         .portrait .pixel { opacity: 0; image-rendering: pixelated; }
-        .portrait:hover .pixel { opacity: 1; }
+        @media (hover: hover) and (pointer: fine) { .portrait:hover .pixel { opacity: 1; } }
         .profile-name { margin: 0 0 8px; font-size: 22px; }
         .profile-text { margin: 0; }
         /* SNS とメールは段を分ける */
