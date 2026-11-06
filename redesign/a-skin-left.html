@@ -1278,7 +1278,7 @@
                 if (from === to) { if (!open) closeAll(); return; }
                 wrap.style.overflow = 'hidden';
                 // インターンの「詳しく見る」（details-motion.js）と同じ速さ・同じ動き。閉じるときも同じ速さで縮む
-                wrap.animate([{ height: `${from}px` }, { height: `${to}px` }], { duration: 240, easing: 'cubic-bezier(.2, .8, .2, 1)' })
+                wrap.animate([{ height: `${from}px` }, { height: `${to}px` }], { duration: 400, easing: 'cubic-bezier(.2, .8, .2, 1)' })
                     .finished.then(() => { wrap.style.overflow = ''; if (!open) closeAll(); }, () => {});
             });
             main.addEventListener('volumechange', event => {
