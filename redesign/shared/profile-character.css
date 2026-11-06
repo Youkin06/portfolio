@@ -315,7 +315,7 @@ main a.profile-guest-link {
 }
 
 /* 全部スクロール版（?view=scroll）：草原の代わりに、箱（受賞歴・インターンの1件）の上の線に立って歩く。
-   箱の上をキャラクターの背の高さぶんあけ、前の箱と重ならないようにする。 */
+   箱の位置は変えない。見出し（「受賞歴」など）の文字とは重ならないよう、歩く範囲は profile-walk.js が見出しの右側にしぼる。 */
 .perch-walkway {
     --profile-pixel-size: 4px;
     --character-size: 96px;
@@ -327,9 +327,8 @@ main a.profile-guest-link {
     pointer-events: none;
 }
 .perch-walkway .profile-character { bottom: -7px; }
-.has-perch { position: relative; margin-top: calc(var(--character-size, 96px) + 4px); }
+.has-perch { position: relative; }
 @media (max-width: 960px) {
     .perch-walkway { --profile-pixel-size: 3px; --character-size: 72px; }
     .perch-walkway .profile-character { bottom: -5px; }
-    .has-perch { margin-top: 76px; }
 }
