@@ -54,7 +54,7 @@
         content.style.overflow = 'hidden';
         const animation = content.animate(
             [{ height: `${from}px` }, { height: `${to}px` }],
-            { duration: 240, easing: 'cubic-bezier(.2, .8, .2, 1)' }
+            { duration: 400, easing: 'cubic-bezier(.2, .8, .2, 1)' }
         );
         states.set(details, { opening, animation, original });
         animation.onfinish = finish;

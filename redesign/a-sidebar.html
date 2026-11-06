@@ -1257,25 +1257,51 @@
             window.addEventListener('resize', () => requestAnimationFrame(sizeTechDetails));
             document.fonts?.ready.then(sizeTechDetails);
             // 技術スタック：押すと説明を開き、もう一度押すと閉じる。開くのは1つだけ。
-            // 説明が重ならずに下へ伸びる表示（全部スクロール版・スマホ）では、「詳しく見る」と同じ動きで高さを変える。
+            // 説明が重ならずに下へ伸びる表示（全部スクロール版・スマホ）では、「詳しく見る」と同じ速さで説明の窓そのものを伸び縮みさせる。
+            // 窓の線（下の線も）は動いている間もずっと見せ、中身だけを窓の中で切る（外側で切ると、下の線が見えず白い余白に見えるため）。
+            const TECH_BOX = ['height', 'minHeight', 'marginTop', 'paddingTop', 'paddingBottom', 'borderTopWidth', 'borderBottomWidth'];
+            const techBoxNow = el => { const cs = getComputedStyle(el); return Object.fromEntries(TECH_BOX.map(k => [k, k === 'height' ? `${el.getBoundingClientRect().height}px` : cs[k]])); };
+            const techBoxZero = Object.fromEntries(TECH_BOX.map(k => [k, '0px']));
+            // 窓は、細い線のようになる前に見えなくする（開くときは最初に、閉じるときは最後に、うすくする）
+            const TECH_MOTION = { duration: 400, easing: 'cubic-bezier(.2, .8, .2, 1)' };
+            let techMotion = null;
             main.addEventListener('click', event => {
                 const button = event.target.closest('.tech > button');
                 if (!button) return;
                 const open = button.getAttribute('aria-expanded') !== 'true';
                 const list = button.closest('[data-block="skills"]');
-                const wrap = list.querySelector('.tech-details');
-                const inFlow = [...wrap.children].some(d => getComputedStyle(d).position !== 'absolute');
-                wrap.getAnimations().forEach(a => a.cancel());
-                const from = wrap.getBoundingClientRect().height;
+                const details = [...list.querySelectorAll('.tech-detail')];
+                const target = list.querySelector(`#${button.getAttribute('aria-controls')}`);
+                const shown = details.find(d => !d.hidden);
+                // 動いている途中なら、その時点の大きさから続ける
+                const moving = details.find(d => d.getAnimations().length);
+                const from = moving ? techBoxNow(moving) : null;
+                details.forEach(d => d.getAnimations().forEach(a => a.cancel()));
                 list.querySelectorAll('.tech > button').forEach(b => b.setAttribute('aria-expanded', String(b === button && open)));
-                list.querySelectorAll('.tech-detail').forEach(d => { d.hidden = !(open && d.id === button.getAttribute('aria-controls')); });
-                if (!inFlow || reduceMotion) return;
-                const to = wrap.getBoundingClientRect().height;
-                if (from === to) return;
-                wrap.style.overflow = 'hidden';
-                // 途中で速さを落とさず、出始めたらそのまま一気に開く
-                wrap.animate([{ height: `${from}px` }, { height: `${to}px` }], { duration: 200, easing: 'linear' })
-                    .finished.then(() => { wrap.style.overflow = ''; }, () => {});
+                const showOnly = el => details.forEach(d => { d.hidden = d !== el; });
+                const inFlow = getComputedStyle(target).position !== 'absolute';
+                // 開いている説明を別の技術に切り替えるだけなら、窓の大きさは同じなので動かさない
+                if (open && shown && shown !== target && !moving) { showOnly(target); return; }
+                if (!inFlow || reduceMotion) { showOnly(open ? target : null); return; }
+                const box = open ? target : (moving || shown);
+                if (!box) { showOnly(null); return; }
+                showOnly(box);
+                const fromOpacity = moving ? getComputedStyle(moving).opacity : (open ? '0' : '1');
+                const full = techBoxNow(box);
+                box.style.overflow = 'hidden';
+                const size = box.animate(open ? [from || techBoxZero, full] : [from || full, techBoxZero], TECH_MOTION);
+                // うすさは別の動きにして、大きさの動きとは別の時間の配分にする
+                box.animate(open
+                    ? [{ opacity: fromOpacity }, { opacity: 0.25, offset: 0.2 }, { opacity: 1, offset: 0.5 }, { opacity: 1 }]
+                    : [{ opacity: fromOpacity }, { opacity: 0, offset: 0.35 }, { opacity: 0 }],
+                    { duration: TECH_MOTION.duration, easing: 'linear' });
+                // 速く何度も押したときは、最後に押した動きだけが後片付けをする（前の動きの後片付けが、今の動きの途中で中身を出してしまわないように）
+                techMotion = size;
+                size.finished.then(() => {
+                    if (techMotion !== size) return;
+                    box.style.overflow = '';
+                    if (!open) showOnly(null);
+                }, () => {});
             });
             main.addEventListener('volumechange', event => {
                 const player = event.target.closest?.('[data-player]');
