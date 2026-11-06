@@ -19,7 +19,7 @@
 
 ## ブランチ
 
-- `main` … 公開中のサイト。GitHub Pages が `main` の中身をそのまま https://youkin06.github.io/portfolio/ に出すので、**`main` への push は公開になる**。
+- `main` … 公開中のサイト。`main` に push すると GitHub Actions（`.github/workflows/pages.yml`）が `tools/collect-site.sh` で公開するファイルだけを集め、https://youkin06.github.io/portfolio/ に出すので、**`main` への push は公開になる**。試作のページ（`redesign/` の中の HTML）・白案以外のスキン・テスト・道具・メモ（`.md`）は公開しない。公開される中身は `sh tools/collect-site.sh <フォルダ>` で手元に集めて確かめられる。
 - `develop` … 全体改修の作業場所。push しても公開されない。完成したら `main` に取り込んで公開する。
 - `visual-skins` … デザイン担当の作業場所（worktree `../portfolio-skins`）。`develop` を取り込み、`develop` に戻す。
 
