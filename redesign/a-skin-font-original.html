@@ -1271,14 +1271,17 @@
                 wrap.getAnimations().forEach(a => a.cancel());
                 const from = wrap.getBoundingClientRect().height;
                 list.querySelectorAll('.tech > button').forEach(b => b.setAttribute('aria-expanded', String(b === button && open)));
-                list.querySelectorAll('.tech-detail').forEach(d => { d.hidden = !(open && d.id === button.getAttribute('aria-controls')); });
-                if (!inFlow || reduceMotion) return;
-                const to = wrap.getBoundingClientRect().height;
-                if (from === to) return;
+                const showOnly = id => list.querySelectorAll('.tech-detail').forEach(d => { d.hidden = d.id !== id; });
+                // 閉じるときは、縮み終わるまで説明を見せたままにする（先に消すと、空の枠が縮むだけで動きが見えない）
+                if (open) showOnly(button.getAttribute('aria-controls'));
+                const closeAll = () => showOnly(null);
+                if (!inFlow || reduceMotion) { if (!open) closeAll(); return; }
+                const to = open ? wrap.getBoundingClientRect().height : 0;
+                if (from === to) { if (!open) closeAll(); return; }
                 wrap.style.overflow = 'hidden';
-                // 途中で速さを落とさず、出始めたらそのまま一気に開く
+                // 途中で速さを落とさず、出始めたらそのまま一気に開く（閉じるときも同じ速さで縮む）
                 wrap.animate([{ height: `${from}px` }, { height: `${to}px` }], { duration: 200, easing: 'linear' })
-                    .finished.then(() => { wrap.style.overflow = ''; }, () => {});
+                    .finished.then(() => { wrap.style.overflow = ''; if (!open) closeAll(); }, () => {});
             });
             main.addEventListener('volumechange', event => {
                 const player = event.target.closest?.('[data-player]');
