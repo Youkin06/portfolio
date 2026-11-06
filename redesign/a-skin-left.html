@@ -380,6 +380,12 @@
         @media (min-width: 961px) {
             body[data-view="scroll"] .home-part + .home-part { margin-top: 96px; }
             body[data-view="scroll"] main :is([id^="block-"], .home-part) { scroll-margin-top: 24px; }
+            /* 技術スタックの説明は重ねず、インターンの「詳しく見る」と同じように下へ伸ばす（伸び縮みの動きは押したときの処理で付ける） */
+            body[data-view="scroll"] .tech-detail { position: static; margin-top: 12px; }
+        }
+        /* 全部スクロール版では、受賞歴・インターン・メディア掲載の見出しを、ページの見出し（プロフィール）と同じ大きさにする */
+        body[data-view="scroll"] .home-part[data-section="about"] :is([data-block="awards"], [data-block="internships"], [data-block="media"]) > .window-title {
+            font-size: clamp(28px, 3.2vw, 38px);
         }
         @media (max-width: 960px) {
             .sidebar { inset: 64px 10px 10px 10px; width: auto; z-index: 30; transform: translateY(-120%); transition: transform .25s ease; }
@@ -816,7 +822,7 @@
                 '': (single = false) => block('profile', single ? null : TEXT.profile, (PROFILE_VERSIONS[PROFILE_STYLE] || PROFILE_VERSIONS[''])()) +
                     block('skills', TEXT.skills, `<ul class="tech-stack-list">${TECH_STACK.map(tech => `
                         <li class="tech" data-tech="${esc(tech.id)}"><button type="button" title="${esc(tech.name)}" aria-expanded="false" aria-controls="tech-detail-${esc(tech.id)}"><img src="${tech.src || `${DEVICON}${tech.id}.svg`}" alt="${esc(tech.name)}" width="44" height="44" loading="eager" decoding="async"></button></li>`).join('')}
-                    </ul>${TECH_STACK.map(techDetailHTML).join('')}`),
+                    </ul><div class="tech-details">${TECH_STACK.map(techDetailHTML).join('')}</div>`),
                 internships: (single = false) => block('internships', single ? null : TEXT.internships, `<ol class="exp-list timeline">${data.internships.map(expHTML).join('')}</ol>`),
                 awards: (single = false) => block('awards', single ? null : TEXT.awards, `<ul class="item-list awards">${data.awards.map(itemHTML).join('')}</ul>`),
                 media: (single = false) => block('media', single ? null : TEXT.media, `<ul class="item-list media">${data.media.map(itemHTML).join('')}</ul>`),
@@ -1161,13 +1167,24 @@
                 syncPlayer(player);
             });
             // 技術スタック：押すと説明を開き、もう一度押すと閉じる。開くのは1つだけ。
+            // 説明が重ならずに下へ伸びる表示（全部スクロール版・スマホ）では、「詳しく見る」と同じ動きで高さを変える。
             main.addEventListener('click', event => {
                 const button = event.target.closest('.tech > button');
                 if (!button) return;
                 const open = button.getAttribute('aria-expanded') !== 'true';
                 const list = button.closest('[data-block="skills"]');
+                const wrap = list.querySelector('.tech-details');
+                const inFlow = [...wrap.children].some(d => getComputedStyle(d).position !== 'absolute');
+                wrap.getAnimations().forEach(a => a.cancel());
+                const from = wrap.getBoundingClientRect().height;
                 list.querySelectorAll('.tech > button').forEach(b => b.setAttribute('aria-expanded', String(b === button && open)));
                 list.querySelectorAll('.tech-detail').forEach(d => { d.hidden = !(open && d.id === button.getAttribute('aria-controls')); });
+                if (!inFlow || reduceMotion) return;
+                const to = wrap.getBoundingClientRect().height;
+                if (from === to) return;
+                wrap.style.overflow = 'hidden';
+                wrap.animate([{ height: `${from}px` }, { height: `${to}px` }], { duration: 240, easing: 'cubic-bezier(.2, .8, .2, 1)' })
+                    .finished.then(() => { wrap.style.overflow = ''; }, () => {});
             });
             main.addEventListener('volumechange', event => {
                 const player = event.target.closest?.('[data-player]');
