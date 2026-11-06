@@ -12,3 +12,7 @@ body {
     --box-shadow: none; --box-shadow-hover: 5px 5px 0 #1f1f22; --box-hover-move: translate(-5px, -5px); --box-press-move: none;
     --btn-shadow: none; --btn-shadow-hover: 3px 3px 0 #1f1f22; --btn-hover-move: translate(-3px, -3px); --btn-press-move: none;
 }
+/* About me（プロフィール・受賞歴・インターン・メディア掲載）では、触れたときに出る影を赤（About の色）にする */
+body[data-section="about"], .home-part[data-section="about"] {
+    --box-shadow-hover: 5px 5px 0 #d23340; --btn-shadow-hover: 3px 3px 0 #d23340;
+}

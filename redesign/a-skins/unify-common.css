@@ -17,7 +17,8 @@
 }
 [data-ui] main .card .thumb { border-bottom: 2px solid var(--u-line); }
 [data-ui] main :is(.vplayer, .research-video) { border: 2px solid var(--u-line); border-radius: var(--u-radius); box-shadow: var(--box-shadow); overflow: hidden; }
-/* 顔写真の後ろの赤い円（white-common.css）は、押せる箱ではないのでそのまま残す */
+/* 顔写真には影を付けない（黒い線の丸だけ） */
+[data-ui] main .portrait { box-shadow: none; }
 [data-ui] main .profile-stats a { border: 2px solid var(--u-line); border-radius: var(--u-radius); box-shadow: var(--box-shadow); }
 [data-ui] main .profile-stats a:hover { box-shadow: var(--box-shadow-hover, var(--box-shadow)); transform: var(--box-hover-move, translate(-1px, -1px)); }
 [data-ui] main .profile-stats a:active { box-shadow: none; transform: var(--box-press-move, translate(4px, 4px)); }
@@ -97,6 +98,3 @@
 /* スクロールバーはどのページ・どの場所でも出さない（スクロール自体はできる） */
 html, body, * { scrollbar-width: none; }
 ::-webkit-scrollbar { display: none; }
-
-/* 技術スタックのアイコンだけ、触れたとき・開いているときの影を赤（About の色）にする */
-[data-ui] main .tech > button:is(:hover, [aria-expanded="true"]) { box-shadow: 3px 3px 0 #d23340; }
