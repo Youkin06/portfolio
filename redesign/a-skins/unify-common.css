@@ -118,8 +118,10 @@ html, body, * { scrollbar-width: none; }
     }
     [data-ui] .topbar #menu-button[aria-expanded="true"] { box-shadow: var(--btn-shadow-hover); transform: var(--btn-hover-move, translate(-1px, -1px)); }
     [data-ui] .topbar #menu-button:active { box-shadow: none; transform: var(--btn-press-move, translate(2px, 2px)); }
-    /* 開いた目次は枠線で囲まない */
-    [data-ui] .sidebar { border: 0; outline: 0; }
+    /* 上の帯の下の線も、ほかの線と同じ 2px の黒 */
+    [data-ui] .topbar { border-bottom: 2px solid var(--u-line); }
+    /* 開いた目次は枠線で囲まず、上の帯の下から画面いっぱいに出す（周りに後ろのページがはみ出して見えない） */
+    [data-ui] .sidebar { inset: 66px 0 0 0; border: 0; outline: 0; border-radius: 0; }
 }
 @media (max-width: 960px) and (hover: hover) and (pointer: fine) {
     [data-ui] .topbar #menu-button:hover { box-shadow: var(--btn-shadow-hover); transform: var(--btn-hover-move, translate(-1px, -1px)); }
