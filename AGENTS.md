@@ -14,6 +14,7 @@
   - 今後のベースは **A-白・色の札案（white-fill、`redesign/a-skin-white-fill.html`）**。A 案（`redesign/a-sidebar.html`）にスキンを重ねたものを使う。見た目違いの「スキン」は `redesign/a-skins/*.css` と `build.sh` で作る。
   - フォント比較は `redesign/font-compare.html`。現行（Zen Maru Gothic）と `font-original`・`font-zen`・`font-ud`・`font-mincho` の4案を同じページで比較できる。各案は store の文言・レイアウトを共用し、`build.sh` で生成する。
 - `Images/research/` … 研究のページで流す動画と静止画。`content.html` の研究の枠に `data-video="Images/research/<名前>.mp4"` を書くと表示される（音を出せる動画は `data-video-audio` も付ける）。人の顔がはっきり映る動画は、顔をドット絵のアイコンで隠してから置く（VR ゴーグルを付けている人は隠さない）。動画はほかと同じ横長（16:9）にそろえる。
+- `Images/sidebar-banner/` … 左上の「Youkin」の見出しの画像（20枚）。ページが出たときに全部そろって見えるよう、`redesign/a-sidebar.html` に直接埋め込んである（1枚ずつ読み込むとバラバラに出てくるため）。画像を作り直したら `python3 tools/inline-banner.py` → `sh redesign/a-skins/build.sh` の順に実行する。スマホの上の帯の「Youkin」も、中身の読み込みを待たずにすぐ出す。
 - `Images/clips/` … 作品一覧で動かす6秒のループ動画と静止画（ファイル名は YouTube の動画 ID）。
 - 作品ページの全編動画は別リポジトリ `Youkin06/portfolio-media`（GitHub Pages）に置き、`https://youkin06.github.io/portfolio-media/videos/<動画ID>.mp4` で読み込む。
 - 動画の読み込み（`redesign/a-sidebar.html` の「動画の先読み」）：
