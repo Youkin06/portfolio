@@ -16,7 +16,7 @@
     };
     // キャラクターが画面の端にいても、頭の上のボタンが画面からはみ出さないよう横にずらす。
     const keepInside = link => {
-        if (!link) return;
+        if (!link?.style || !link.getBoundingClientRect) return;
         link.style.removeProperty('--guest-shift');
         const rect = link.getBoundingClientRect();
         const margin = 8;
