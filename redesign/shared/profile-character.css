@@ -327,6 +327,11 @@ main a.profile-guest-link {
     pointer-events: none;
 }
 .perch-walkway .profile-character { bottom: -7px; }
+/* ロケット（DEPTH DIARY）は箱の上の帯の真ん中を飛ぶ。位置と機首の向きは profile-flight.js が書く。
+   吹き出しは、ほかのキャラクターと同じく上に出す（プロフィールの空では画面の上端に近いので下に出している）。 */
+.perch-walkway .profile-depth-player { top: 50%; }
+main .perch-walkway .profile-depth-player a.profile-guest-link { top: auto; bottom: calc(100% + 6px); }
+.perch-walkway .profile-depth-player .profile-guest-link::after { top: 100%; bottom: auto; }
 .has-perch { position: relative; }
 @media (max-width: 960px) {
     .perch-walkway { --profile-pixel-size: 3px; --character-size: 72px; }
