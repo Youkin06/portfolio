@@ -327,12 +327,12 @@ main a.profile-guest-link {
     pointer-events: none;
 }
 .perch-walkway .profile-character { bottom: -7px; }
-/* ロケット（DEPTH DIARY）も、ほかのキャラクターと同じく箱の線の上にいる。横向きにすると絵の下に透明な4ドットがあるので、その分だけ下げる。
+/* ロケット（DEPTH DIARY）は、箱の線の少し上（2ドット分）に浮かせる。横向きにすると絵の下に透明な4ドットがあるので、差し引き2ドット分だけ下げる。
    横の位置と機首の向きは profile-flight.js が書く。
    吹き出しは、ほかのキャラクターと同じく上に出す（プロフィールの空では画面の上端に近いので下に出している）。 */
 .perch-walkway .profile-depth-player {
     top: auto;
-    bottom: calc(-4 * var(--profile-pixel-size));
+    bottom: calc(-2 * var(--profile-pixel-size));
     transform: translateX(-50%);
 }
 main .perch-walkway .profile-depth-player a.profile-guest-link { top: auto; bottom: calc(100% + 6px); }
