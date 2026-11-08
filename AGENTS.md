@@ -16,6 +16,7 @@
   - フォント比較は `redesign/font-compare.html`。現行（Zen Maru Gothic）と `font-original`・`font-zen`・`font-ud`・`font-mincho` の4案を同じページで比較できる。各案は store の文言・レイアウトを共用し、`build.sh` で生成する。
 - `Images/research/` … 研究のページで流す動画と静止画。`content.html` の研究の枠に `data-video="Images/research/<名前>.mp4"` を書くと表示される（音を出せる動画は `data-video-audio` も付ける）。人の顔がはっきり映る動画は、顔をドット絵のアイコンで隠してから置く（VR ゴーグルを付けている人は隠さない）。動画はほかと同じ横長（16:9）にそろえる。
 - `Images/sidebar-banner/` … 左上の「Youkin」の見出しの画像（20枚）。ページが出たときに全部そろって見えるよう、`redesign/a-sidebar.html` に直接埋め込んである（1枚ずつ読み込むとバラバラに出てくるため）。画像を作り直したら `python3 tools/inline-banner.py` → `sh redesign/a-skins/build.sh` の順に実行する。スマホの上の帯の「Youkin」も、中身の読み込みを待たずにすぐ出す。
+- `Images/icons/`（devicon・simpleicons）… 技術スタックのアイコン。プロフィールと一緒に全部そろって出るよう、`redesign/a-sidebar.html` の `TECH_ICONS` に直接埋め込んである（1つずつ読み込むと作品一覧の画像やフォントと取り合いになり、遅い回線では 3.7〜5.5 秒にバラバラに出ていた。埋め込んで 3.1 秒で全部そろう）。アイコンを差し替えたり技術を足したりしたら、`tools/inline-tech-icons.py` の `ICONS` を直し、`python3 tools/inline-tech-icons.py` → `sh redesign/a-skins/build.sh` の順に実行する（忘れると `tests/tech-icons.test.cjs` が落ちる）。
 - 顔写真（`Images/YoheiYaoi-600.jpg`）は、`content.html` が届くのを待たずに読み込み始めるよう、`redesign/a-sidebar.html` の `<head>` で先読み（`<link rel="preload">`）している。`content.html` の顔写真を差し替えたら、そこも同じ画像にする（`tests/photo-preload.test.cjs` が食い違いを見つける）。
 - `Images/clips/` … 作品一覧で動かす6秒のループ動画と静止画（ファイル名は YouTube の動画 ID）。
 - `Images/profile-character/` の歩くキャラクター（idle1・idle2・walk1・walk2）は、PNG と1画素も変わらない WebP（ロスレス）にしている（106KB → 65KB）。描き直したときも WebP（ロスレス）で置く。
