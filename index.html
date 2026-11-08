@@ -11,6 +11,9 @@
         window.PORTFOLIO_SOURCE = 'content.html';
         window.portfolioSource = fetch(window.PORTFOLIO_SOURCE, { cache: 'no-cache' }).then(response => response.text());
     </script>
+    <!-- 顔写真も、中身（content.html）が届くのを待たずに読み込み始める。プロフィールを出すときには届いていて、一度に出る。
+         content.html の顔写真（.flip-card-front img）を差し替えたら、ここも同じ画像にする（tests/photo-preload.test.cjs で確かめる）。 -->
+    <link rel="preload" as="image" href="Images/YoheiYaoi-600.jpg" fetchpriority="high">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="redesign/shared/base.css">
