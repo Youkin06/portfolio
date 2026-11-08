@@ -10,6 +10,7 @@
 - `script.js` ほか `*.js` … アコーディオン、モーダル、背景描画、動画の遅延読み込みなど
 - `Images/` … 画像素材
 - `tests/` … Node標準のテスト（`node --test tests/*.cjs`）
+- `fonts/` … 公開用のトップページで使う Zen Maru Gothic（400・700・900）。Google Fonts から読み込むと 84 件・約 1MB になるため、サイトで使う文字（約900字）だけを切り出して置いている（3件・約 440KB）。`tools/subset-fonts.py` が作る（`python3 -m pip install fonttools brotli` が要る）。**`content.html` などに新しい漢字を書いたら `python3 tools/subset-fonts.py` をもう一度実行する**（忘れると `tests/font-subset.test.cjs` が落ちる。実行しないと、その字だけ別のフォントで表示される）。元のフォントは `fonts/.source/` に落とし、コミットしない。
 - `redesign/` … 全体改修の試作4案（A〜D）。`redesign/shared/content.js` が `content.html` から内容を読み取って表示するため、内容の修正は `content.html` だけでよい。
   - 今後のベースは **A-白・色の札案（white-fill、`redesign/a-skin-white-fill.html`）**。A 案（`redesign/a-sidebar.html`）にスキンを重ねたものを使う。見た目違いの「スキン」は `redesign/a-skins/*.css` と `build.sh` で作る。
   - フォント比較は `redesign/font-compare.html`。現行（Zen Maru Gothic）と `font-original`・`font-zen`・`font-ud`・`font-mincho` の4案を同じページで比較できる。各案は store の文言・レイアウトを共用し、`build.sh` で生成する。
@@ -17,6 +18,7 @@
 - `Images/sidebar-banner/` … 左上の「Youkin」の見出しの画像（20枚）。ページが出たときに全部そろって見えるよう、`redesign/a-sidebar.html` に直接埋め込んである（1枚ずつ読み込むとバラバラに出てくるため）。画像を作り直したら `python3 tools/inline-banner.py` → `sh redesign/a-skins/build.sh` の順に実行する。スマホの上の帯の「Youkin」も、中身の読み込みを待たずにすぐ出す。
 - 顔写真（`Images/YoheiYaoi-600.jpg`）は、`content.html` が届くのを待たずに読み込み始めるよう、`redesign/a-sidebar.html` の `<head>` で先読み（`<link rel="preload">`）している。`content.html` の顔写真を差し替えたら、そこも同じ画像にする（`tests/photo-preload.test.cjs` が食い違いを見つける）。
 - `Images/clips/` … 作品一覧で動かす6秒のループ動画と静止画（ファイル名は YouTube の動画 ID）。
+- `Images/profile-character/` の歩くキャラクター（idle1・idle2・walk1・walk2）は、PNG と1画素も変わらない WebP（ロスレス）にしている（106KB → 65KB）。描き直したときも WebP（ロスレス）で置く。
 - 作品ページの全編動画は別リポジトリ `Youkin06/portfolio-media`（GitHub Pages）に置き、`https://youkin06.github.io/portfolio-media/videos/<動画ID>.mp4` で読み込む。
 - 動画の読み込み（`redesign/a-sidebar.html` の「動画の先読み」）：
   - ページを開いて一段落したら、作品一覧の6秒ループと静止画（全部で約1.3MB）を先読みする。
@@ -53,6 +55,9 @@
   - store のセクション色は main の配色を参考に、About me＝赤・Works＝水色・Research＝黄緑。白地の文字には濃い同系色、選択背景には淡い同系色を使う。
   - `window.SKIN` で変えられるもの（形 `layout`・画面の言葉 `text`・アイコン色・メールの出し方）と、CSS から使える目印は、`redesign/a-sidebar.html` の先頭のコメントにまとめてある。
   - `build.sh` は行頭の `</head>` を目印に差し込むので、`a-sidebar.html` の閉じタグ `</head>` は1行に単独で書く。
+  - `build.sh` の3つめの引数を `local` にすると、Google Fonts の代わりに `fonts/zen-maru-gothic.css` を読み込み、Google Fonts への preconnect も消す（今は white-fill＝公開用のトップページだけ）。
+  - スキンの CSS が `@import` でたどる CSS（white-fill なら white-common → store → left、unify-common）は、`build.sh` が `<link rel="preload" as="style">` を並べて同時に取りに行かせる。`@import` だけだと前の CSS が届くまで次を取りに行けず、遅い回線で最初の表示が 1 秒ほど遅れていた。効き方（並び順）は `@import` のまま。
+  - フォントの preload（`as="font"`）は試したが、最初の表示がかえって遅くなったので入れていない（2026-11-08）。
   - 使わなくなったスキンは `redesign/a-skins/archive/` に置く。
 
 ## 改修の分担（複数の Claude セッションで作業するとき）
@@ -91,3 +96,4 @@
 - **Sausage Smash の全編動画が重い。** 毎秒約2MB・全体で18.6MB あり（ほかの作品の4〜10倍）、遅い回線（1.6Mbps）では再生が始まらない。画質を少し下げて半分くらいにする案。「じいや！巨大ロボで紅茶を注ぎなさい！」（21MB）も大きめ。動画は別リポジトリ `Youkin06/portfolio-media` にあり、直すとそちらへの push が要る。ユーザーの指示で一旦保留（2026-11-06）。
 - **スマホのプロフィールの数字タイルの並べ方。** 今は2つずつで、最後の「研究」が1つだけ残る。案 A（3つずつ）・B（最後だけ横いっぱい）・C（上に2つ、下に3つ。おすすめ）を見せて、返事待ち（2026-11-06）。標準をすっきり版（数字タイルなし）にしたので、「数字で見る」版を使うときだけの話になった。
 - **GitHub のアイコンだけ外のサイト（flaticon）から読み込んでいる。** `content.html` の SNS のリンク。サイトの中に置けば外のサイトの調子に左右されない。未対応。
+- **作品一覧の6秒ループのうち `Images/clips/YkrrAr-tfY4.mp4`（Sausage Smash）だけ 622KB と重い**（ほかは 40〜220KB。12本の合計 1.35MB の半分）。床の模様が細かく、カメラも動くため。すでに crf 30 で、330kbps にすると 247KB になるが床の模様がぼやける。画質を下げてよいか、ユーザーの返事待ち（2026-11-08）。

@@ -14,6 +14,6 @@ rsync -a \
     --include 'redesign/a-skins/left.css' --include 'redesign/a-skins/store.css' --include 'redesign/a-skins/white-common.css' \
     --include 'redesign/a-skins/unify-common.css' --include 'redesign/a-skins/white-fill.css' --include 'redesign/a-skins/white-fill.js' \
     --exclude 'redesign/a-skins/*' \
-    --exclude 'tests' --exclude 'tools' --exclude '*.md' --exclude '.DS_Store' \
+    --exclude 'tests' --exclude 'tools' --exclude 'fonts/.source' --exclude 'fonts/subset-chars.txt' --exclude '*.md' --exclude '.DS_Store' \
     ./ "$out"/
 echo "公開するファイルを $out に集めました（$(find "$out" -type f | wc -l | tr -d ' ') 件）"

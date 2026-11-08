@@ -1,0 +1,23 @@
+/* tools/subset-fonts.py が作るファイル。直接は編集しない。
+   Zen Maru Gothic（SIL Open Font License 1.1）から、サイトで使う文字だけを切り出したもの。 */
+@font-face {
+    font-family: "Zen Maru Gothic";
+    src: url("zen-maru-gothic-400.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Zen Maru Gothic";
+    src: url("zen-maru-gothic-700.woff2") format("woff2");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Zen Maru Gothic";
+    src: url("zen-maru-gothic-900.woff2") format("woff2");
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
