@@ -126,3 +126,21 @@ html, body, * { scrollbar-width: none; }
 @media (max-width: 960px) and (hover: hover) and (pointer: fine) {
     [data-ui] .topbar #menu-button:hover { box-shadow: var(--btn-shadow-hover); transform: var(--btn-hover-move, translate(-1px, -1px)); }
 }
+
+/* キャラクター（ぼくのにっき・カモ・ロケット）の頭の上に出る作品へのボタンも、受賞歴の「作品：〜」と同じ形にする。
+   位置合わせの translateX（画面の端ではみ出さないようずらす分 --guest-shift も含む）はそのままに、触れたら浮き上がり、押したら沈む。 */
+[data-ui] main a.profile-guest-link {
+    display: inline-flex; align-items: center; padding: 5px 12px;
+    border: 2px solid var(--u-line); border-radius: var(--u-radius);
+    background: #ffffff; color: var(--fg); font-size: 13px; font-weight: 700; line-height: 1.5;
+    white-space: nowrap; box-shadow: var(--btn-shadow);
+    transition: transform .08s ease, box-shadow .08s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+    [data-ui] main a.profile-guest-link:hover {
+        color: var(--fg); transform: translateX(calc(-50% + var(--guest-shift, 0px))) var(--btn-hover-move, translate(-1px, -1px)); box-shadow: var(--btn-shadow-hover);
+    }
+    /* 浮き上がっても、元の位置に触れている間は触れたままにする（ほかのボタンと同じ） */
+    [data-ui] main a.profile-guest-link:hover::before { content: ""; position: absolute; inset: -2px -5px -5px -2px; }
+}
+[data-ui] main a.profile-guest-link:active { transform: translateX(calc(-50% + var(--guest-shift, 0px))); box-shadow: none; }
