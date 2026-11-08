@@ -97,6 +97,22 @@ sed -E \
     -e "s#'\.\./Images/#'Images/#g" \
     -e 's#(src|href)="(shared|a-skins)/#\1="redesign/\2/#g' \
     a-skin-white-fill.html > ../index.html
+# 公開用のトップページでは、本文を組み立てる JS（shared/*.js）を HTML の中に直接書き込む。
+# 別のファイルのままだと、遅い回線では JS が届くまで本文の場所が空のまま表示される（最初の表示から約1秒）。
+# 書き込むと、最初の表示で本文までそろって出る。元のファイル（redesign/shared/）を直して、このスクリプトをもう一度実行する。
+awk '
+    /^    <script src="redesign\/shared\/[a-z0-9-]+\.js"><\/script>\r?$/ {
+        file = $0
+        sub(/^    <script src="/, "", file)
+        sub(/"><\/script>\r?$/, "", file)
+        print "    <script>"
+        while ((getline line < ("../" file)) > 0) print line
+        close("../" file)
+        print "    </script>"
+        next
+    }
+    { print }
+' ../index.html > ../index.html.tmp && mv ../index.html.tmp ../index.html
 build white-soft '白・やわらかい影案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
 build white-sky '白・淡い空案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
 build white-tint '白・色の札（黒文字）案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'

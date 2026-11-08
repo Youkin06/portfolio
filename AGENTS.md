@@ -21,6 +21,7 @@
 - `Images/clips/` … 作品一覧で動かす6秒のループ動画と静止画（ファイル名は YouTube の動画 ID）。
 - `Images/profile-character/` の歩くキャラクター（idle1・idle2・walk1・walk2）は、PNG と1画素も変わらない WebP（ロスレス）にしている（106KB → 65KB）。描き直したときも WebP（ロスレス）で置く。
 - 作品ページの全編動画は別リポジトリ `Youkin06/portfolio-media`（GitHub Pages）に置き、`https://youkin06.github.io/portfolio-media/videos/<動画ID>.mp4` で読み込む。
+- 公開用のトップページ（`index.html`）では、本文を組み立てる JS（`redesign/shared/*.js`）を `build.sh` が HTML の中に直接書き込む。別のファイルのままだと、遅い回線では JS が届くまで本文の場所が空のまま（以前は「読み込み中…」と出ていた）だったため。書き込んでからは、最初の表示で本文・写真・技術スタックまでそろって出る（遅い回線で 3.1秒 → 2.2秒）。JS を直すときは `redesign/shared/` を直して `build.sh` を実行する。`redesign/a-sidebar.html` の `<main id="main">` には「読み込み中…」などの文字を置かない（一瞬でも見えると目立つため。2026-11-08 にユーザーが「やばい」と指摘）。
 - 動画の読み込み（`redesign/a-sidebar.html` の「動画の先読み」）：
   - ページを開いて一段落したら、作品一覧の6秒ループと静止画（全部で約1.3MB）を先読みする。
   - 作品・研究へのリンクに触れたら（マウスを乗せる・指が触れる・キーで選ぶ）、その全編動画の最初の 1.5MB だけ先読みする。
