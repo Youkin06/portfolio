@@ -138,7 +138,7 @@ html, body, * { scrollbar-width: none; }
 }
 @media (hover: hover) and (pointer: fine) {
     [data-ui] main a.profile-guest-link:hover {
-        color: var(--fg); transform: translateX(calc(-50% + var(--guest-shift, 0px))) var(--btn-hover-move, translate(-1px, -1px)); box-shadow: var(--btn-shadow-hover);
+        color: var(--fg); background: var(--btn-hover-bg, #ffffff); text-decoration: none; transform: translateX(calc(-50% + var(--guest-shift, 0px))) var(--btn-hover-move, translate(-1px, -1px)); box-shadow: var(--btn-shadow-hover);
     }
     /* 浮き上がっても、元の位置に触れている間は触れたままにする（ほかのボタンと同じ） */
     [data-ui] main a.profile-guest-link:hover::before { content: ""; position: absolute; inset: -2px -5px -5px -2px; }
