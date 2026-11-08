@@ -930,7 +930,7 @@
             const cardTitle = title => esc(title).replace(/^(.+?！)(?=.)/, '$1<br>');
             const clipHTML = p => p.videoId ? `
                 <video muted loop playsinline preload="none" data-src="${CLIP_BASE}${esc(p.videoId)}.mp4"
-                    poster="${CLIP_BASE}${esc(p.videoId)}.jpg" aria-hidden="true"
+                    data-poster="${CLIP_BASE}${esc(p.videoId)}.jpg" aria-hidden="true"
                     onerror="this.outerHTML='<img src=&quot;${thumbUrl(p.videoId, 'mqdefault')}&quot; alt=&quot;&quot;>'"></video>` : '';
             const cardHTML = p => {
                 const i = projects.indexOf(p);
@@ -1053,9 +1053,12 @@
             // 見えている動く見本だけ再生し、画面外に出たら止める。
             const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
             // 読み込みは画面に入る少し前（800px 手前）から始め、見えたときにはすぐ動けるようにしておく。
+            // 静止画（poster）も同じときに付ける。最初から付けると、開いたときにフォントや写真と回線を取り合うため。
+            const showPoster = video => { if (video.dataset.poster && !video.poster) video.poster = video.dataset.poster; };
             const clipLoader = new IntersectionObserver(entries => entries.forEach(entry => {
                 const video = entry.target;
                 if (!entry.isIntersecting || video.src) return;
+                showPoster(video);
                 video.preload = 'auto';
                 video.src = video.dataset.src;
             }), { rootMargin: '800px 0px' });
@@ -1063,6 +1066,7 @@
             const clipPlayer = new IntersectionObserver(entries => entries.forEach(entry => {
                 const video = entry.target;
                 if (entry.isIntersecting) {
+                    showPoster(video);
                     if (!video.src) video.src = video.dataset.src;
                     if (!reduceMotion) video.play().catch(() => {});
                 } else {
@@ -1085,7 +1089,7 @@
             const startFullVideosLater = () => main.querySelectorAll('[data-player]').forEach(player => setTimeout(() => startFullVideo(player), 2500));
 
             // ---- 動画の先読み ----
-            // データ節約の設定や遅い回線では、先読みしない。
+            // 動画の先読みは、データ節約の設定や遅い回線ではしない（canPrefetch）。
             const connection = navigator.connection || {};
             const canPrefetch = !connection.saveData && !/(^|-)2g$|^3g$/.test(connection.effectiveType || '');
             const prefetch = href => {
@@ -1094,13 +1098,13 @@
                 link.href = href;
                 document.head.append(link);
             };
-            // 1. ページを開いて一段落したら、作品一覧の6秒ループ（全部で約1.3MB）と静止画をまとめて先読みする。
+            // 1. ページを開いて一段落したら、作品一覧の静止画（全部で約250KB）だけ先読みする。目次から作品一覧へ飛んでも、空の枠を見せないため。
+            //    6秒ループ（全部で約1.3MB）は先読みせず、画面の 800px 手前に来たら読み込む（上の clipLoader）。開いたときの通信量を減らすため。
             const prefetchClips = () => projects.forEach(p => {
-                if (!p.videoId) return;
-                prefetch(`${CLIP_BASE}${p.videoId}.jpg`);
-                prefetch(`${CLIP_BASE}${p.videoId}.mp4`);
+                if (p.videoId) prefetch(`${CLIP_BASE}${p.videoId}.jpg`);
             });
-            if (canPrefetch) {
+            // 静止画は軽いので、遅い回線でも先読みする（データ節約の設定のときだけしない）。
+            if (!connection.saveData) {
                 const later = window.requestIdleCallback || (fn => setTimeout(fn, 1500));
                 const start = () => later(prefetchClips, { timeout: 4000 });
                 document.readyState === 'complete' ? start() : window.addEventListener('load', start, { once: true });
