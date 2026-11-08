@@ -2,7 +2,9 @@
 // 遠めの目的地を選び、曲がるときは減速しながらゆるやかに旋回し、まっすぐ進めるときは加速する。
 // 着いたら、ときどきその場でふわっと浮いて休んでから次へ向かう。機首はいつも進む方向へ向ける（元画像は機首が上向き）。
 // 受賞歴などほかのページへ移ると、右上の画面の外へ飛び去る。プロフィールに戻ると、外から飛んで戻ってくる。
-// 触れて止まっている間（data-paused）と、動きを減らす設定のときは動かさない。
+// 全部スクロール版では、メディア掲載の箱の上（data-perch の中）を左右に行ったり来たりする。どのページを読んでいても出ていかない。
+// ほかの歩くキャラクターと同じく箱の線の上にいて、等速で進み、端に着いたらその場で向きを反転する。見出し（「メディア掲載」）の文字には当たらないよう、その右側だけを飛ぶ。
+// 触れて止まっている間（data-paused）と、動きを減らす設定のときは動かさない（動きを減らす設定では、右端で左を向いて止まる）。
 (function () {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
     const MAX_SPEED = 130;   // px/秒
@@ -11,6 +13,42 @@
     let target = null, targetAge = 0, rest = 0, clock = 0, last = 0, leaving = false;
 
     const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
+
+    // ---- 箱の上で、左右に行ったり来たり ----
+    const PERCH_SPEED = 90;  // px/秒（ずっと同じ速さ）
+    const perch = { x: null, dir: 1 };
+    // 飛ぶ場所と高さが重なる見出しの、文字の右端（飛ぶ場所の左端から測る）。重ならなければ 0。profile-walk.js と同じ。
+    const titleRight = way => {
+        const title = way.closest('.block')?.querySelector('.window-title');
+        if (!title) return 0;
+        const w = way.getBoundingClientRect();
+        const range = document.createRange();
+        range.selectNodeContents(title);
+        const t = range.getBoundingClientRect();
+        return t.bottom > w.top && t.top < w.bottom ? t.right - w.left + 24 : 0;
+    };
+    const flyPerched = (player, dt) => {
+        const way = player.parentElement;
+        const half = player.offsetWidth / 2;
+        const lo = titleRight(way) + half, hi = way.clientWidth - half;
+        // 元画像は機首が上向き。右へは 90° 回し、左へはそれを左右反転する（歩くキャラクターと同じく、上下はそのまま）。
+        const show = () => {
+            player.style.left = `${perch.x}px`;
+            player.querySelector('.profile-depth-player-facing').style.transform = `scaleX(${perch.dir}) rotate(90deg)`;
+        };
+        if (hi <= lo || reduce.matches) {
+            perch.x = Math.max(lo, hi); perch.dir = -1;
+            return show();
+        }
+        if (perch.x === null) perch.x = lo + (hi - lo) * Math.random();
+        perch.x = clamp(perch.x, lo, hi);
+        if (!player.hasAttribute('data-paused')) {
+            perch.x += perch.dir * PERCH_SPEED * dt;
+            if (perch.x >= hi) { perch.x = hi; perch.dir = -1; }
+            if (perch.x <= lo) { perch.x = lo; perch.dir = 1; }
+        }
+        show();
+    };
     const wrap = a => Math.atan2(Math.sin(a), Math.cos(a));
     // 今いる場所から離れた目的地を選ぶ（近いと小さく回り続けて不自然なため）。
     const pickTarget = (w, h) => {
@@ -26,6 +64,10 @@
         const dt = Math.min((time - last) / 1000, 0.05);
         last = time;
         const player = document.querySelector('.profile-depth-player');
+        if (player && player.closest('[data-perch]')) {
+            flyPerched(player, dt);
+            return requestAnimationFrame(tick);
+        }
         const box = player && player.parentElement;
         const w = box ? box.clientWidth : 0, h = box ? box.clientHeight : 0;
         const home = document.body.dataset.page === 'about/';
