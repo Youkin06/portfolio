@@ -12,6 +12,16 @@
         const paused = state.hover || state.focus || state.held;
         guest.toggleAttribute('data-paused', paused);
         guest.querySelector('.profile-guest-trigger').setAttribute('aria-expanded', String(paused));
+        if (paused) keepInside(guest.querySelector('.profile-guest-link'));
+    };
+    // キャラクターが画面の端にいても、頭の上のボタンが画面からはみ出さないよう横にずらす。
+    const keepInside = link => {
+        if (!link?.style || !link.getBoundingClientRect) return;
+        link.style.removeProperty('--guest-shift');
+        const rect = link.getBoundingClientRect();
+        const margin = 8;
+        const shift = Math.max(margin - rect.left, Math.min(0, window.innerWidth - margin - rect.right));
+        if (shift) link.style.setProperty('--guest-shift', `${Math.round(shift)}px`);
     };
     const track = (event, key, active) => {
         const guest = event.target.closest('[data-profile-guest]');

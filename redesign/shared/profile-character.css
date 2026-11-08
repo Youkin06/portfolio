@@ -293,7 +293,7 @@ main a.profile-guest-link {
     line-height: 1.4;
     text-align: center;
     text-decoration: none;
-    transform: translateX(-50%);
+    transform: translateX(calc(-50% + var(--guest-shift, 0px)));
     visibility: hidden;
     opacity: 0;
     pointer-events: none;
