@@ -10,11 +10,35 @@ cd "$(dirname "$0")/.." || exit 1
 # 本文に Noto Sans JP を使う案（A案のまま・デジタル庁系・Lato＋Noto のフォント比較）
 NOTO_SKINS='left left-digital digital font-original'
 
+# スキンの CSS が @import でたどる CSS をすべて書き出す（読み込む順に）。
+# 外のサイト（Google Fonts など）の CSS は数えない。たどる途中で f が書き換わらないよう、( ) の中で動かす。
+imports() (
+    for f in $(sed -n 's/^@import url("\([^":]*\)");.*/\1/p' "a-skins/$1"); do
+        imports "$f"
+        echo "$f"
+    done
+)
+
 build() {
     name=$1; title=$2; fonts=$3; config_name=${4:-$1}
-    # フォントを足さない案は3つめの引数を '' にする
-    font_link=${fonts:+"    <link href=\"https://fonts.googleapis.com/css2?${fonts}\&display=swap\" rel=\"stylesheet\">\\
+    # フォントを足さない案は3つめの引数を '' にする。
+    # 'local' はサイトの中に置いた Zen Maru Gothic（fonts/。tools/subset-fonts.py が作る）を使い、Google Fonts へはつながない。
+    case $fonts in
+        local)
+            font_link="    <link rel=\"stylesheet\" href=\"../fonts/zen-maru-gothic.css\">\\
+"
+            drop_preconnect='/<link rel="preconnect" href="https:\/\/fonts\./d' ;;
+        *)
+            font_link=${fonts:+"    <link href=\"https://fonts.googleapis.com/css2?${fonts}\&display=swap\" rel=\"stylesheet\">\\
 "}
+            drop_preconnect='' ;;
+    esac
+    # @import の先は、元の CSS が届くまで取りに行けず順番待ちになるので、先に並べて取りに行かせる（効き方は @import のまま）。
+    preload=''
+    for f in $(imports "${name}.css" | awk '!seen[$0]++'); do
+        preload="${preload}    <link rel=\"preload\" href=\"a-skins/${f}\" as=\"style\">\\
+"
+    done
     config=''
     [ -f "a-skins/${config_name}.js" ] && config="    <script src=\"a-skins/${config_name}.js\"></script>\\
 "
@@ -22,7 +46,8 @@ build() {
     case " $NOTO_SKINS " in *" $name "*) drop_noto='' ;; *) drop_noto='/family=Noto+Sans+JP/d' ;; esac
     sed -e "s#<title>A サイドバー案#<title>A-${title}#" \
         -e "${drop_noto:-s/^\$//}" \
-        -e "s#^</head>#${font_link}    <link rel=\"stylesheet\" href=\"a-skins/${name}.css\">\\
+        -e "${drop_preconnect:-s/^\$//}" \
+        -e "s#^</head>#${font_link}${preload}    <link rel=\"stylesheet\" href=\"a-skins/${name}.css\">\\
 ${config}</head>#" \
         a-sidebar.html > "a-skin-${name}.html"
 }
@@ -59,7 +84,7 @@ build mist '薄曇り案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
 # 白案の色違い（About は赤、Works は青、Research は緑）
 build white-gray '白・灰色サイドバー案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
 build white-line '白・線で区切る案' 'family=Zen+Maru+Gothic:wght@400;500;700;900'
-build white-fill '白・色の札案' 'family=Zen+Maru+Gothic:wght@400;700;900'
+build white-fill '白・色の札案' local
 
 # 公開用のトップページ（リポジトリ直下の index.html）。white-fill を、置き場所に合わせて書き換えて書き出す。
 # 直接は編集しない（a-sidebar.html・スキンを直して、このスクリプトをもう一度実行する）。
