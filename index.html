@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head><!-- redesign/a-skins/build.sh が redesign/a-sidebar.html と white-fill から作るファイル。直接は編集しない。 -->
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>矢追陽平（ヨウキン）のポートフォリオ</title>
@@ -26,7 +26,7 @@
             iconColor: SNS アイコンの色（16進数6桁、# なし）
             mail     : 'button'（既定。メールを開くボタン）か 'text'（選んでコピーできる文字）
         ・CSS から使える目印
-            body[data-layout][data-section="about|works|research"][data-page="works/zelly-swipe" など]
+            body[data-layout][data-section="about|works|research"][data-page="works/jelly-swipe" など]
             .menu-group[data-section][data-active]、.menu-label（大項目へのリンク）、.menu-list a.active
             色分け用の [data-index]（0 始まり）と [data-tone]（0〜3）。既定の色は下の CSS で決めている
             スキル li[data-level="1〜5"]（.skill-name / .gauge / .skill-word）
@@ -661,7 +661,7 @@
     const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
     /** トップに大きく出す作品。採用担当が最初に見る3〜4本に絞る。 */
-    const FEATURED = ['sausage-smash', 'zelly-swipe', 'pintch-witch', 'boku-no-nikki'];
+    const FEATURED = ['sausage-smash', 'jelly-swipe', 'pintch-witch', 'boku-no-nikki'];
 
     /** タグから絞り込み用のカテゴリを作る。 */
     const CATEGORY_RULES = [
@@ -1226,7 +1226,7 @@
         const MAIL_AS_TEXT = SKIN.mail === 'text';
 
         // 開発期間に年が書かれていない作品の制作年（GitHub・コミット日・大会名から確認）
-        const YEAR_FALLBACK = { 'sausage-smash': 2026, 'jiya-robot-tea': 2026, 'project-siro': 2026, 'zelly-swipe': 2026, 'frying-pan': 2026 };
+        const YEAR_FALLBACK = { 'sausage-smash': 2026, 'jiya-robot-tea': 2026, 'project-siro': 2026, 'jelly-swipe': 2026, 'frying-pan': 2026 };
         const yearOf = p => (/(\d{4})年/.exec(p.period) || [])[1] || YEAR_FALLBACK[p.id] || '';
         const no = i => String(i + 1).padStart(2, '0');
         // 色分けの目印（色そのものは CSS で決める）
@@ -1281,7 +1281,7 @@
             { id: 'blender', name: 'Blender', since: '高校の3年間', word: /Blender/,
                 points: ['建物・乗り物・キャラクターのモデリング', 'ボーンとウェイトの設定', 'Life is Tech! で基本操作を教えています'] },
             { id: 'figma', name: 'Figma', since: '約2年', word: /Figma/,
-                points: ['UI のデザイン', 'ZELLY SWIPE の素材をすべて制作', 'MCP と組み合わせたデザイン'] },
+                points: ['UI のデザイン', 'JELLY SWIPE の素材をすべて制作', 'MCP と組み合わせたデザイン'] },
             { id: 'notion', name: 'Notion', word: /Notion/,
                 points: ['よく使っています'] },
             // devicon にないものは Simple Icons から（Images/icons/simpleicons/）
