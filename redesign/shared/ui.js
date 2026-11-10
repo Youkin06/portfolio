@@ -4,7 +4,7 @@
     const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
     /** トップに大きく出す作品。採用担当が最初に見る3〜4本に絞る。 */
-    const FEATURED = ['sausage-smash', 'zelly-swipe', 'pintch-witch', 'boku-no-nikki'];
+    const FEATURED = ['sausage-smash', 'jelly-swipe', 'pintch-witch', 'boku-no-nikki'];
 
     /** タグから絞り込み用のカテゴリを作る。 */
     const CATEGORY_RULES = [
