@@ -6,7 +6,7 @@ const vm = require('node:vm');
 
 function setup() {
     const handlers = {};
-    let outsideClick;
+    const docHandlers = {};
     const main = {
         addEventListener(type, handler) { handlers[type] = handler; },
         querySelectorAll() { return guest.paused ? [guest] : []; },
@@ -29,10 +29,10 @@ function setup() {
     };
     const document = {
         getElementById() { return main; },
-        addEventListener(_, handler) { outsideClick = handler; },
+        addEventListener(type, handler) { docHandlers[type] = handler; },
     };
     vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../redesign/shared/profile-guests.js'), 'utf8'), { document, WeakMap });
-    return { guest, trigger, link, fire(type, extra = {}) { handlers[type]({ target: trigger, relatedTarget: null, ...extra }); }, outside() { outsideClick({ target: {} }); } };
+    return { guest, trigger, link, fire(type, extra = {}) { handlers[type]({ target: trigger, relatedTarget: null, ...extra }); }, outside() { docHandlers.click({ target: {} }); }, moveTo(target) { docHandlers.pointermove({ target, pointerType: 'mouse' }); } };
 }
 
 test('hover stops a guest and moving onto its project link keeps it stopped', () => {
@@ -43,6 +43,17 @@ test('hover stops a guest and moving onto its project link keeps it stopped', ()
     p.fire('pointerout', { relatedTarget: p.link });
     assert.equal(p.guest.paused, true);
     p.fire('pointerout', { target: p.link });
+    assert.equal(p.guest.paused, false);
+    assert.equal(p.trigger.expanded, 'false');
+});
+
+test('a missed pointerout is caught when the pointer moves outside the guest', () => {
+    // ボタンの左上の角から抜けると、ブラウザが pointerout を出さないことがある
+    const p = setup();
+    p.fire('pointerover', { pointerType: 'mouse' });
+    p.moveTo(p.link);
+    assert.equal(p.guest.paused, true);
+    p.moveTo({});
     assert.equal(p.guest.paused, false);
     assert.equal(p.trigger.expanded, 'false');
 });

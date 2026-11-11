@@ -599,9 +599,9 @@
                 points: ['SDL で描画するテトリスを制作', 'DirectX 11 と HLSL で描画・シェーダー', 'Arduino の制御'] },
             { id: 'python', name: 'Python', since: '約半年', word: /Python/,
                 points: ['Pyxel でゲームを制作', '大学の授業で使用'] },
-            { id: 'git', name: 'Git', since: '約1年', word: /Git(?!Hub)/,
+            { id: 'git', name: 'Git', since: '約1年', word: /Git/,
                 points: ['ブランチ運用・worktree', '共同開発の経験あり'] },
-            { id: 'github', name: 'GitHub', since: '約1年', word: /GitHub/,
+            { id: 'github', name: 'GitHub', since: '約1年', word: /Git/,
                 points: ['GitHub Actions で CI/CD', '共同開発の経験あり'] },
             { id: 'blender', name: 'Blender', since: '高校の3年間', word: /Blender/,
                 points: ['建物・乗り物・キャラクターのモデリング', 'ボーンとウェイトの設定', 'Life is Tech! で基本操作を教えています'] },
@@ -615,6 +615,7 @@
             { id: 'codex', name: 'Codex', since: '2026年から', word: /Codex/, src: '../Images/icons/simpleicons/openai.svg',
                 points: ['CLI で開発'] },
         ];
+        // Git と GitHub は一緒に使うものなので、どちらも「Git」を含む作品をすべて並べ、同じ一覧にする。
         // 使った作品は、プロフィールに収まるよう4つまで出し、残りは数だけ出す
         const TECH_WORKS_MAX = 4;
         const MEDIA_BASE = 'https://youkin06.github.io/portfolio-media/videos/';
