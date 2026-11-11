@@ -3,6 +3,8 @@
     const main = document.getElementById('main');
     if (!main) return;
     const states = new WeakMap();
+    // カーソルが乗っているキャラクター（下の pointermove で、外へ出たのを見張る）
+    const hovered = new Set();
     const stateOf = guest => {
         if (!states.has(guest)) states.set(guest, { hover: false, focus: false, held: false });
         return states.get(guest);
@@ -28,8 +30,21 @@
         if (!guest || guest.contains(event.relatedTarget)) return;
         if (key === 'hover' && event.pointerType === 'touch') return;
         stateOf(guest)[key] = active;
+        if (key === 'hover') active ? hovered.add(guest) : hovered.delete(guest);
         sync(guest);
     };
+    // 頭の上のボタンは触れると左上へ浮き上がるので、左上の角から抜けると、ボタンが元の位置へ戻る拍子に
+    // ブラウザが「ボタンから出た」（pointerout）を出さないことがある。そのままだと吹き出しが出たままになるため、
+    // カーソルが動いたときにキャラクターの外にいれば、触れていないことにする。
+    document.addEventListener('pointermove', event => {
+        if (!hovered.size || event.pointerType === 'touch') return;
+        hovered.forEach(guest => {
+            if (guest.contains(event.target)) return;
+            stateOf(guest).hover = false;
+            hovered.delete(guest);
+            sync(guest);
+        });
+    }, { passive: true });
     main.addEventListener('pointerover', event => track(event, 'hover', true));
     main.addEventListener('pointerout', event => track(event, 'hover', false));
     main.addEventListener('focusin', event => track(event, 'focus', true));
