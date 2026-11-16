@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>画面に出ていない文の確認</title>
+<!--
+  content.html の文のうち、トップページ（index.html）のどのページにも出ていないものを一覧にする。
+  AI は JS を動かさずに content.html を直接読むので、ここに出たものは「画面には無いのに AI には読まれる」文。
+  見出しの書き方の違い（「ジャンル:」→「ジャンル」など）は、下の LABELS で除く。
+  使い方：リポジトリ直下で python3 tools/serve.py を起動し、http://127.0.0.1:8000/tools/hidden-text-check.html を開く。
+-->
+<style>
+  body { font: 14px/1.6 system-ui, sans-serif; margin: 16px; }
+  iframe { width: 1280px; height: 800px; border: 1px solid #ccc; }
+  li { margin: 2px 0; }
+  code { color: #888; }
+</style>
+</head>
+<body>
+<p id="status">確認中…（全部のページを順に開くので 20 秒ほどかかる）</p>
+<ul id="out"></ul>
+<iframe id="frame"></iframe>
+<script>
+// 画面では書き方を変えて出している見出しなど（中身ではないもの）
+const LABELS = /^(TOP|PROFILE|PROJECTS|Name|About Me|関連リンク:|▶︎ クリックして詳細を見る|(ジャンル|開発期間|開発体制|担当|使用技術|出展|操作説明|詳しい説明|技術説明|GitHubリポジトリ|リンク):|(大学|所属|目標)：.*|【[^】]+】.*)$/;
+const norm = s => s.replace(/\s+/g, '');
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+const frame = document.getElementById('frame');
+const shownText = () => {
+    const body = frame.contentDocument.body.cloneNode(true);
+    body.querySelectorAll('script, style, noscript, template').forEach(el => el.remove());
+    const attrs = [...body.querySelectorAll('[alt], [title], [aria-label], a[href]')]
+        .map(el => ['alt', 'title', 'aria-label', 'href'].map(name => el.getAttribute(name) || '').join(' '));
+    return norm(body.textContent + attrs.join(' '));
+};
+(async () => {
+    frame.src = '../index.html#about';
+    await new Promise(resolve => { frame.onload = resolve; });
+    await sleep(2500);
+    let shown = shownText();
+    const routes = [...new Set([...frame.contentDocument.querySelectorAll('a[href^="#works/"], a[href^="#research/"]')].map(a => a.getAttribute('href')))];
+    for (const hash of ['#works', '#research', ...routes]) {
+        frame.contentWindow.location.hash = hash;
+        await sleep(700);
+        shown += shownText();
+    }
+    const doc = new DOMParser().parseFromString(await (await fetch('../content.html', { cache: 'no-cache' })).text(), 'text/html');
+    doc.querySelectorAll('script, style, noscript').forEach(el => el.remove());
+    const missing = [];
+    const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
+    for (let node; (node = walker.nextNode());) {
+        const text = node.textContent.replace(/\s+/g, ' ').trim();
+        if (norm(text).length < 2 || LABELS.test(text) || shown.includes(norm(text))) continue;
+        // 以前のページの最初の見出し（目標と名前）は、画面のプロフィールと同じ内容なので数えない
+        if (node.parentElement.closest('#top')) continue;
+        const owner = node.parentElement.closest('[id]');
+        missing.push(`${owner ? '#' + owner.id : '?'}\t${text}`);
+    }
+    document.getElementById('out').innerHTML = missing.map(m => {
+        const [where, text] = m.split('\t');
+        return `<li><code>${where}</code> ${text.replace(/</g, '&lt;')}</li>`;
+    }).join('');
+    const status = document.getElementById('status');
+    status.textContent = missing.length ? `画面に出ていない文：${missing.length} 件` : '画面に出ていない文はありません';
+    status.dataset.done = String(missing.length);
+})();
+</script>
+</body>
+</html>
