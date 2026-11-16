@@ -7,6 +7,7 @@
 - `index.html` … 公開用のトップページ（新しいデザイン＝白・色の札案）。`sh redesign/a-skins/build.sh` が `redesign/a-sidebar.html` と white-fill のスキンから作るので、**直接は編集しない**。
 - `content.html` … サイトの中身（経歴・インターン・作品カード・モーダル）。以前のサイトのページで、新しいデザインはここから内容を読み取って表示する。**内容の修正はここだけでよい**。
   - ただし**目標を変えたときは3か所**をそろえる：`content.html` の「目標：」と大見出し（h1）、`redesign/a-sidebar.html` の `<meta name="description">` と `<noscript>`（そのあと `build.sh`）。トップページの本文は JS で組み立てるため、JS を動かさずに読む AI（ChatGPT など）や検索エンジンには description・noscript と `content.html` しか届かない。以前は `content.html` の h1 に古いキャッチコピー「時間を忘れてプレイできるゲームを。」が残っていて、AI に読ませるとそれが出ていた（2026-11-16 に修正）。ずれていると `tests/static-profile.test.cjs` が落ちる。
+  - **画面（トップページ）に出していない内容は `content.html` に置かない。** AI はそれも読んで古い内容を答えてしまうため。2026-11-16 に、画面に出していなかった「経験」欄（小・中・高時代の話、株式会社シフト、BitSummit「参加します」など）・「スキル」欄（星の評価、ゲームアイデア、書道）・フッター（© 2025）を消した。内容を足したり新しいデザインの表示をやめたりしたら、`python3 tools/serve.py` を起動して http://127.0.0.1:8000/tools/hidden-text-check.html を開き、「画面に出ていない文はありません」と出るか確かめる（全ページを順に開いて、`content.html` の文と突き合わせる）。
 - `style.css` … スタイル
 - `script.js` ほか `*.js` … アコーディオン、モーダル、背景描画、動画の遅延読み込みなど
 - `Images/` … 画像素材
