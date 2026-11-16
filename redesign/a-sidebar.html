@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A サイドバー案 | 矢追陽平 Portfolio</title>
+    <!-- 本文は JS で content.html から組み立てるので、JS を動かさずに読む AI や検索エンジンにはこの説明と下の <noscript> だけが届く。
+         目標は content.html の「目標：」と同じ文にする（tests/static-profile.test.cjs で確かめる）。 -->
+    <meta name="description" content="矢追陽平（ヨウキン）のポートフォリオ。慶應義塾大学 環境情報学部。Unity を中心に、VR やハンドトラッキング、2D アクションなど、いろいろな遊び方のゲームを作っています。目標は「異分野技術を掛け合わせた遊びの発明で、次世代の遊び場となるゲームを創る」ことです。">
     <link rel="icon" href="../Images/Rocket.png" type="image/png">
     <!-- 中身（content.html）は、フォントや CSS を待たずにすぐ読み込み始める（shared/content.js がこれを使う）。
          公開用のトップページ（リポジトリ直下の index.html）は build.sh がこのファイルから作り、置き場所に合わせて '../' を外す。 -->
@@ -447,6 +450,15 @@
     <link rel="stylesheet" href="shared/profile-character.css">
 </head>
 <body>
+    <!-- JS を動かさずに読む AI・検索エンジン向けの短い自己紹介（ブラウザでは表示されない）。目標は content.html と同じ文にする。 -->
+    <noscript>
+        <h1>矢追陽平（ヨウキン）のポートフォリオ</h1>
+        <p>大学：慶應義塾大学 環境情報学部</p>
+        <p>所属：Life is Tech!、Iwaken Lab.、中西泰人研究会</p>
+        <p>目標：「異分野技術を掛け合わせた遊びの発明で、次世代の遊び場となるゲームを創る」</p>
+        <p>Unity を中心に、VR やハンドトラッキング、2D アクションなど、いろいろな遊び方のゲームを作っています。受賞歴・インターン経験・作品一覧・研究は、このページを JavaScript を有効にして開くか、<a href="../content.html">content.html</a> で見られます。</p>
+        <p>メール：yohei0607@keio.jp / X：https://x.com/youkin06 / GitHub：https://github.com/Youkin06 / Qiita：https://qiita.com/youkin06</p>
+    </noscript>
     <div class="topbar">
         <div class="topbar-title" id="topbar-name"></div>
         <button type="button" aria-controls="sidebar" aria-expanded="false" id="menu-button"></button>
