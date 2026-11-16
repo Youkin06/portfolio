@@ -145,6 +145,4 @@ const createSectionSketch = (containerId, glowColor) => {
 document.addEventListener('DOMContentLoaded', () => {
     createSectionSketch('profile-background', '#ff0000');    // PROFILE: 赤
     createSectionSketch('projects-background', '#adff2f');   // PROJECTS: 黄緑
-    createSectionSketch('experience-background', '#ffa500'); // EXPERIENCE: オレンジ
-    createSectionSketch('skills-background', '#87ceeb');     // SKILLS: 水色
 });
