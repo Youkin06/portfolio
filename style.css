@@ -410,6 +410,10 @@ main {
 .hero-content {
     position: relative;
     z-index: 1;
+    /* 見出し（目標）が長いので、画面の端にくっつかないよう左右に余白をとる */
+    box-sizing: border-box;
+    max-width: 100%;
+    padding: 0 16px;
 }
 
 .hero-content h1 {
@@ -1841,7 +1845,7 @@ main {
 
 
     .hero-content h1 {
-        font-size: 2.5rem;
+        font-size: 1.8rem;
         /* モバイルでの文字サイズを調整 */
     }
 
