@@ -4,7 +4,7 @@
      --box-shadow   … 箱（作品カード・数字のタイル・受賞歴などの行・作品情報・動画）の影
      --btn-shadow   … ボタン（SNS・リンク・詳しく見る・戻る・技術のアイコン）の影
      --btn-hover-bg … ボタンに触れたときの地の色
-     --box-hover-move / --btn-hover-move / --btn-press-move … 触れたとき・押したときの動き */
+     --box-hover-move / --btn-hover-move … 触れたときの動き（押したときに沈む動きはない。2026-11-27 にやめた） */
 :root {
     --u-line: #1f1f22;
     --u-radius: 6px;
@@ -22,7 +22,6 @@
 [data-ui] main .portrait { box-shadow: none; }
 [data-ui] main .profile-stats a { border: 2px solid var(--u-line); border-radius: var(--u-radius); box-shadow: var(--box-shadow); }
 [data-ui] main .profile-stats a:hover { box-shadow: var(--box-shadow-hover, var(--box-shadow)); transform: var(--box-hover-move, translate(-1px, -1px)); }
-[data-ui] main .profile-stats a:active { box-shadow: none; transform: var(--box-press-move, translate(4px, 4px)); }
 
 /* 受賞歴・インターン・メディア掲載：線で区切った行を、1つずつの箱にする */
 [data-ui] main :is(.item-list, .exp-list) { display: grid; gap: 14px; }
@@ -48,14 +47,11 @@
 [data-ui] main .exp-more summary { margin-top: 8px; padding: 3px 10px; font-size: 12px; }
 [data-ui] main .exp-more summary::before { border-color: currentColor; }
 /* 触れたときに浮き上がるのはマウスのときだけ。スマホ（iPhone）では触れた見た目が変わると、
-   1回目のタップが「触れた」だけになり、「詳しく見る」などを2回押さないと開かないため。スマホでは押したときに沈む動きだけにする */
+   1回目のタップが「触れた」だけになり、「詳しく見る」などを2回押さないと開かないため。スマホでは押しても動かない */
 @media (hover: hover) and (pointer: fine) {
     [data-ui] main :is(.contacts a, .link-list a, .item-links a, .exp-links a, .tech-detail-works a, .back, .exp-more summary, .tech > button):hover {
         color: var(--fg); background: var(--btn-hover-bg, #ffffff); transform: var(--btn-hover-move, translate(-1px, -1px)); box-shadow: var(--btn-shadow-hover);
     }
-}
-[data-ui] main :is(.contacts a, .link-list a, .item-links a, .exp-links a, .tech-detail-works a, .back, .exp-more summary, .tech > button):active {
-    transform: var(--btn-press-move, translate(2px, 2px)); box-shadow: none;
 }
 /* 開いたあとも、ほかのボタンと同じ白地のまま（向きの変わる矢印で開いていることを示す） */
 [data-ui] main .exp-more:is([open], [data-expanded]) summary { background: #ffffff; }
@@ -70,7 +66,6 @@
 }
 [data-ui] main .card { transition: transform .12s ease, box-shadow .12s ease; }
 [data-ui] main .card:is(:hover, :focus-within) { box-shadow: var(--box-shadow-hover, var(--box-shadow)); transform: var(--box-hover-move, translate(-1px, -1px)); }
-[data-ui] main .card:has(.card-link:active) { box-shadow: none; transform: var(--box-press-move, translate(5px, 5px)); }
 @media (prefers-reduced-motion: reduce) {
     [data-ui] main :is(.card, .profile-stats a):is(:hover, :focus-within, :active) { transform: none; }
 }
@@ -110,14 +105,13 @@ html, body, * { scrollbar-width: none; }
 
 /* ---- スマホの目次 ---- */
 @media (max-width: 960px) {
-    /* 「目次」ボタンも、ほかのボタンと同じ形（2px の黒い線・角 6px・白地）。押すと沈み、目次を開いている間は浮いて影が出る */
+    /* 「目次」ボタンも、ほかのボタンと同じ形（2px の黒い線・角 6px・白地）。目次を開いている間は浮いて影が出る */
     [data-ui] .topbar #menu-button {
         border: 2px solid var(--u-line); border-radius: var(--u-radius); background: #ffffff; color: var(--fg);
         font-size: 13px; font-weight: 700; line-height: 1.5; padding: 5px 12px; box-shadow: var(--btn-shadow);
         transition: transform .08s ease, box-shadow .08s ease;
     }
     [data-ui] .topbar #menu-button[aria-expanded="true"] { box-shadow: var(--btn-shadow-hover); transform: var(--btn-hover-move, translate(-1px, -1px)); }
-    [data-ui] .topbar #menu-button:active { box-shadow: none; transform: var(--btn-press-move, translate(2px, 2px)); }
     /* 上の帯の下の線も、ほかの線と同じ 2px の黒 */
     [data-ui] .topbar { border-bottom: 2px solid var(--u-line); }
     /* 開いた目次は枠線で囲まず、上の帯の下から画面いっぱいに出す（周りに後ろのページがはみ出して見えない） */
@@ -128,7 +122,7 @@ html, body, * { scrollbar-width: none; }
 }
 
 /* キャラクター（ぼくのにっき・カモ・ロケット）の頭の上に出る作品へのボタンも、受賞歴の「作品：〜」と同じ形にする。
-   位置合わせの translateX（画面の端ではみ出さないようずらす分 --guest-shift も含む）はそのままに、触れたら浮き上がり、押したら沈む。 */
+   位置合わせの translateX（画面の端ではみ出さないようずらす分 --guest-shift も含む）はそのままに、触れたら浮き上がる。 */
 [data-ui] main a.profile-guest-link {
     display: inline-flex; align-items: center; padding: 5px 12px;
     border: 2px solid var(--u-line); border-radius: var(--u-radius);
@@ -143,4 +137,3 @@ html, body, * { scrollbar-width: none; }
     /* 浮き上がっても、元の位置に触れている間は触れたままにする（ほかのボタンと同じ） */
     [data-ui] main a.profile-guest-link:hover::before { content: ""; position: absolute; inset: -2px -5px -5px -2px; }
 }
-[data-ui] main a.profile-guest-link:active { transform: translateX(calc(-50% + var(--guest-shift, 0px))); box-shadow: none; }
