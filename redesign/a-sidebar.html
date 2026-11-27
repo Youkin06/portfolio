@@ -1152,7 +1152,8 @@
             // 作品と研究の1件ずつのページは、スマホでもパソコンと同じ別のページ。
             const mobile = matchMedia('(max-width: 960px)');
             const PERCHES = [
-                { guest: () => bokuGuest, list: '[data-block="awards"] .item', text: '神ゲー創造主エボリューション' },
+                // ぼくのにっきは受賞歴の1件目に立つ（2件目より下だと、頭が上の箱の文字に重なるため）。
+                { guest: () => bokuGuest, list: '[data-block="awards"] .item', text: '' },
                 { guest: () => kamoGuest, list: '[data-block="internships"] .exp', text: 'Unityメンター' },
                 // ロケットは、メディア掲載の1件目の箱の上を左右に行ったり来たりする（text が空なら1件目）。
                 { guest: () => depthGuest, list: '[data-block="media"] .item', text: '' },

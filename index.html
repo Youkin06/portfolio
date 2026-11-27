@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
+<head><!-- redesign/a-skins/build.sh が redesign/a-sidebar.html と white-fill から作るファイル。直接は編集しない。 -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>矢追陽平（ヨウキン）のポートフォリオ</title>
@@ -606,7 +606,8 @@
             title: text(item.querySelector('h3')),
             summary: text(summaryEl),
             tags,
-            videoId: videoIdFrom(item.querySelector('iframe')?.dataset.videoSrc),
+            // YouTube にない動画は data-video-id に名前を書く（Images/clips と portfolio-media の名前）。
+            videoId: item.dataset.videoId || videoIdFrom(item.querySelector('iframe')?.dataset.videoSrc),
             genre: field('ジャンル'),
             period: field('開発期間'),
             team: field('開発体制'),
@@ -1847,7 +1848,8 @@
             // 作品と研究の1件ずつのページは、スマホでもパソコンと同じ別のページ。
             const mobile = matchMedia('(max-width: 960px)');
             const PERCHES = [
-                { guest: () => bokuGuest, list: '[data-block="awards"] .item', text: '神ゲー創造主エボリューション' },
+                // ぼくのにっきは受賞歴の1件目に立つ（2件目より下だと、頭が上の箱の文字に重なるため）。
+                { guest: () => bokuGuest, list: '[data-block="awards"] .item', text: '' },
                 { guest: () => kamoGuest, list: '[data-block="internships"] .exp', text: 'Unityメンター' },
                 // ロケットは、メディア掲載の1件目の箱の上を左右に行ったり来たりする（text が空なら1件目）。
                 { guest: () => depthGuest, list: '[data-block="media"] .item', text: '' },
