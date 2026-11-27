@@ -888,7 +888,8 @@ main {
     pointer-events: none;
 }
 
-.video-container iframe {
+.video-container iframe,
+.video-container video {
     position: absolute;
     top: 0;
     left: 0;
@@ -1041,6 +1042,11 @@ main {
 .tag.hackathon {
     background: #ff5c35;
     color: white;
+}
+
+.tag.react {
+    background: #61dafb;
+    color: #1a1a1a;
 }
 
 .tag.winner {

@@ -132,6 +132,10 @@
                         </div>
                         <div class="accordion-content award-list">
                             <p class="award-item">
+                                <span>DevFest GDGoC Japan 2026 Hackathon 決勝進出</span>
+                                <a href="#project-tabimusubi" class="award-project-link">作品：たびむすび</a>
+                            </p>
+                            <p class="award-item">
                                 <span>神ゲー創造主エボリューション2026 一次審査通過</span>
                                 <a href="#project-pintch-witch" class="award-project-link">作品：PiNTCH WiTCH // Shadow play</a>
                             </p>
@@ -403,6 +407,23 @@
 
             <!-- 作品グリッド (2列) -->
             <div class="project-grid">
+                <div id="project-tabimusubi" class="project-item" data-modal-target="modal-project-tabimusubi" data-video-id="tabimusubi">
+                    <div class="video-container">
+                        <video src="Images/clips/tabimusubi.mp4" poster="Images/clips/tabimusubi.jpg"
+                            autoplay muted loop playsinline title="たびむすび デモ動画"></video>
+                    </div>
+                    <div class="project-description">
+                        <h3>たびむすび</h3>
+                        <p>友達と「やりたいこと」を書くと、日本地図の上に3Dの街が建ち、旅のしおりになるスマホ向けの旅行計画アプリ。<br><span class="click-for-details">▶︎ クリックして詳細を見る</span></p>
+                        <ul class="tags">
+                            <li class="tag react">React</li>
+                            <li class="tag team-dev">チーム開発</li>
+                            <li class="tag hackathon">ハッカソン</li>
+                            <li class="tag winner">決勝進出</li>
+                        </ul>
+                    </div>
+                </div>
+
                 <div id="project-pintch-witch" class="project-item" data-modal-target="modal-project-5">
                     <div class="video-container">
                         <iframe
@@ -765,6 +786,56 @@
                 <li><a href="https://youtu.be/TWyRMdgAO90" target="_blank">動画を見る</a></li>
                 <li><a href="https://unityroom.com/games/anatahasirodesu" target="_blank">ゲームをプレイ</a></li>
                 <li><a href="https://github.com/Youkin06/SiroGame" target="_blank">GitHubリポジトリ</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="modal-project-tabimusubi" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2>たびむすび</h2>
+            <p><strong>ジャンル:</strong> 旅行計画アプリ（スマホ向けの Web アプリ）</p>
+            <p><strong>開発期間:</strong> 2026年11月（約3週間）</p>
+            <p><strong>開発体制:</strong> 4人によるチーム制作</p>
+            <p><strong>担当:</strong> UI/UX（場所カードやシートの操作感、旅を再生する演出、旅をつくる画面の地方・県選び、しおりの宿・ごはんの枠と行の入れ替え）</p>
+            <p><strong>使用技術:</strong> React、TypeScript、three.js、Google Maps Platform（Maps JavaScript API・Routes API・Places API）、Gemini、Firebase、Git / GitHub</p>
+            <p><strong>詳しい説明:</strong><br>
+                DevFest GDGoC Japan 2026 Hackathon で制作し、決勝に進出した旅行計画アプリです。
+                グループ旅行の計画は、幹事ひとりの仕事になりがちです。たびむすびでは、友達がそれぞれ「長野の温泉に入りたい」のように「やりたいこと」を書くと、Gemini が地図に候補のピンを立てます。
+                気に入った場所を「建築」すると、日本地図の上に3Dのミニチュアが建ち、建てた場所がそのまま旅のしおりにまとまります。
+                全員の「やりたい」が地図の上で形になり、いつの間にか旅ができあがる、「全員が主人公の旅」を目指しました。
+                <br><br>
+                アプリは Gemini や Google マップの API の利用料金がかかるため、一般には公開していません。
+            </p>
+            <p><strong>技術説明:</strong><br>
+                主に UI/UX を担当し、触って気持ちよく、迷わずに使える画面にとにかくこだわりました。
+                場所の情報は下のシートを左右にスワイプして切り替え、初めて開いたときだけカードが揺れてスワイプできることを伝えます。
+                シートは取っ手のドラッグで開け閉めでき、出るときは下から上がり、閉じるときは下へ下がるように、動きの向きをそろえました。
+                <br><br>
+                しおりの再生ボタンを押すと、乗り物の模型が道に沿って旅を巡ります。電車の区間は電車、飛行機の区間は空を飛ぶ飛行機、歩く区間は足を動かす人に変わり、場所に着くと「パシャ」とシャッターの音が鳴って写真が出ます。
+                旅をつくる画面では、地方や県を選ぶと地図がいったん引いてから、その場所へ飛び込むように寄ります。迷ったときのサイコロや、地方ごとの名物の3D模型も入れ、行き先を選ぶところから旅が楽しみになるようにしました。
+                <br><br>
+                画面は AI で作ると簡単に形になりますが、触って楽しいかは実際に触らないと分かりません。チームや友人に触ってもらっては直すことを繰り返し、シートの動き1つでも、指の動かし方や戻る操作に合わせて細かく調整しました。
+                見た目を作ることと、触って気持ちいいことは別物だと学びました。
+            </p>
+            <p><strong>振り返り:</strong><br>
+                課題解決型のハッカソンに参加するのは初めてでした。課題に対して、前提は何か、なぜそれが必要なのかを考えながら進めました。
+                また、ペルソナを決めておき、話が広がってきたら一度ペルソナに立ち返って考えるようにしました。
+                <br><br>
+                今回のコンセプトは、幹事の負担を減らすことと、みんなで旅の計画をすることの2つに焦点を当てたものでした。
+                ただ、幹事の負担を減らすといっても、どこで負担になっているのかを十分に分析できていませんでした。
+                そこをしっかり分析し、幹事の負担を減らすことだけに絞ってプロダクトを作ってもよかったと考えています。
+                <br><br>
+                決勝で敗れたことからの学びは、アプリに多くの機能を詰め込みすぎたことと、課題をしっかり解決しきれていなかったことです。
+                広く浅くではなく、狭く深く作ることが大切だと感じました。
+                <br><br>
+                それでも、実際に使えるレベルのアプリを作れたのはよかったです。
+                企画だけでなく、プレゼンや動画制作、AI の使い方など、多くのことを学べたハッカソンでした。
+            </p>
+            <p><strong>リンク:</strong></p>
+            <ul>
+                <li><a href="https://youkin06.github.io/portfolio-media/videos/tabimusubi.mp4" target="_blank" rel="noopener noreferrer">デモ動画を見る</a></li>
+                <li><a href="https://github.com/Devfest-Hackathon-2026/df-2026-t140" target="_blank" rel="noopener noreferrer">GitHubリポジトリ</a></li>
             </ul>
         </div>
     </div>
