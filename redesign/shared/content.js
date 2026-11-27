@@ -100,7 +100,8 @@
             title: text(item.querySelector('h3')),
             summary: text(summaryEl),
             tags,
-            videoId: videoIdFrom(item.querySelector('iframe')?.dataset.videoSrc),
+            // YouTube にない動画は data-video-id に名前を書く（Images/clips と portfolio-media の名前）。
+            videoId: item.dataset.videoId || videoIdFrom(item.querySelector('iframe')?.dataset.videoSrc),
             genre: field('ジャンル'),
             period: field('開発期間'),
             team: field('開発体制'),
