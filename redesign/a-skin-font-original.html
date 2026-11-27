@@ -955,7 +955,7 @@
                         <div class="thumb">${clipHTML(p)}</div>
                         <div class="body">
                             <h3><a class="card-link" href="#works/${esc(p.id)}">${cardTitle(p.title)}</a><small>${yearOf(p)}</small></h3>
-                            <p>${esc(p.summary)}</p>${tagsHTML(p.tags)}
+                            ${p.summary ? `<p>${esc(p.summary)}</p>` : ''}${tagsHTML(p.tags)}
                         </div>
                     </article>`;
             };
