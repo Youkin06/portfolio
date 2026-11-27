@@ -88,6 +88,8 @@
         const modal = doc.getElementById(modalId);
         const summaryEl = item.querySelector('.project-description p').cloneNode(true);
         summaryEl.querySelector('.click-for-details')?.remove();
+        // 短い説明の <wbr> は、2行になるときに折り返してよい区切り。見えない文字（U+200B）にして渡す。
+        summaryEl.querySelectorAll('wbr').forEach(wbr => wbr.replaceWith('\u200b'));
         const tags = [...item.querySelectorAll('.tag')].map(tag => ({
             key: [...tag.classList].find(c => c !== 'tag') || '',
             label: text(tag),

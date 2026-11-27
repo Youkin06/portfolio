@@ -363,6 +363,7 @@
         .data dt { color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .06em; }
         .data dd { margin: 2px 0 0; }
         .data .tags { margin: 0 0 16px; }
+        .phrase { display: inline-block; }
         .link-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
         .link-list a {
             display: block;
@@ -594,6 +595,8 @@
         const modal = doc.getElementById(modalId);
         const summaryEl = item.querySelector('.project-description p').cloneNode(true);
         summaryEl.querySelector('.click-for-details')?.remove();
+        // 短い説明の <wbr> は、2行になるときに折り返してよい区切り。見えない文字（U+200B）にして渡す。
+        summaryEl.querySelectorAll('wbr').forEach(wbr => wbr.replaceWith('\u200b'));
         const tags = [...item.querySelectorAll('.tag')].map(tag => ({
             key: [...tag.classList].find(c => c !== 'tag') || '',
             label: text(tag),
@@ -1434,8 +1437,10 @@
             // 段落ごとに <p> に分けて読みやすくする（元の文章は <br><br> で段落を区切っている）。
             const paragraphs = html => html.split(/(?:<br\s*\/?>\s*){2,}/).map(part => `<p>${part.trim()}</p>`).join('');
 
+            // 作品の短い説明は、区切り（U+200B）ごとにまとめて、2行になるときは区切りのところで折り返す。
+            const phrasesHTML = text => text.split('\u200b').map(part => `<span class="phrase">${esc(part)}</span>`).join('');
             const pageHead = (label, title, lead) => `
-                <header class="page-head">${label ? `<div class="label">${esc(label)}</div>` : ''}<h1>${esc(title)}</h1>${lead ? `<p>${esc(lead)}</p>` : ''}</header>`;
+                <header class="page-head">${label ? `<div class="label">${esc(label)}</div>` : ''}<h1>${esc(title)}</h1>${lead ? `<p>${phrasesHTML(lead)}</p>` : ''}</header>`;
 
             const pagerHTML = (prev, next, href, label) => `
                 <nav class="pager" aria-label="前後">
@@ -1645,7 +1650,7 @@
                         <div class="thumb">${clipHTML(p)}</div>
                         <div class="body">
                             <h3><a class="card-link" href="#works/${esc(p.id)}">${cardTitle(p.title)}</a><small>${yearOf(p)}</small></h3>
-                            ${p.summary ? `<p>${esc(p.summary)}</p>` : ''}${tagsHTML(p.tags)}
+                            ${p.summary ? `<p>${phrasesHTML(p.summary)}</p>` : ''}${tagsHTML(p.tags)}
                         </div>
                     </article>`;
             };
